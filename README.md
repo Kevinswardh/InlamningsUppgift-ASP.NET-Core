@@ -1,2 +1,2 @@
 # InlamningsUppgift-ASP.NET-Core
-Inlämninguppgift för Asp .NET Core application Alpha.
+Detta är Frontend delen med alla statiska design filer, bilder och javascript kod för normal in-page navigering utan partials.
