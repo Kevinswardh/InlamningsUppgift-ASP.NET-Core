@@ -1,0 +1,56 @@
+Så vi behöver en Start sida. på denna start sidan sköter vi login/create
+
+då kan användare logga in eller skapa sitt konto efter att hen har blivit händvisad hit. 
+
+Wälkommen text med en beskrivande text om appen. 
+
+Personen logga in -----> 
+
+Kommer då till Project sidan där personen har sin profilbild och inställningar + notificeringar uppe till höger,
+kan lägga till nya projekt och hoppa till teams fliken till vänster, där kan även finns statestik, kundkontakter, Chattmeddelanden etc.
+
+Tanken med rollerna är förjande:
+Så admin är gjort förn början, admin kan ge högsta rollerna, och en ny member somprecis registrerat sig får newmember attributet
+tanken blir då att när någon ny logga in kommer hen se Admin + Officers/Ansvariga men inga andra members. 
+både ansvariga och admin kan då ge den rollen av TeamMember, Customer eller admin kan också sätta Ansvarig. Detta är heriaki rollerna. 
+Därefter finns där specifika positioner varje temamember kan ha t.ex developer, customer support etc. 
+
+Sekretess sker då automatiskt för de som inte är asvnariga och de ansvariga kan bemöta den nya member om vad hen behöver. 
+
+Flickar med team member och en annan med Customers där man ahr chat funktioner med sina medlemmar och sina kunder direkt i appen. 
+
+Asvariga + admin kan lägga till rabatter till olika customer från domain modellerna so mvi för skapar i 10 15 20 25 30 50 75 100.
+Så om team member skapar projekt eller projekt är skapat och när betalning skickas så läggs rabatten på.
+
+Så en customer ser bara de projekt hen är delaktig i och kan inte se andra Customers
+admin/manager ser alla project med alla customers och alla team members
+Team members ser alla proejkt dem är delaktiga i men kan också skapa egna och lägga till andra medlemmar, managers kan ändra.
+Tanken är att customer loggar in pratar med manager, får en eller flera team mebers unlocked för en de
+skapar sedan ett projekt med kunden om inte manager och kunden redan gjort detta oavsett ska både managers/team members kunna
+skapa och ändra i projekt och klicka avsluta managers kan bara ta bort t.ex pga bokföring etc. 
+Så customer kmr in, pratar med manager, får team member eller projekt med teammembers tilldelade
+team membersen får notifikation att de blivit tillagda i nytt projekt
+där kan de ha grupp chatt (teroetisk video/voice chatt) och en Relaterad filer sida kanske iaf vidare planerat om det finns tilldelade
+så får team membersen och kunder alla dokument samlade i appen har tillgång till kommunikation och att ha projektet struktur och planering
+
+
+Pages Frontend:
+
+Login/Create - använder samma. Status: Klar
+
+Admin Login. Status: pågående
+
+Project page 
+Add button
+Add project modal
+Edit project modal
+Notification window
+Account information/dark mode/logout window
+Visiual linking
+
+Links to
+
+Team Member - Chat modal, minimize to side?
+Customer page - Chat modal, minize to side? 
+
+New member tar vi bort och låter admin/ansvariga ändra detta med status - användaren skapar sitt egna konto. 

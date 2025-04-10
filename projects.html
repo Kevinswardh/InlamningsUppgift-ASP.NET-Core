@@ -1,0 +1,2776 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects</title>
+    <link rel="stylesheet" href="styles.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <style>
+      /*Project page*/
+
+      .dashboard {
+        display: flex;
+        min-height: 100vh;
+        background-color: #f8fafc;
+        font-family: "Inter", sans-serif;
+      }
+
+      .sidebar {
+        width: 240px;
+        background-color: #fff;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #e5e7eb;
+      }
+
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-text {
+        font-size: 24px;
+        font-weight: 600;
+        color: #000;
+        margin: 0;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #64748b;
+        background: none;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        text-align: left;
+      }
+
+      .nav-item.active {
+        background-color: #e0f2fe;
+        color: #0ea5e9;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 16px;
+      }
+
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 16px;
+      }
+
+      .search-container {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 8px 16px;
+        width: 300px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .search-input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 14px;
+        margin-left: 8px;
+      }
+
+      .user-controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .icon-button {
+        color: #64748b;
+        font-size: 20px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+      .icon-button,
+      .user-avatar-button {
+        user-select: none;
+      }
+      .user-avatar img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .section-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+      }
+
+      .add-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #0ea5e9;
+        color: #fff;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .tab-list {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      .tab-item {
+        color: #64748b;
+        cursor: pointer;
+        font-size: 14px;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+
+      .tab-item.active-tab {
+        color: #0ea5e9;
+        font-weight: 600;
+        position: relative;
+      }
+
+      .tab-item.active-tab::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 100%;
+        height: 2px;
+        background-color: #0ea5e9;
+        border-radius: 2px;
+      }
+
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+      }
+
+      .project-card {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .project-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        gap: 12px;
+      }
+
+      .company-logo {
+        width: 49px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .company-logo img {
+        width: 44px;
+        height: 44px;
+      }
+
+      .project-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-grow: 1;
+      }
+
+      .project-title {
+        font-weight: 500;
+        color: #111827;
+        font-size: 15px;
+        margin: 0;
+      }
+
+      .company-name {
+        color: #64748b;
+        font-size: 13px;
+        margin: 0;
+      }
+
+      .menu-button {
+        font-size: 24px;
+        color: #64748b;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .project-description {
+        color: #4b5563;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 4.5em;
+        flex-grow: 1;
+      }
+
+      .project-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .time-remaining {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      .team-members {
+        display: flex;
+        align-items: center;
+      }
+
+      .member-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+      }
+
+      .member-avatar + .member-avatar {
+        margin-left: -8px;
+      }
+
+      @media (max-width: 991px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .project-grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .dashboard {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          border-right: none;
+          border-bottom: 1px solid #e5e7eb;
+          padding: 0px;
+        }
+
+        .nav-item {
+          padding: 8px;
+          width: 100%;
+        }
+
+        .main-content {
+          padding: 12px;
+        }
+
+        .project-card {
+          padding: 16px;
+        }
+
+        .project-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .search-container {
+          width: 100%;
+        }
+      }
+
+      .project-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .project-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-grow: 1;
+      }
+
+      .project-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .project-title {
+        font-weight: 500;
+        color: #111827;
+        font-size: 15px;
+        margin: 0;
+        text-align: left;
+      }
+
+      .company-name {
+        color: #64748b;
+        font-size: 13px;
+        margin: 0;
+        text-align: left;
+      }
+      .project-card {
+        position: relative;
+      }
+
+      .projects-menu-button {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 10px;
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .projects-menu-button .dot {
+        display: block;
+        width: 4px;
+        height: 4px;
+        background-color: #1a1926;
+        border-radius: 50%;
+      }
+      .time-remaining {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #f1f5f9; /* ljusgrå bakgrund */
+        color: #1a1926; /* textfärg */
+        font-size: 14px;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 12px;
+      }
+      @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap");
+
+      .logo-text {
+        font-family: "Comfortaa", cursive;
+        font-weight: 700;
+        font-size: 26px;
+        line-height: normal; /* Figma har "Auto", så "normal" funkar bra */
+        letter-spacing: 0;
+        color: #1e1e1e; /* Justera om "Body Dark" är annan färg */
+      }
+
+      .project-form {
+        border-radius: 16px;
+        box-shadow: 0px 40px 30px -30px rgba(4, 15, 21, 0.15),
+          0px 50px 50px 0px rgba(4, 15, 21, 0.15);
+        background-color: #fff;
+        width: 100%;
+        padding: 20px; /* mindre padding */
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        user-select: none;
+      }
+
+      .form-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #fff; /* eller vad modalens bakgrund är */
+        padding: 20px;
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        font-family: Nunito, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1926;
+        user-select: none;
+      }
+
+      .close-icon {
+        aspect-ratio: 1;
+        object-fit: contain;
+        object-position: center;
+        width: 37px;
+        align-self: start;
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+
+      .close-icon-wrapper {
+        position: absolute; /* Gör knappen fast inom headern */
+        top: 16px; /* Placera den 16px från toppen på headern */
+        right: 16px; /* Placera den 16px från högerkanten på headern */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        cursor: pointer;
+        width: fit-content;
+        height: fit-content;
+        z-index: 101; /* Se till att den är ovanpå headerinnehållet */
+      }
+
+      .image-upload-section {
+        display: flex;
+        justify-content: center;
+        margin-top: 38px;
+      }
+
+      .upload-border {
+        border-radius: 30px;
+        border: 1px dashed var(--Border-300, #c6c8cc);
+        display: flex;
+        width: 150px;
+        height: 150px;
+        padding: 30px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .upload-icon {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 30px;
+        pointer-events: none;
+      }
+
+      .form-group {
+        margin-top: 30px;
+      }
+
+      .form-label {
+        color: #1a1926;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 9px;
+      }
+
+      .form-input {
+        border-radius: 14px;
+        border: 1px solid var(--Border-100, #ebeef2);
+        padding: 14px 16px;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #637085;
+        font-weight: 400;
+        width: 100%;
+      }
+
+      .wysiwyg-editor {
+        border-radius: 14px;
+        border: 1px solid var(--Border-100, #ebeef2);
+        padding: 16px 1px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .editor-placeholder {
+        color: #637085;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        margin-left: 15px;
+        margin-bottom: 93px;
+      }
+
+      .editor-divider {
+        border: 1px solid var(--Border-100, #ebeef2);
+        height: 1px;
+        width: 100%;
+      }
+
+      .editor-toolbar {
+        display: flex;
+        margin-top: 14px;
+        margin-left: 15px;
+        width: 348px;
+        max-width: 100%;
+        align-items: stretch;
+        gap: 20px;
+        justify-content: space-between;
+      }
+
+      .toolbar-group {
+        display: flex;
+        align-items: stretch;
+        gap: 17px;
+      }
+
+      .toolbar-icon {
+        aspect-ratio: 1;
+        object-fit: contain;
+        object-position: center;
+        width: 16px;
+        margin: auto 0;
+        flex-shrink: 0;
+      }
+
+      .toolbar-divider {
+        transform: rotate(-90deg);
+        border: 1px solid var(--Border-100, #ebeef2);
+        width: 1px;
+        height: 20px;
+      }
+
+      .date-container {
+        display: flex;
+        gap: 24px;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        flex-wrap: wrap;
+      }
+
+      .date-input {
+        border-radius: 14px;
+        border: 1px solid var(--Border-100, #ebeef2);
+        padding: 12px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #28263b;
+        font-weight: 400;
+        gap: 18px;
+      }
+
+      .calendar-icon {
+        aspect-ratio: 1;
+        object-fit: contain;
+        object-position: center;
+        width: 20px;
+      }
+
+      /* För container av medlemmar */
+      .members-input {
+        display: flex;
+        flex-direction: column; /* Ordning: text, tags, input */
+        gap: 8px;
+        padding: 0; /* Ta bort padding från wrappern */
+        position: relative;
+      }
+      /* För taggarna */
+      .members-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px; /* Avstånd mellan taggarna och inputfältet */
+        padding: 0;
+        border: none; /* Ingen border här */
+      }
+
+      .member-tag {
+        border-radius: 8px;
+        background-color: #f5f7fa;
+        padding: 7px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .member-avatar {
+        width: 22px;
+        aspect-ratio: 1;
+        object-fit: contain;
+      }
+
+      .member-name {
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 14px;
+        color: #28263b;
+      }
+
+      .remove-icon {
+        width: 12px;
+        aspect-ratio: 1;
+        object-fit: contain;
+      }
+
+      .add-member-icon {
+        width: 20px;
+        aspect-ratio: 1;
+        object-fit: contain;
+      }
+
+      .budget-input {
+        border-radius: 14px;
+        border: 1px solid var(--Border-100, #ebeef2);
+        padding: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .currency-icon {
+        width: 20px;
+        aspect-ratio: 1;
+        object-fit: contain;
+      }
+
+      .budget-field {
+        border: none;
+        outline: none;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #637085;
+        width: 100%;
+      }
+
+      .submit-button {
+        border-radius: 14px;
+        border: 1px solid #fff;
+        box-shadow: 0px 4px 16px 0px rgba(0, 129, 255, 0.18);
+        background-color: #2d99ff;
+        margin-top: 32px;
+        padding: 14px 24px;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #fff;
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+        cursor: pointer;
+      }
+
+      @media (max-width: 991px) {
+        .project-form {
+          padding: 20px;
+        }
+
+        .upload-border {
+          padding: 20px;
+        }
+
+        .editor-placeholder {
+          margin-left: 10px;
+        }
+
+        .editor-toolbar {
+          margin-left: 10px;
+        }
+
+        .submit-button {
+          padding: 14px 20px;
+        }
+
+        .editor-placeholder {
+          margin-bottom: 40px;
+        }
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; /* <- Lägg till detta om det inte redan är maxat */
+        padding: 20px;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+      .modal::-webkit-scrollbar {
+        display: none;
+      }
+      .modal {
+        position: relative; /* Ser till att innehåll inom modalen kan positioneras relativt till den */
+        background: #fff;
+        border-radius: 16px;
+        max-width: 800px;
+        width: 100%;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        z-index: 100000 !important;
+      }
+
+      .modal .project-form header {
+        position: relative; /* Gör så att elementen inuti headern kan positioneras relativt till den */
+        padding: 16px; /* Anpassa padding efter behov */
+      }
+
+      .modal-overlay {
+        position: fixed !important;
+        z-index: 99999 !important;
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        inset: 0 !important;
+      }
+
+      .modal {
+        z-index: 100000 !important;
+        position: relative !important;
+      }
+
+      .ql-tooltip {
+        z-index: 100001 !important;
+      }
+
+      .upload-border {
+        cursor: pointer;
+        transition: background 0.2s ease;
+        text-align: center;
+      }
+
+      .upload-border:hover {
+        background-color: #f0f4f8;
+      }
+
+      .upload-text {
+        font-size: 13px;
+        color: #637085;
+        margin-top: 10px;
+        user-select: none;
+      }
+
+      /*quill*/
+
+      #editor-container {
+        height: 150px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+      }
+      .ql-editor,
+      .ql-editor * {
+        background: transparent !important;
+        background-color: transparent !important;
+      }
+
+      .ql-toolbar.ql-snow {
+        border-radius: 8px 8px 0 0;
+      }
+
+      .ql-container.ql-snow {
+        border-radius: 0 0 8px 8px;
+      }
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        cursor: pointer;
+        position: absolute;
+        right: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .date-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        gap: 18px;
+        justify-content: space-between;
+        align-items: center;
+        width: 150px;
+      }
+
+      .custom-date {
+        width: 100%;
+        padding-right: 80px; /* space for icon */
+        border-radius: 14px;
+        border: 1px solid var(--Border-100, #ebeef2);
+        padding: 14px 16px;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #637085;
+        font-weight: 400;
+        appearance: none; /* removes native styles in most browsers */
+      }
+
+      .custom-date::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        z-index: 2;
+        position: absolute;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .calendar-icon-clickable {
+        position: absolute;
+        right: 16px;
+        width: 20px;
+        height: 20px;
+        pointer-events: none;
+      }
+      @keyframes shakeWithFakeBorder {
+        0% {
+          transform: translateX(0);
+          box-shadow: none;
+        }
+        20% {
+          transform: translateX(-4px);
+          box-shadow: 0 0 0 3px #ff0000;
+        }
+        40% {
+          transform: translateX(4px);
+          box-shadow: none;
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+          box-shadow: none;
+        }
+        100% {
+          transform: translateX(0);
+          box-shadow: none;
+        }
+      }
+
+      .shake-animation {
+        animation: shakeWithFakeBorder 0.4s ease;
+        box-shadow: 8px;
+      }
+
+      /*Profile menu*/
+
+      .profile-menu {
+        display: block;
+        width: 300px;
+        border-radius: 14px;
+        box-shadow: 0px 16px 80px 0px rgba(4, 15, 21, 0.15),
+          0px 40px 20px -30px rgba(4, 15, 21, 0.1);
+        padding: 8px;
+        background-color: #fff;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        z-index: 1000;
+      }
+      .profile-menu[hidden] {
+        display: none !important;
+      }
+      .profile-header {
+        display: flex;
+        align-items: center;
+        border-radius: 14px;
+        padding: 12px;
+        margin-bottom: 12px;
+        background-color: #f5f7fa;
+      }
+      .avatar-container {
+        width: 40px;
+        height: 40px;
+        margin-right: 16px;
+      }
+      .profile-name {
+        color: #1a1926;
+        font-family: "Nunito", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+      }
+      .menu-divider {
+        height: 1px;
+        margin: 8px 0;
+        border: none;
+        background-color: #ebeef2;
+      }
+      .menu-options {
+        display: flex;
+        flex-direction: column;
+      }
+      .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 14px;
+        border-radius: 14px;
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+      }
+      .menu-item:hover {
+        background-color: #f5f7fa;
+      }
+      .settings-icon,
+      .logout-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 24px;
+      }
+      .menu-text {
+        color: #28263b;
+        font-family: "Nunito", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+      }
+      .toggle-switch {
+        position: absolute;
+        right: 12px;
+        width: 42px;
+        height: 24px;
+      }
+      .user-avatar-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+      }
+      .avatar-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      @media (max-width: 991px) {
+        .profile-menu {
+          width: 280px;
+        }
+      }
+      @media (max-width: 640px) {
+        .profile-menu {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+      /* === Dropdown meny för trippelpunkter i projektkort === */
+
+      .project-card {
+        position: relative;
+      }
+
+      .project-menu-button {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        z-index: 10;
+      }
+
+      .project-menu-button .dot {
+        display: block;
+        width: 4px;
+        height: 4px;
+        background-color: #1a1926;
+        border-radius: 50%;
+      }
+
+      /* Dropdownmeny */
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 52px;
+        right: 12px;
+        width: 230px;
+        border-radius: 14px;
+        background-color: #fff;
+        box-shadow: 0px 16px 80px 0px rgba(4, 15, 21, 0.15),
+          0px 40px 20px -30px rgba(4, 15, 21, 0.1);
+        padding: 8px;
+        z-index: 20;
+      }
+
+      .dropdown-menu.show {
+        display: block;
+      }
+
+      .menu-item {
+        display: flex;
+        width: 100%;
+        height: 48px;
+        padding: 14px;
+        align-items: center;
+        gap: 16px;
+        border-radius: 14px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-family: "Nunito", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        text-align: left;
+        color: #1a1926;
+        transition: background-color 0.2s ease;
+      }
+
+      .menu-item:hover {
+        background-color: #f5f7fa;
+        font-weight: 600;
+      }
+
+      .menu-item-edit {
+        margin-bottom: 4px; /* spacing före Add Member */
+      }
+
+      .menu-text-delete {
+        color: #ff6640;
+      }
+
+      .menu-divider {
+        height: 1px;
+        background-color: #ebeef2;
+        margin: 8px 0;
+      }
+
+      .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+      /*Settings menu*/
+      .settings-menu {
+        display: block;
+        width: 300px;
+        border-radius: 14px;
+        box-shadow: 0px 16px 80px 0px rgba(4, 15, 21, 0.15),
+          0px 40px 20px -30px rgba(4, 15, 21, 0.1);
+        padding: 8px;
+        background-color: #fff;
+        position: absolute;
+        top: 60px;
+        right: 60px;
+        z-index: 1000;
+      }
+
+      .settings-menu[hidden] {
+        display: none !important;
+      }
+
+      .settings-header {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        gap: 12px;
+        background-color: #f5f7fa;
+        border-radius: 14px;
+        margin-bottom: 12px;
+      }
+
+      .settings-icon-large {
+        font-size: 20px;
+        color: #1a1926;
+      }
+
+      .settings-title {
+        font-size: 16px;
+        font-weight: 600;
+        font-family: "Nunito", sans-serif;
+        margin: 0;
+        color: #1a1926;
+      }
+
+      /*add memer tags*/
+      /* För container av medlemmar */
+      .members-input {
+        display: flex;
+        flex-direction: column; /* Ordning: text, tags, input */
+        gap: 8px;
+        padding: 0; /* Ta bort padding från wrappern */
+        position: relative;
+      }
+
+      /* För taggarna */
+      .members-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 8px; /* Avstånd mellan taggarna och inputfältet */
+        padding: 0;
+        border: none; /* Ingen border här */
+      }
+
+      /* Inputfältet */
+      .member-input {
+        width: 100%; /* Full bredd för inputfältet */
+        padding: 8px 4px;
+        border: 1px solid #ebeef2; /* Border endast på input text-fältet */
+        outline: none;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        border-radius: 8px; /* Rundade hörn för inputen */
+        margin-bottom: 10px;
+      }
+
+      /* För förslag som visas */
+
+      .suggestions-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
+        border: 1px solid #ebeef2;
+        border-radius: 8px;
+        z-index: 10;
+        list-style: none;
+        padding: 8px 0; /* Padding på listan */
+        margin: 4px 0 0 0;
+        max-height: 200px;
+        overflow-y: auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Lägger till skugga för djup */
+      }
+
+      /* För varje list item */
+      .suggestions-list li {
+        padding: 10px 14px; /* Padding för varje förslag */
+        cursor: pointer;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #28263b;
+        transition: background-color 0.2s ease, font-weight 0.2s ease;
+      }
+
+      /* Hover och active förslag */
+      .suggestions-list li:hover,
+      .suggestions-list li.active {
+        background-color: #f0f4f8;
+        font-weight: 600;
+      }
+
+      /* För varje tagg som läggs till */
+      .member-tag {
+        background-color: #f5f7fa;
+        border-radius: 8px;
+        padding: 7px 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+
+      /* Avatarbild i taggen */
+      .member-avatar {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      /* Ta bort ikon i taggen */
+      .remove-icon {
+        width: 12px;
+        height: 12px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HTML body content continues after this -->
+    <div class="dashboard">
+      <nav class="sidebar">
+        <div class="sidebar-header">
+          <img src="icons/Logo.svg" alt="Logo" class="logo" />
+          <span class="logo-text">alpha</span>
+        </div>
+        <button onclick="location.href='projects.html'" class="nav-item active">
+          <i class="ti ti-folder"></i>
+          <span>Projects</span>
+        </button>
+        <button onclick="location.href='managers.html'" class="nav-item">
+          <i class="ti ti-user"></i>
+          <span>Managers</span>
+        </button>
+        <button onclick="location.href='teammembers.html'" class="nav-item">
+          <i class="ti ti-users"></i>
+          <span>Team members</span>
+        </button>
+        <button onclick="location.href='customers.html'" class="nav-item">
+          <i class="ti ti-address-book"></i>
+          <span>Customers</span>
+        </button>
+      </nav>
+      <main class="main-content">
+        <header class="top-bar">
+          <div class="search-container">
+            <i class="ti ti-search"></i>
+            <input
+              type="text"
+              placeholder="Search anything..."
+              class="search-input"
+            />
+          </div>
+          <div class="user-controls">
+            <button class="icon-button"><i class="ti ti-bell"></i></button>
+            <button class="icon-button">
+              <i class="ti ti-settings" id="settingsToggle"></i>
+            </button>
+            <article class="settings-menu" id="settingsMenu" hidden>
+              <header class="settings-header">
+                <div class="settings-icon-container">
+                  <i class="ti ti-settings settings-icon-large"></i>
+                </div>
+                <h2 class="settings-title">Inställningar</h2>
+              </header>
+
+              <hr class="menu-divider" />
+
+              <nav class="menu-options">
+                <button class="menu-item settings-item">
+                  <svg
+                    class="settings-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#1a1926"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                  </svg>
+
+                  <span class="menu-text">Dark Mode</span>
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/8e399c7b44626eab4a435fe78c427ce938d29b4f"
+                    alt="Toggle switch"
+                    class="toggle-switch"
+                  />
+                </button>
+              </nav>
+            </article>
+
+            <button
+              class="user-avatar-button"
+              id="profileToggle"
+              aria-label="Toggle profile menu"
+            >
+              <img src="icons/profilepicture.png" alt="User" />
+            </button>
+          </div>
+          <article class="profile-menu" id="profileMenu" hidden>
+            <header class="profile-header">
+              <div class="avatar-container">
+                <img
+                  src="icons/profilepicture.png"
+                  alt="Avatar"
+                  class="avatar-img"
+                />
+              </div>
+
+              <h2 class="profile-name">Tommy Mattin-Lassei</h2>
+            </header>
+
+            <hr class="menu-divider" />
+
+            <nav class="menu-options">
+              <button class="menu-item logout-item">
+                <svg
+                  class="logout-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.81689 5.58815C1.81689 3.62735 3.44109 2.03055 5.43652 2.03055H9.40541C11.3968 2.03055 13.0169 3.62255 13.0169 5.58015V14.4729C13.0169 16.4345 11.3927 18.0305 9.39645 18.0305H5.42919C3.43702 18.0305 1.81689 16.4385 1.81689 14.4809V13.7289V5.58815Z"
+                    fill="white"
+                  ></path>
+                  <path
+                    opacity="0.25"
+                    d="M1.81689 5.58815C1.81689 3.62735 3.44109 2.03055 5.43652 2.03055H9.40541C11.3968 2.03055 13.0169 3.62255 13.0169 5.58015V14.4729C13.0169 16.4345 11.3927 18.0305 9.39645 18.0305H5.42919C3.43702 18.0305 1.81689 16.4385 1.81689 14.4809V13.7289V5.58815Z"
+                    fill="#1A1926"
+                  ></path>
+                  <path
+                    d="M17.6402 9.59439L15.3635 7.26719C15.1282 7.02719 14.7496 7.02719 14.5151 7.26879C14.2813 7.51039 14.2821 7.89999 14.5166 8.13999L15.764 9.41439H14.568H7.85579C7.52466 9.41439 7.25586 9.69039 7.25586 10.0304C7.25586 10.3712 7.52466 10.6464 7.85579 10.6464H15.764L14.5166 11.9208C14.2821 12.1608 14.2813 12.5504 14.5151 12.792C14.6327 12.9128 14.7862 12.9736 14.9405 12.9736C15.0932 12.9736 15.2467 12.9128 15.3635 12.7936L17.6402 10.4672C17.7531 10.3512 17.817 10.1944 17.817 10.0304C17.817 9.86719 17.7531 9.71039 17.6402 9.59439Z"
+                    fill="#1A1926"
+                  ></path>
+                </svg>
+                <span class="menu-text">Logout</span>
+              </button>
+            </nav>
+          </article>
+        </header>
+
+        <section class="content-section">
+          <div class="section-header">
+            <h2 class="section-title">Projects</h2>
+            <button class="add-button">
+              <i class="ti ti-plus"></i>
+              <span>Add Project</span>
+            </button>
+          </div>
+
+          <div class="tab-list">
+            <button class="tab-item active-tab">ALL [8]</button>
+            <button class="tab-item">STARTED [8]</button>
+            <button class="tab-item">COMPLETED [0]</button>
+          </div>
+
+          <div class="project-grid">
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card">
+              <div class="project-header">
+                <div class="project-left">
+                  <div class="company-logo">
+                    <img src="icons/projectlogo.svg" alt="GitLab Icon" />
+                  </div>
+                  <div class="project-text">
+                    <h3 class="project-title">Website Redesign</h3>
+                    <p class="company-name">GitLab Inc.</p>
+                  </div>
+                </div>
+                <button class="projects-menu-button" aria-label="Open menu">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none">
+                  <button class="menu-item menu-item-edit">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M8.5 14H11.5L16 5L13 2L8.5 14Z"
+                          fill="#1A1926"
+                        />
+                        <path
+                          d="M2 18H18"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                  </button>
+
+                  <button class="menu-item menu-item-add">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10 4V16M4 10H16"
+                          stroke="#1A1926"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text">Add Member</span>
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  <button class="menu-item menu-item-delete">
+                    <div class="icon-wrapper">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        class="icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 6H17M7 6V4H13V6M8 9V14M12 9V14"
+                          stroke="#FF6640"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <span class="menu-text menu-text-delete"
+                      >Delete Project</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <p class="project-description">
+                It is necessary to develop a website redesign in a corporate
+                style.
+              </p>
+              <div class="project-footer">
+                <div class="time-remaining">
+                  <i class="ti ti-clock"></i>
+                  <span>1 week left</span>
+                </div>
+                <div class="team-members">
+                  <img
+                    src="https://placehold.co/24x24/87CEEB/87CEEB"
+                    alt="Member 1"
+                    class="member-avatar"
+                  />
+                  <img
+                    src="https://placehold.co/24x24/DDA0DD/DDA0DD"
+                    alt="Member 2"
+                    class="member-avatar"
+                  />
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+        <!-- ADD PROJECT MODAL -->
+        <div class="modal-overlay" id="modalOverlay">
+          <div class="modal" id="projectModal">
+            <header class="form-header">
+              <h1 class="form-title">Add Project</h1>
+              <div class="close-icon-wrapper">
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/fbad265fe11d048cf327a34d15de60a4a8ffd228?placeholderIfAbsent=true"
+                  alt="Close"
+                  class="close-icon"
+                />
+              </div>
+            </header>
+            <form class="project-form">
+              <section class="image-upload-section" id="imageUploadSection">
+                <label class="upload-border" for="projectImageInput">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/71061189ef2425aef008f44a16c4de13605797de?placeholderIfAbsent=true"
+                    alt="Upload"
+                    class="upload-icon"
+                    id="uploadPreview"
+                  />
+                  <span class="upload-text" id="uploadText"
+                    >Click to upload icon</span
+                  >
+                </label>
+                <input
+                  type="file"
+                  id="projectImageInput"
+                  accept="image/*"
+                  hidden
+                />
+              </section>
+
+              <div class="form-group">
+                <label class="form-label">Project Name</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="Project Name"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Client Name</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  placeholder="Client Name"
+                />
+              </div>
+
+              <!-- Quill -->
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <div id="editor-container">
+                  <p><br /></p>
+                </div>
+                <input
+                  type="hidden"
+                  name="description"
+                  id="hidden-description"
+                />
+              </div>
+
+              <div class="date-container">
+                <div class="form-group">
+                  <label class="form-label">Start Date</label>
+                  <div class="date-wrapper">
+                    <input type="date" class="form-input custom-date" />
+                    <img
+                      src="icons/calendar.svg"
+                      alt="Calendar"
+                      class="calendar-icon-clickable"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">End Date</label>
+                  <div class="date-wrapper">
+                    <input type="date" class="form-input custom-date" />
+                    <img
+                      src="icons/calendar.svg"
+                      alt="Calendar"
+                      class="calendar-icon-clickable"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Members</label>
+                <div class="members-input">
+                  <div class="members-tags" id="membersTagsContainer">
+                    <!-- Dynamiskt tillagda taggar kommer här -->
+                  </div>
+                  <input
+                    type="text"
+                    id="memberInput"
+                    class="member-input"
+                    placeholder="Add member..."
+                  />
+                  <ul id="suggestionsList" class="suggestions-list">
+                    <!-- Filtrerade resultat kommer här -->
+                  </ul>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Budget</label>
+                <div class="budget-input">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/4dcedbc0cf0e776a433556885c24281aa83f0ee1?placeholderIfAbsent=true"
+                    alt="Currency"
+                    class="currency-icon"
+                  />
+                  <input type="text" placeholder="0" class="budget-field" />
+                </div>
+              </div>
+
+              <button type="submit" class="submit-button">Create</button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- 1. Modal Add Project & Close Modal + Stäng andra menyer -->
+    <script>
+      const addButton = document.querySelector(".add-button");
+      const modalOverlay = document.getElementById("modalOverlay");
+      const closeButton = modalOverlay.querySelector(".close-icon");
+
+      addButton.addEventListener("click", () => {
+        profileMenu.hidden = true;
+        settingsMenu.hidden = true;
+        modalOverlay.classList.add("active");
+      });
+
+      closeButton.addEventListener("click", () => {
+        modalOverlay.classList.remove("active");
+      });
+    </script>
+
+    <!-- 2. Quill Editor + Cursor Fix -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+      const quill = new Quill("#editor-container", {
+        theme: "snow",
+        placeholder: "Type something...",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline"],
+            ["blockquote", "code-block"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["clean"],
+          ],
+        },
+      });
+
+      let savedRange = null;
+      quill.on("selection-change", function (range) {
+        if (range) {
+          savedRange = range;
+        }
+      });
+
+      document
+        .querySelector(".ql-toolbar")
+        .addEventListener("mousedown", function () {
+          if (savedRange) {
+            setTimeout(() => {
+              quill.setSelection(savedRange.index, savedRange.length);
+            }, 0);
+          }
+        });
+    </script>
+
+    <!-- 3. Header-menyer: Profil & Inställningar -->
+    <script>
+      const profileToggle = document.getElementById("profileToggle");
+      const profileMenu = document.getElementById("profileMenu");
+      const settingsToggle = document.getElementById("settingsToggle");
+      const settingsMenu = document.getElementById("settingsMenu");
+
+      // 🔁 För att också stänga projektdropdowns
+      const allDropdowns = document.querySelectorAll(".dropdown-menu");
+
+      function closeMenusExcept(exception) {
+        if (exception !== "profile") {
+          profileMenu.hidden = true;
+        }
+        if (exception !== "settings") {
+          settingsMenu.hidden = true;
+        }
+        // 🔁 Stäng alla dropdowns från projekt
+        if (exception !== "dropdown") {
+          allDropdowns.forEach((dropdown) => {
+            dropdown.style.display = "none";
+          });
+        }
+      }
+
+      profileToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = profileMenu.hidden;
+        closeMenusExcept("profile");
+        profileMenu.hidden = !isHidden;
+      });
+
+      settingsToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = settingsMenu.hidden;
+        closeMenusExcept("settings");
+        settingsMenu.hidden = !isHidden;
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          !profileMenu.contains(e.target) &&
+          !profileToggle.contains(e.target) &&
+          !settingsMenu.contains(e.target) &&
+          !settingsToggle.contains(e.target)
+        ) {
+          closeMenusExcept(); // stänger alla
+        }
+      });
+    </script>
+
+    <!-- 4. Dropdown Meny i Projektkort -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const allMenuButtons = document.querySelectorAll(
+          ".projects-menu-button"
+        );
+        const allDropdowns = document.querySelectorAll(".dropdown-menu");
+        const profileMenu = document.getElementById("profileMenu");
+        const settingsMenu = document.getElementById("settingsMenu");
+
+        allMenuButtons.forEach((button) => {
+          const dropdown = button.parentElement.querySelector(".dropdown-menu");
+
+          button.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            // Stäng andra dropdowns
+            allDropdowns.forEach((d) => {
+              if (d !== dropdown) d.style.display = "none";
+            });
+
+            // 🔁 Stäng även inställningar och profil
+            profileMenu.hidden = true;
+            settingsMenu.hidden = true;
+
+            // Visa eller dölj denna
+            dropdown.style.display =
+              dropdown.style.display === "block" ? "none" : "block";
+          });
+        });
+
+        // Klick utanför = stäng alla dropdowns
+        document.addEventListener("click", () => {
+          allDropdowns.forEach((dropdown) => {
+            dropdown.style.display = "none";
+          });
+        });
+      });
+    </script>
+    <!-- 5. Modal Bakgrund – Skakanimation på fel klick (FUNKAR MED SUGGESTIONSLISTA) -->
+    <script>
+      // const modalOverlay = document.getElementById("modalOverlay");
+      const projectModal = document.getElementById("projectModal");
+      const closeWrapper = projectModal.querySelector(".close-icon-wrapper");
+      // const memberInput = document.getElementById("memberInput");
+      // const suggestionsList = document.getElementById("suggestionsList"); ❌ ta bort denna om redan definierad
+
+      modalOverlay.addEventListener("click", (e) => {
+        const clickedInsideModal = projectModal.contains(e.target);
+        const clickedInSuggestions = suggestionsList.contains(e.target);
+        const clickedInput = memberInput.contains(e.target);
+
+        if (!clickedInsideModal && !clickedInSuggestions && !clickedInput) {
+          closeWrapper.classList.remove("shake-animation");
+          void closeWrapper.offsetWidth;
+          closeWrapper.classList.add("shake-animation");
+        }
+      });
+    </script>
+
+    <!-- 6. Bildförhandsvisning i "Add Project" -->
+    <script>
+      const fileInput = document.getElementById("projectImageInput");
+      const previewImage = document.getElementById("uploadPreview");
+      const uploadText = document.getElementById("uploadText");
+
+      fileInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (file && file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            previewImage.src = e.target.result;
+            uploadText.style.display = "none";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      closeButton.addEventListener("click", () => {
+        modalOverlay.classList.remove("active");
+        previewImage.src =
+          "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/71061189ef2425aef008f44a16c4de13605797de?placeholderIfAbsent=true";
+        uploadText.style.display = "block";
+        fileInput.value = "";
+      });
+    </script>
+
+    <!-- 7. Medlemssök och taggning -->
+    <script>
+      const memberInput = document.getElementById("memberInput");
+      const suggestionsList = document.getElementById("suggestionsList");
+      const membersTagsContainer = document.getElementById(
+        "membersTagsContainer"
+      );
+
+      const membersData = {
+        therese: {
+          name: "Therése Lidbom",
+          avatar:
+            "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/062c8d2c544a1cfec394b494618868cbe3eae88b?placeholderIfAbsent=true",
+        },
+        hans: {
+          name: "Hans Mattin-Lassei",
+          avatar:
+            "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/421b658bc5ea3245d4f35d0f675af7b328b8c40e?placeholderIfAbsent=true",
+        },
+        emma: {
+          name: "Emma Sjöström",
+          avatar:
+            "https://cdn.builder.io/api/v1/image/assets/TEMP/50c7e1d92d04682beceaa22a8ea7709a6dc0a782?placeholderIfAbsent=true",
+        },
+        john: {
+          name: "John Doe",
+          avatar:
+            "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/062c8d2c544a1cfec394b494618868cbe3eae88b?placeholderIfAbsent=true",
+        },
+        lisa: {
+          name: "Lisa Lind",
+          avatar:
+            "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/421b658bc5ea3245d4f35d0f675af7b328b8c40e?placeholderIfAbsent=true",
+        },
+        david: {
+          name: "David Henriksson",
+          avatar:
+            "https://cdn.builder.io/api/v1/image/assets/TEMP/50c7e1d92d04682beceaa22a8ea7709a6dc0a782?placeholderIfAbsent=true",
+        },
+      };
+
+      let currentSuggestions = [];
+      let activeIndex = -1;
+      let selectedMembers = [];
+
+      function showSuggestions(query) {
+        suggestionsList.innerHTML = "";
+        const availableMembers = Object.keys(membersData).filter(
+          (key) => !selectedMembers.includes(key)
+        );
+        let suggestions = [];
+
+        if (query.length < 1) {
+          suggestions = availableMembers.slice(0, 5);
+        } else {
+          suggestions = availableMembers.filter((key) =>
+            membersData[key].name.toLowerCase().includes(query.toLowerCase())
+          );
+        }
+
+        if (suggestions.length === 0) {
+          suggestionsList.style.display = "none";
+          return;
+        }
+
+        currentSuggestions = suggestions;
+        suggestionsList.style.display = "block";
+
+        suggestions.forEach((key, index) => {
+          const suggestionItem = document.createElement("li");
+          suggestionItem.textContent = membersData[key].name;
+
+          if (activeIndex === index) {
+            suggestionItem.classList.add("active");
+          }
+
+          // ✅ FIX: Stoppa eventet från att bubbla upp till modal-overlay
+          suggestionItem.addEventListener("click", (e) => {
+            e.stopPropagation();
+            addMember(key);
+          });
+
+          suggestionsList.appendChild(suggestionItem);
+        });
+      }
+
+      function addMember(memberKey) {
+        const member = membersData[memberKey];
+        const existingTag = membersTagsContainer.querySelector(
+          `[data-id="${memberKey}"]`
+        );
+        if (existingTag) return;
+
+        const tag = document.createElement("div");
+        tag.className = "member-tag";
+        tag.dataset.id = memberKey;
+        tag.innerHTML = `
+      <img src="${member.avatar}" alt="${member.name}" class="member-avatar" />
+      <span class="member-name">${member.name}</span>
+      <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/dfff3394c6759651f9dc2423c2fe281189809b34?placeholderIfAbsent=true" alt="Remove" class="remove-icon" />
+    `;
+
+        tag
+          .querySelector(".remove-icon")
+          .addEventListener("click", () => tag.remove());
+
+        membersTagsContainer.appendChild(tag);
+        selectedMembers.push(memberKey);
+        memberInput.value = "";
+        suggestionsList.innerHTML = "";
+        activeIndex = -1;
+        suggestionsList.style.display = "none";
+      }
+
+      memberInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim();
+        showSuggestions(query);
+      });
+
+      memberInput.addEventListener("keydown", (e) => {
+        const suggestions = suggestionsList.querySelectorAll("li");
+
+        if (e.key === "Enter" && activeIndex >= 0) {
+          e.preventDefault();
+          addMember(currentSuggestions[activeIndex]);
+        } else if (
+          e.key === "ArrowDown" &&
+          activeIndex < suggestions.length - 1
+        ) {
+          if (activeIndex >= 0) {
+            suggestions[activeIndex].classList.remove("active");
+          }
+          activeIndex++;
+          suggestions[activeIndex].classList.add("active");
+        } else if (e.key === "ArrowUp" && activeIndex > 0) {
+          suggestions[activeIndex].classList.remove("active");
+          activeIndex--;
+          suggestions[activeIndex].classList.add("active");
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          !memberInput.contains(e.target) &&
+          !suggestionsList.contains(e.target)
+        ) {
+          suggestionsList.style.display = "none";
+        }
+      });
+
+      memberInput.addEventListener("focus", () => {
+        const query = memberInput.value.trim();
+        showSuggestions(query);
+      });
+    </script>
+  </body>
+</html>

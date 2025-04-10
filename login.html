@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <div class="background-container">
+        <img
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/ce3234e7c1b44e43f8b055fd3bc42ab0c0e31e4c"
+          alt="Background"
+          class="background-image"
+        />
+        <div class="blur-overlay"></div>
+      </div>
+      <section class="welcome-section">
+        <h1 class="welcome-title">
+          Welcome to <span class="highlight">Alpha</span>
+        </h1>
+        <p class="welcome-description">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+          ullamcorper nisl erat, vel convallis elit fermentum pellentesque. Sed
+          mollis velit facilisis facilisis viverra.
+        </p>
+      </section>
+
+      <section class="login-section">
+        <div class="login-container">
+          <div class="form-toggle-container">
+            <!-- Login Form -->
+            <div class="login-form-wrapper">
+              <h2 class="login-header">Login</h2>
+              <div class="oauth-grid">
+                <button class="oauth-button">
+                  <img
+                    src="icons/google-icon-logo-svgrepo-com.svg"
+                    alt="Login icon"
+                    class="google-icon"
+                  />
+                  <span>Google</span>
+                </button>
+                <button class="oauth-button">
+                  <img
+                    src="icons/facebook-svgrepo-com.svg"
+                    alt="Login icon"
+                    class="google-icon"
+                  />
+                  <span>Facebook</span>
+                </button>
+                <button class="oauth-button">
+                  <img
+                    src="icons/microsoft-svgrepo-com.svg"
+                    alt="Login icon"
+                    class="google-icon"
+                  />
+                  <span>Microsoft</span>
+                </button>
+                <button class="oauth-button">
+                  <img
+                    src="icons/github-svgrepo-com.svg"
+                    alt="Login icon"
+                    class="google-icon"
+                  />
+                  <span>GitHub</span>
+                </button>
+              </div>
+
+              <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">OR</span>
+                <div class="divider-line"></div>
+              </div>
+
+              <form class="login-form">
+                <div class="form-group">
+                  <label for="login-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    id="login-email"
+                    name="email"
+                    class="form-input"
+                    placeholder="Your email address"
+                    autocomplete="email"
+                  />
+                </div>
+
+                <div class="form-group mb-20">
+                  <label for="login-password" class="form-label"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    id="login-password"
+                    name="password"
+                    class="form-input"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                  />
+                </div>
+
+                <div class="form-actions">
+                  <label class="remember-me">
+                    <input type="checkbox" /> Remember Me
+                  </label>
+                  <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <!--Ändra till button senare i visiual studio-->
+                <a href="projects.html" class="temporary-login-button"
+                  >Log In</a
+                >
+
+                <p class="signup-prompt">
+                  Don’t have an account?
+                  <a href="#" class="toggle-to-signup">Sign Up</a>
+                </p>
+              </form>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="signup-form-wrapper">
+              <h2 class="signup-title">Create Account</h2>
+              <div class="oauth-grid">
+                <button class="oauth-button">
+                  <img
+                    src="icons/google-icon-logo-svgrepo-com.svg"
+                    alt="Signup icon"
+                    class="google-icon"
+                  />
+                  <span>Google</span>
+                </button>
+                <button class="oauth-button">
+                  <img
+                    src="icons/facebook-svgrepo-com.svg"
+                    alt="Signup icon"
+                    class="google-icon"
+                  />
+                  <span>Facebook</span>
+                </button>
+                <button class="oauth-button">
+                  <img
+                    src="icons/microsoft-svgrepo-com.svg"
+                    alt="Signup icon"
+                    class="google-icon"
+                  />
+                  <span>Microsoft</span>
+                </button>
+                <button class="oauth-button">
+                  <img
+                    src="icons/github-svgrepo-com.svg"
+                    alt="Signup icon"
+                    class="google-icon"
+                  />
+                  <span>GitHub</span>
+                </button>
+              </div>
+
+              <div class="divider">
+                <div class="divider-line"></div>
+                <span class="divider-text">OR</span>
+                <div class="divider-line"></div>
+              </div>
+
+              <form class="signup-form">
+                <div class="form-group">
+                  <label for="fullname" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    id="fullname"
+                    class="form-input"
+                    placeholder="Your full name"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="signup-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    id="signup-email"
+                    class="form-input"
+                    placeholder="Your email address"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="signup-password" class="form-label"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    id="signup-password"
+                    class="form-input"
+                    placeholder="Enter your password"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="confirm-password" class="form-label"
+                    >Confirm Password</label
+                  >
+                  <input
+                    type="password"
+                    id="confirm-password"
+                    class="form-input"
+                    placeholder="Confirm your password"
+                  />
+                </div>
+
+                <div class="form-actions">
+                  <label class="remember-me">
+                    <input type="checkbox" /> I accept
+                    <a href="#" class="terms-link">Terms and Conditions</a>
+                  </label>
+                </div>
+
+                <button type="submit" class="login-button">
+                  Create Account
+                </button>
+
+                <p class="login-text">
+                  Already have an account?
+                  <a href="#" class="toggle-to-login">Login</a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      document
+        .querySelector(".toggle-to-signup")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          document
+            .querySelector(".login-container")
+            .classList.add("show-signup");
+        });
+
+      document
+        .querySelector(".toggle-to-login")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          document
+            .querySelector(".login-container")
+            .classList.remove("show-signup");
+        });
+    </script>
+  </body>
+</html>
