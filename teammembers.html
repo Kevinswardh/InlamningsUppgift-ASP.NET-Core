@@ -508,6 +508,198 @@
         letter-spacing: 0;
         color: #1e1e1e; /* Justera om "Body Dark" är annan färg */
       }
+      /* Notification */
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+
+      .notification-card {
+        position: absolute;
+        top: 60px; /* Justera höjden så att den är på samma nivå som de andra modalerna */
+        right: 100px; /* Placera den mer till höger för att den inte ska vara förbi knappen */
+        width: 380px;
+        border-radius: 14px;
+        box-shadow: 0 16px 80px 0 rgba(4, 15, 21, 0.15),
+          0 40px 20px -30px rgba(4, 15, 21, 0.1);
+        padding: 22px 24px;
+        background-color: #fff;
+        z-index: 9999; /* Se till att den är ovanpå andra element */
+      }
+
+      .notification-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 17px;
+      }
+
+      .notification-title {
+        font-family: "Nunito", sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a1926;
+        margin: 0;
+      }
+
+      .notification-count {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        color: #fff;
+        font-family: "Nunito", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        background-color: #ff6640;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .notification-divider {
+        height: 1px;
+        margin: 0 0 17px;
+        background-color: #ebeef2;
+        border: none;
+      }
+
+      .notification-item {
+        display: flex;
+        align-items: center;
+        padding: 16px;
+        border-radius: 14px;
+        position: relative;
+        background-color: #f5f7fa;
+      }
+
+      .app-icon-wrapper {
+        margin-right: 20px;
+      }
+
+      .notification-content {
+        flex-grow: 1;
+      }
+
+      .notification-message {
+        font-family: "Nunito", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        color: #1a1926;
+        margin: 0 0 4px;
+      }
+
+      .notification-time {
+        font-family: "Nunito", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: #637085;
+        margin: 0;
+      }
+
+      .notification-close {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #1a1926;
+        font-size: 18px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+
+      .notification-close:hover {
+        opacity: 0.8;
+      }
+
+      @media (max-width: 640px) {
+        .notification-card {
+          width: 100%;
+          box-shadow: none;
+        }
+
+        .notification-item {
+          padding: 12px;
+        }
+      }
+      /*Settings menu*/
+      .settings-menu {
+        display: block;
+        width: 300px;
+        border-radius: 14px;
+        box-shadow: 0px 16px 80px 0px rgba(4, 15, 21, 0.15),
+          0px 40px 20px -30px rgba(4, 15, 21, 0.1);
+        padding: 8px;
+        background-color: #fff;
+        position: absolute;
+        top: 60px;
+        right: 60px;
+        z-index: 1000;
+      }
+
+      .settings-menu[hidden] {
+        display: none !important;
+      }
+
+      .settings-header {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        gap: 12px;
+        background-color: #f5f7fa;
+        border-radius: 14px;
+        margin-bottom: 12px;
+      }
+
+      .settings-icon-large {
+        font-size: 20px;
+        color: #1a1926;
+      }
+
+      .settings-title {
+        font-size: 16px;
+        font-weight: 600;
+        font-family: "Nunito", sans-serif;
+        margin: 0;
+        color: #1a1926;
+      }
+      /* För förslag som visas */
+
+      .suggestions-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
+        border: 1px solid #ebeef2;
+        border-radius: 8px;
+        z-index: 10;
+        list-style: none;
+        padding: 8px 0; /* Padding på listan */
+        margin: 4px 0 0 0;
+        max-height: 200px;
+        overflow-y: auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Lägger till skugga för djup */
+      }
+
+      /* För varje list item */
+      .suggestions-list li {
+        padding: 10px 14px; /* Padding för varje förslag */
+        cursor: pointer;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        color: #28263b;
+        transition: background-color 0.2s ease, font-weight 0.2s ease;
+      }
+
+      /* Hover och active förslag */
+      .suggestions-list li:hover,
+      .suggestions-list li.active {
+        background-color: #f0f4f8;
+        font-weight: 600;
+      }
+      header {
+        user-select: none;
+      }
     </style>
   </head>
   <body>
@@ -549,8 +741,166 @@
             />
           </div>
           <div class="user-controls">
-            <button class="icon-button"><i class="ti ti-bell"></i></button>
-            <button class="icon-button"><i class="ti ti-settings"></i></button>
+            <!-- Klockikonen -->
+            <button class="icon-button" id="notificationsToggle">
+              <i class="ti ti-bell"></i>
+            </button>
+
+            <section class="notification-card" id="notificationsCard" hidden>
+              <header class="notification-header">
+                <h2 class="notification-title">Notifications</h2>
+                <span class="notification-count">1</span>
+              </header>
+              <hr class="notification-divider" />
+              <article class="notification-item">
+                <div class="app-icon-wrapper">
+                  <svg
+                    class="app-icon"
+                    width="56"
+                    height="56"
+                    viewBox="0 0 56 56"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g clip-path="url(#clip0_7623_10982)">
+                      <rect width="56" height="56" rx="14" fill="white"></rect>
+                      <rect
+                        width="56"
+                        height="56"
+                        rx="14"
+                        fill="url(#paint0_linear_7623_10982)"
+                        fill-opacity="0.7"
+                      ></rect>
+                      <g filter="url(#filter0_d_7623_10982)">
+                        <path
+                          d="M27.3808 16.5088C27.7652 15.8398 28.7303 15.8396 29.1149 16.5086L41.1493 37.4425C41.5301 38.105 41.0577 38.9323 40.2936 38.9394C38.6448 38.9546 36.6348 38.9699 34.4285 38.9821C34.0694 38.9841 33.7368 38.7932 33.5572 38.4823L24.4213 22.6602C24.2431 22.3515 24.2426 21.9712 24.4202 21.6621L27.3808 16.5088Z"
+                          fill="white"
+                        ></path>
+                        <path
+                          d="M20.1405 29.2468C19.7826 29.2468 19.4519 29.4381 19.2735 29.7484L14.8435 37.455C14.4643 38.1147 14.9312 38.9387 15.692 38.9491C17.5011 38.9736 19.495 38.9891 21.5651 38.9977C21.9276 38.9993 22.2625 38.8042 22.4403 38.4882L26.7999 30.737C27.1748 30.0704 26.6931 29.2468 25.9283 29.2468H20.1405Z"
+                          fill="white"
+                        ></path>
+                      </g>
+                    </g>
+                    <defs>
+                      <filter
+                        id="filter0_d_7623_10982"
+                        x="10.709"
+                        y="16.007"
+                        width="34.5747"
+                        height="30.9908"
+                        filterUnits="userSpaceOnUse"
+                        color-interpolation-filters="sRGB"
+                      >
+                        <feFlood
+                          flood-opacity="0"
+                          result="BackgroundImageFix"
+                        ></feFlood>
+                        <feColorMatrix
+                          in="SourceAlpha"
+                          type="matrix"
+                          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                          result="hardAlpha"
+                        ></feColorMatrix>
+                        <feOffset dy="4"></feOffset>
+                        <feGaussianBlur stdDeviation="2"></feGaussianBlur>
+                        <feComposite
+                          in2="hardAlpha"
+                          operator="out"
+                        ></feComposite>
+                        <feColorMatrix
+                          type="matrix"
+                          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                        ></feColorMatrix>
+                        <feBlend
+                          mode="normal"
+                          in2="BackgroundImageFix"
+                          result="effect1_dropShadow_7623_10982"
+                        ></feBlend>
+                        <feBlend
+                          mode="normal"
+                          in="SourceGraphic"
+                          in2="effect1_dropShadow_7623_10982"
+                          result="shape"
+                        ></feBlend>
+                      </filter>
+                      <linearGradient
+                        id="paint0_linear_7623_10982"
+                        x1="9.88235"
+                        y1="56.4706"
+                        x2="46.8042"
+                        y2="22.0572"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stop-color="#307CF4"></stop>
+                        <stop offset="0.302083" stop-color="#863AF7"></stop>
+                        <stop offset="0.640221" stop-color="#BC37E2"></stop>
+                        <stop offset="1" stop-color="#EF615C"></stop>
+                      </linearGradient>
+                      <clipPath id="clip0_7623_10982">
+                        <rect
+                          width="56"
+                          height="56"
+                          rx="14"
+                          fill="white"
+                        ></rect>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div class="notification-content">
+                  <p class="notification-message">ASP.NET Web App added</p>
+                  <p class="notification-time">1 min ago</p>
+                </div>
+                <button
+                  class="notification-close"
+                  aria-label="Close notification"
+                >
+                  <i class="ti ti-x"></i>
+                </button>
+              </article>
+            </section>
+
+            <button class="icon-button">
+              <i class="ti ti-settings" id="settingsToggle"></i>
+            </button>
+            <article class="settings-menu" id="settingsMenu" hidden>
+              <header class="settings-header">
+                <div class="settings-icon-container">
+                  <i class="ti ti-settings settings-icon-large"></i>
+                </div>
+                <h2 class="settings-title">Inställningar</h2>
+              </header>
+
+              <hr class="menu-divider" />
+
+              <nav class="menu-options">
+                <button class="menu-item settings-item">
+                  <svg
+                    class="settings-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#1a1926"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                  </svg>
+
+                  <span class="menu-text">Dark Mode</span>
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/8e399c7b44626eab4a435fe78c427ce938d29b4f"
+                    alt="Toggle switch"
+                    class="toggle-switch"
+                  />
+                </button>
+              </nav>
+            </article>
+
             <button
               class="user-avatar-button"
               id="profileToggle"
@@ -575,39 +925,6 @@
             <hr class="menu-divider" />
 
             <nav class="menu-options">
-              <button class="menu-item settings-item">
-                <svg
-                  class="settings-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M16.7218 11.264C17.0079 11.416 17.2287 11.656 17.384 11.896C17.6865 12.392 17.662 13 17.3677 13.536L16.7954 14.496C16.4929 15.008 15.9287 15.328 15.3483 15.328C15.0621 15.328 14.7433 15.248 14.4816 15.088C14.2691 14.952 14.0238 14.904 13.7622 14.904C12.9528 14.904 12.2742 15.568 12.2497 16.36C12.2497 17.28 11.4975 18 10.5573 18H9.44544C8.49707 18 7.7449 17.28 7.7449 16.36C7.72855 15.568 7.04997 14.904 6.24058 14.904C5.97079 14.904 5.72552 14.952 5.52113 15.088C5.2595 15.248 4.93248 15.328 4.65451 15.328C4.06586 15.328 3.50174 15.008 3.19924 14.496L2.63512 13.536C2.33262 13.016 2.31627 12.392 2.61877 11.896C2.74958 11.656 2.99485 11.416 3.27282 11.264C3.50174 11.152 3.6489 10.968 3.78789 10.752C4.19667 10.064 3.9514 9.16 3.25647 8.752C2.44708 8.296 2.18546 7.28 2.65147 6.488L3.19924 5.544C3.67343 4.752 4.68721 4.472 5.50477 4.936C6.21606 5.32 7.13991 5.064 7.55687 4.384C7.68768 4.16 7.76126 3.92 7.7449 3.68C7.72855 3.368 7.81849 3.072 7.97382 2.832C8.27632 2.336 8.82409 2.016 9.42092 2H10.5737C11.1787 2 11.7265 2.336 12.029 2.832C12.1761 3.072 12.2742 3.368 12.2497 3.68C12.2333 3.92 12.3069 4.16 12.4377 4.384C12.8547 5.064 13.7785 5.32 14.498 4.936C15.3074 4.472 16.3293 4.752 16.7954 5.544L17.3431 6.488C17.8173 7.28 17.5557 8.296 16.7381 8.752C16.0432 9.16 15.7979 10.064 16.2149 10.752C16.3457 10.968 16.4929 11.152 16.7218 11.264Z"
-                    fill="white"
-                  ></path>
-                  <path
-                    d="M10.0099 12.264C8.7263 12.264 7.68799 11.264 7.68799 10.008C7.68799 8.752 8.7263 7.744 10.0099 7.744C11.2935 7.744 12.3072 8.752 12.3072 10.008C12.3072 11.264 11.2935 12.264 10.0099 12.264Z"
-                    fill="#1A1926"
-                  ></path>
-                  <path
-                    opacity="0.25"
-                    d="M17.384 11.896C17.2287 11.656 17.0079 11.416 16.7218 11.264C16.4929 11.152 16.3457 10.968 16.2149 10.752C15.7979 10.064 16.0432 9.16 16.7381 8.752C17.5557 8.296 17.8173 7.28 17.3431 6.488L16.7954 5.544C16.3293 4.752 15.3074 4.472 14.498 4.936C13.7785 5.32 12.8547 5.064 12.4377 4.384C12.3069 4.16 12.2333 3.92 12.2497 3.68C12.2742 3.368 12.1761 3.072 12.029 2.832C11.7265 2.336 11.1787 2 10.5737 2H9.42092C8.82409 2.016 8.27632 2.336 7.97382 2.832C7.81849 3.072 7.72855 3.368 7.7449 3.68C7.76126 3.92 7.68768 4.16 7.55687 4.384C7.13991 5.064 6.21606 5.32 5.50477 4.936C4.68721 4.472 3.67343 4.752 3.19924 5.544L2.65147 6.488C2.18546 7.28 2.44708 8.296 3.25647 8.752C3.9514 9.16 4.19667 10.064 3.78789 10.752C3.6489 10.968 3.50174 11.152 3.27282 11.264C2.99485 11.416 2.74958 11.656 2.61877 11.896C2.31627 12.392 2.33262 13.016 2.63512 13.536L3.19924 14.496C3.50174 15.008 4.06586 15.328 4.65451 15.328C4.93248 15.328 5.2595 15.248 5.52113 15.088C5.72552 14.952 5.97079 14.904 6.24058 14.904C7.04997 14.904 7.72855 15.568 7.7449 16.36C7.7449 17.28 8.49707 18 9.44544 18H10.5573C11.4975 18 12.2497 17.28 12.2497 16.36C12.2742 15.568 12.9528 14.904 13.7622 14.904C14.0238 14.904 14.2691 14.952 14.4816 15.088C14.7433 15.248 15.0621 15.328 15.3483 15.328C15.9287 15.328 16.4929 15.008 16.7954 14.496L17.3677 13.536C17.662 13 17.6865 12.392 17.384 11.896Z"
-                    fill="#1A1926"
-                  ></path>
-                </svg>
-                <span class="menu-text">Dark Mode</span>
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/8e399c7b44626eab4a435fe78c427ce938d29b4f"
-                  alt="Toggle switch"
-                  class="toggle-switch"
-                />
-              </button>
-
               <button class="menu-item logout-item">
                 <svg
                   class="logout-icon"
@@ -1589,29 +1906,181 @@
         </section>
       </main>
     </div>
-    <!--Profile menu modal-->
+    <!-- 1. Header-menyer: Profil, Inställningar & Notifications -->
     <script>
       const profileToggle = document.getElementById("profileToggle");
       const profileMenu = document.getElementById("profileMenu");
+      const settingsToggle = document.getElementById("settingsToggle");
+      const settingsMenu = document.getElementById("settingsMenu");
+      const notificationsToggle = document.getElementById(
+        "notificationsToggle"
+      );
+      const notificationsCard = document.getElementById("notificationsCard");
 
-      let isProfileMenuOpen = false;
+      // 🔁 För att också stänga projektdropdowns
+      const allDropdowns = document.querySelectorAll(".dropdown-menu");
 
-      // Toggle när man klickar på avataren
+      function closeMenusExcept(exception) {
+        if (exception !== "profile") profileMenu.hidden = true;
+        if (exception !== "settings") settingsMenu.hidden = true;
+        if (exception !== "dropdown") {
+          allDropdowns.forEach((dropdown) => {
+            dropdown.style.display = "none";
+          });
+        }
+        if (exception !== "notifications" && notificationsCard) {
+          notificationsCard.hidden = true;
+        }
+      }
+
       profileToggle.addEventListener("click", (e) => {
         e.stopPropagation();
-        isProfileMenuOpen = !isProfileMenuOpen;
-        profileMenu.hidden = !isProfileMenuOpen;
+        const isHidden = profileMenu.hidden;
+        closeMenusExcept("profile");
+        profileMenu.hidden = !isHidden;
       });
 
-      // Stäng om man klickar utanför menyn OCH avataren
+      settingsToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = settingsMenu.hidden;
+        closeMenusExcept("settings");
+        settingsMenu.hidden = !isHidden;
+      });
+
+      notificationsToggle?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = notificationsCard.hidden;
+        closeMenusExcept("notifications");
+        notificationsCard.hidden = !isHidden;
+      });
+
       document.addEventListener("click", (e) => {
         if (
           !profileMenu.contains(e.target) &&
-          !profileToggle.contains(e.target)
+          !profileToggle.contains(e.target) &&
+          !settingsMenu.contains(e.target) &&
+          !settingsToggle.contains(e.target) &&
+          (!notificationsCard || !notificationsCard.contains(e.target)) &&
+          (!notificationsToggle || !notificationsToggle.contains(e.target))
         ) {
-          isProfileMenuOpen = false;
-          profileMenu.hidden = true;
+          closeMenusExcept(); // Stänger alla
         }
+      });
+    </script>
+
+    <!-- 2. Sökfunktion i toppfältet med dropdown och tangentbordsnavigering -->
+    <script>
+      const searchInput = document.querySelector(".search-input");
+      const searchContainer = document.querySelector(".search-container");
+
+      const dropdown = document.createElement("ul");
+      dropdown.className = "suggestions-list";
+      dropdown.style.position = "absolute";
+      dropdown.style.top = "100%";
+      dropdown.style.left = "0";
+      dropdown.style.width = "100%";
+      dropdown.style.zIndex = "9999";
+      dropdown.style.maxHeight = "200px";
+      dropdown.style.overflowY = "auto";
+      dropdown.style.display = "none";
+
+      searchContainer.style.position = "relative";
+      searchContainer.appendChild(dropdown);
+
+      const searchData = [
+        { type: "project", name: "Website Redesign" },
+        { type: "project", name: "Mobile App Launch" },
+        { type: "member", name: "Therése Lidbom" },
+        { type: "member", name: "Hans Mattin-Lassei" },
+        { type: "member", name: "Emma Sjöström" },
+      ];
+
+      let currentSearchSuggestions = [];
+      let activeSearchIndex = -1;
+
+      function showSearchSuggestions(query) {
+        dropdown.innerHTML = "";
+        const lowerQuery = query.toLowerCase();
+
+        const results = searchData.filter((item) =>
+          item.name.toLowerCase().includes(lowerQuery)
+        );
+
+        if (results.length === 0) {
+          dropdown.style.display = "none";
+          return;
+        }
+
+        dropdown.style.display = "block";
+        currentSearchSuggestions = results;
+
+        results.forEach((item, index) => {
+          const li = document.createElement("li");
+          li.textContent = `${item.name} (${item.type})`;
+          li.style.padding = "10px 14px";
+          li.style.cursor = "pointer";
+          li.style.fontFamily = "Nunito, sans-serif";
+          li.style.fontSize = "15px";
+
+          if (activeSearchIndex === index) {
+            li.classList.add("active");
+          }
+
+          li.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            alert(`Navigera till ${item.type}: ${item.name}`);
+            dropdown.style.display = "none";
+            searchInput.value = "";
+          });
+
+          dropdown.appendChild(li);
+        });
+      }
+
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim();
+        activeSearchIndex = -1;
+        if (query.length > 0) {
+          showSearchSuggestions(query);
+        } else {
+          dropdown.style.display = "none";
+        }
+      });
+
+      searchInput.addEventListener("keydown", (e) => {
+        const options = dropdown.querySelectorAll("li");
+
+        if (e.key === "ArrowDown" && activeSearchIndex < options.length - 1) {
+          if (activeSearchIndex >= 0) {
+            options[activeSearchIndex].classList.remove("active");
+          }
+          activeSearchIndex++;
+          options[activeSearchIndex].classList.add("active");
+        } else if (e.key === "ArrowUp" && activeSearchIndex > 0) {
+          options[activeSearchIndex].classList.remove("active");
+          activeSearchIndex--;
+          options[activeSearchIndex].classList.add("active");
+        } else if (e.key === "Enter" && activeSearchIndex >= 0) {
+          e.preventDefault();
+          const selected = currentSearchSuggestions[activeSearchIndex];
+          alert(`Navigera till ${selected.type}: ${selected.name}`);
+          searchInput.value = "";
+          dropdown.style.display = "none";
+        }
+      });
+
+      // Dölj dropdown vid klick utanför eller förlorat fokus
+      document.addEventListener("click", (e) => {
+        if (!searchContainer.contains(e.target)) {
+          dropdown.style.display = "none";
+        }
+      });
+
+      // Dölj dropdown när man tappar fokus från inputen
+      searchInput.addEventListener("blur", () => {
+        setTimeout(() => {
+          dropdown.style.display = "none";
+        }, 100); // timeout för att hinna klicka på item
       });
     </script>
   </body>
