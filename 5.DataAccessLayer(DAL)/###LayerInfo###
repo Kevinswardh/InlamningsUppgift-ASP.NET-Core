@@ -1,0 +1,68 @@
+﻿# LayerInfo – 4.InfrastructureLayer
+
+## Syfte med lagret
+
+4.InfrastructureLayer innehåller alla **tekniska implementationer av tjänster som används i applikationen**, särskilt sådana som definierats som interfaces i DomainLayer eller ApplicationLayer. Det är här man ansluter applikationen till verkligheten: databaser, API-anrop, e-post, filsystem, loggning, och andra externa resurser.
+
+Lagret är beroende av andra lager, särskilt DomainLayer (för interfaces) och DataAccessLayer (för databasåtkomst), men inte tvärtom. Infrastructure implementerar – den *känner till* andra, men är *inte känd av* andra lager.
+
+## Vanliga användningsområden
+
+- Implementation av repositories (ex. `ProjectRepository`)
+- Implementation av externa tjänster (ex. `EmailSender`, `SmsService`)
+- Åtkomst till filsystem, tredjepartsbibliotek och nätverksresurser
+- Logging och notifieringar
+- Integration med externa API:er (via t.ex. IntegrationLayer)
+- Access till DataAccessLayer (t.ex. EF DbContext)
+- Setup för bakgrundsjobb eller schemaläggare
+
+## Använda teknologier och tekniker
+
+- Entity Framework Core eller annan ORM
+- HttpClient / REST-anrop
+- Microsoft.Extensions.Logging
+- System.IO eller FileStorage-lösningar
+- Konfiguration via IOptions
+- Implementering av interfaces från Domain eller Application
+- Koppling till andra #-lager såsom Security, Background Jobs eller Integration
+
+## Strukturella delar i lagret
+
+Vanliga komponenter:
+- Repositories (implementering av `IRepository<T>`)
+- E-postklienter, SMS-tjänster, notifierare
+- Filsystemklasser (läs/skriv)
+- Loggtjänster
+- API-klienter (om inte de är helt frikopplade i #IntegrationLayer)
+- Extensions eller wrappers runt externa beroenden
+- Implementering av domänrelaterade interfaces (ex. `IUserRepository`)
+- Åtkomst till DataAccessLayer – oftast genom DbContext
+
+## Kopplingar till andra lager
+
+PresentationLayer:
+- Ingen direkt koppling
+
+ApplicationLayer:
+- Infrastructure tillhandahåller implementationer av interfaces som används av Application (via Dependency Injection)
+
+DomainLayer:
+- Infrastructure implementerar interfaces som definierats här
+- Refererar ofta till domänentiteter
+
+DataAccessLayer:
+- Infrastructure använder databasåtkomst (DbContext) och hämtar/sparar data via detta lager
+
+Övriga #-lager:
+- Samverkar ofta med Cross-cutting Concerns (loggning, validering)
+- Använder ibland tjänster från ConfigurationLayer och SecurityLayer
+
+## Syfte med separationen
+
+Att ha ett infrastruktur-lager:
+- Håller tekniska detaljer borta från affärslogik och applikationsflöde
+- Gör det lättare att byta ut tekniska implementationer (ex. SMTP → SendGrid)
+- Tillåter enkel testning via mockade implementationer
+- Separerar beroenden från kärnlogik
+- Möjliggör tydlig DI-konfiguration (services.AddScoped<IInterface, Implementation>)
+

@@ -1,0 +1,2100 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Nunito:wght@400;600&display=swap");
+
+:root {
+    --color-danger: #ff4d4f;
+    --color-muted: #64748b;
+    --color-primary: #2d99ff;
+    --color-text-dark: #1a1926;
+    --font-logo: "Comfortaa", cursive;
+    --font-main: "Nunito", sans-serif;
+    --font-title: "Poppins", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f8fafc;
+    font-family: var(--font-main);
+    height: 100%;
+}
+
+img,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    user-select: text;
+}
+
+header {
+    user-select: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/************************/
+/***   PROJECT CARD   ***/
+/************************/
+.project-card {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0px 20px 30px -18px rgba(4, 15, 21, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+}
+
+.project-header {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.company-logo {
+    align-items: center;
+    border-radius: 8px;
+    display: flex;
+    flex-shrink: 0;
+    height: 40px;
+    justify-content: center;
+    width: 49px;
+}
+
+    .company-logo img {
+        height: 44px;
+        width: 44px;
+    }
+
+.project-text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.project-title {
+    color: #111827;
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+    text-align: left;
+}
+
+.company-name {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0;
+    text-align: left;
+}
+
+.project-description {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    color: #4b5563;
+    display: -webkit-box;
+    flex-grow: 1;
+    font-size: 14px;
+    height: 4.5em;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.time-remaining {
+    align-items: center;
+    background-color: #f1f5f9;
+    border-radius: 12px;
+    color: #1a1926;
+    display: inline-flex;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 6px;
+    padding: 6px 12px;
+}
+
+.team-members {
+    display: flex;
+}
+
+.member-avatar {
+    border-radius: 50%;
+    border: 2px solid #fff;
+    height: 24px;
+    width: 24px;
+}
+
+    .member-avatar + .member-avatar {
+        margin-left: -8px;
+    }
+
+.projects-menu-button {
+    align-items: center;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: center;
+    padding: 10px;
+    position: absolute;
+    right: 12px;
+    top: 12px;
+}
+
+    .projects-menu-button .dot {
+        background-color: #1a1926;
+        border-radius: 50%;
+        display: block;
+        height: 4px;
+        width: 4px;
+    }
+
+/* Basic CSS Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+p,
+h1,
+h2,
+h3,
+h4 {
+    user-select: text;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 0;
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/*Login page*/
+
+.login-page {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.background-container {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.background-image {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.blur-overlay {
+    backdrop-filter: blur(30px);
+    background-color: rgba(255, 255, 255, 0.15);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 50%;
+}
+
+.login-section {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    padding: 40px;
+    position: relative;
+    width: 50%;
+    z-index: 1;
+}
+
+.login-container {
+    background-color: #fff;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(4, 15, 21, 0.15);
+    max-width: 600px;
+    padding: 50px;
+    width: 100%;
+}
+
+.form-toggle-container {
+    width: 100%;
+}
+
+.toggle-to-signup {
+    color: #2d99ff;
+}
+
+.toggle-to-login {
+    color: #2d99ff;
+}
+
+/* Form toggle logic */
+.signup-form-wrapper {
+    display: none;
+}
+
+.login-container.show-signup .login-form-wrapper {
+    display: none;
+}
+
+.login-container.show-signup .signup-form-wrapper {
+    display: block;
+}
+
+/* Common styles */
+.login-header,
+.signup-title {
+    color: #1a1926;
+    font-family: "Poppins", sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.google-login {
+    align-items: center;
+    background-color: #f5f7fa;
+    border-radius: 14px;
+    border: none;
+    color: #1a1926;
+    cursor: pointer;
+    display: flex;
+    font-size: 15px;
+    font-weight: 600;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding: 14px 16px;
+    width: 100%;
+}
+
+.google-icon {
+    height: 16px;
+    width: 15px;
+}
+
+.divider {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.divider-line {
+    background-color: #ebeef2;
+    flex: 1;
+    height: 1px;
+}
+
+.divider-text {
+    color: #637085;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.mb-50 {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    color: #1a1926;
+    display: block;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.form-input {
+    border-radius: 14px;
+    border: 1px solid var(--Border-100, #ebeef2);
+    color: #637085;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 14px 16px;
+    width: 100%;
+}
+
+.form-actions {
+    align-items: center;
+    display: flex;
+    font-size: 15px;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.remember-me {
+    align-items: center;
+    display: flex;
+    gap: 6px;
+}
+
+.forgot-password,
+.terms-link {
+    color: #2d99ff;
+}
+
+.login-button {
+    background-color: #2d99ff;
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 129, 255, 0.18);
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px;
+    width: 100%;
+}
+
+.signup-prompt,
+.login-text {
+    font-size: 15px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.welcome-section {
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 600px;
+    padding: 80px 50px;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-title {
+    font-family: "Poppins", sans-serif;
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.highlight {
+    color: #ff9640;
+}
+
+.welcome-description {
+    font-family: "Nunito", sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 480px;
+}
+
+/*Extrernal login*/
+.oauth-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 30px;
+}
+
+.oauth-button {
+    align-items: center;
+    background-color: #eeeeee;
+    border-radius: 14px;
+    border: none;
+    color: #1a1926;
+    cursor: pointer;
+    display: flex;
+    font-size: 15px;
+    font-weight: 600;
+    gap: 12px;
+    justify-content: center;
+    padding: 14px 16px;
+    width: 100%;
+}
+
+    .oauth-button img {
+        height: 16px;
+        width: 16px;
+    }
+
+/*Ta bort senare*/
+.temporary-login-button {
+    background-color: #2d99ff;
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 4px 16px rgba(0, 129, 255, 0.18);
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Nunito", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+}
+
+/* Layout-styling (samma som project.html) */
+
+.dashboard {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    width: 240px;
+}
+
+.sidebar-header {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.logo {
+    height: 40px;
+    width: 40px;
+}
+
+.logo-text {
+    /* Figma har "Auto", så "normal" funkar bra */
+    letter-spacing: 0;
+    color: #1e1e1e;
+    font-family: "Comfortaa", cursive;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.nav-item {
+    align-items: center;
+    background: none;
+    border-radius: 8px;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 12px;
+    padding: 12px;
+    text-align: left;
+    width: 100%;
+}
+
+    .nav-item.active {
+        background-color: #e0f2fe;
+        color: #0ea5e9;
+    }
+
+.main-content {
+    flex: 1;
+    padding: 16px;
+}
+
+.top-bar {
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+}
+
+.search-container {
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    padding: 8px 16px;
+    width: 300px;
+}
+
+.search-input {
+    border: none;
+    font-size: 14px;
+    margin-left: 8px;
+    outline: none;
+    width: 100%;
+}
+
+.user-controls {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 0;
+}
+
+.user-avatar img {
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+}
+
+.section-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    color: #111827;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.add-button {
+    align-items: center;
+    background-color: #0ea5e9;
+    border-radius: 8px;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 8px;
+    padding: 8px 16px;
+}
+
+.tab-list {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.tab-item {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+}
+
+    .tab-item.active-tab {
+        color: #0ea5e9;
+        font-weight: 600;
+        position: relative;
+    }
+
+        .tab-item.active-tab::after {
+            background-color: #0ea5e9;
+            border-radius: 2px;
+            bottom: -8px;
+            content: "";
+            height: 2px;
+            left: 0;
+            position: absolute;
+            width: 100%;
+        }
+
+.project-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.avatar-svg {
+    background-color: #e0f2fe;
+    border-radius: 50%;
+    height: 100px;
+    margin-bottom: 16px;
+    width: 100px;
+}
+
+.contact-info {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+    .contact-info p {
+        color: #334155;
+        font-size: 14px;
+        margin: 4px 0;
+    }
+
+.message-button {
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    border: none;
+    color: #1a1926;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 10px 16px;
+    transition: background-color 0.2s ease;
+}
+
+    .message-button:hover {
+        background-color: #e2e8f0;
+    }
+
+.member-card {
+    align-items: center;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 20px 30px -18px rgba(4, 15, 21, 0.1), 0px 40px 30px -30px rgba(4, 15, 21, 0.06);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    font-family: "Nunito", sans-serif;
+    height: 460px;
+    padding: 48px 24px 28px;
+    position: relative;
+    width: 300px;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.member-name {
+    color: #1a1926;
+    font-size: 18px;
+    padding: 12px;
+    font-weight: 700;
+    margin: 0 0 0px;
+    text-align: center;
+}
+
+.member-title {
+    background-color: #f0f1f5;
+    border-radius: 8px;
+    color: #1a1926;
+    font-size: 12px;
+    margin: 0 0 23px;
+    padding: 7px 14px;
+    text-align: center;
+}
+
+.member-contact {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-style: normal;
+    gap: 13px;
+    margin-bottom: 24px;
+}
+
+.member-email,
+.member-phone {
+    color: #28263b;
+    font-size: 15px;
+    margin: 0;
+}
+
+.member-message-button {
+    background-color: #f5f7fa;
+    border-radius: 14px;
+    border: none;
+    color: #1a1926;
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    height: 48px;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+    .member-message-button:hover {
+        background-color: #e9ecf2;
+    }
+
+    .member-message-button:focus {
+        outline-offset: 2px;
+        outline: 2px solid #1a1926;
+    }
+
+.member-menu-button {
+    /* 👉 nu ligger prickarna i rad */
+    gap: 4px;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px;
+    position: absolute;
+    right: 12px;
+    top: 12px;
+}
+
+    .member-menu-button .dot {
+        background-color: #1a1926;
+        border-radius: 50%;
+        display: block;
+        height: 4px;
+        width: 4px;
+    }
+
+/*Profile menu*/
+
+.profile-menu {
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 0px 16px 80px 0px rgba(4, 15, 21, 0.15), 0px 40px 20px -30px rgba(4, 15, 21, 0.1);
+    display: block;
+    padding: 8px;
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    width: 300px;
+    z-index: 1000;
+}
+
+    .profile-menu[hidden] {
+        display: none !important;
+    }
+
+.profile-header {
+    align-items: center;
+    background-color: #f5f7fa;
+    border-radius: 14px;
+    display: flex;
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+.avatar-container {
+    height: 40px;
+    margin-right: 16px;
+    width: 40px;
+}
+
+.profile-name {
+    color: #1a1926;
+    font-family: "Nunito", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.menu-divider {
+    background-color: #ebeef2;
+    border: none;
+    height: 1px;
+    margin: 8px 0;
+}
+
+.menu-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item {
+    align-items: center;
+    background: transparent;
+    border-radius: 14px;
+    border: none;
+    color: #1a1926;
+    cursor: pointer;
+    display: flex;
+    font-family: "Nunito", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    gap: 16px;
+    height: 48px;
+    padding: 14px;
+    text-align: left;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+    .menu-item:hover {
+        background-color: #f5f7fa;
+        font-weight: 600;
+    }
+
+.settings-icon,
+.logout-icon {
+    height: 20px;
+    margin-right: 24px;
+    width: 20px;
+}
+
+.menu-text {
+    color: #28263b;
+    font-family: "Nunito", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.toggle-switch {
+    height: 24px;
+    position: absolute;
+    right: 12px;
+    width: 42px;
+}
+
+.user-avatar-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.avatar-img {
+    border-radius: 8px;
+    height: 40px;
+    object-fit: cover;
+    width: 40px;
+}
+
+/* Notification */
+
+.notification-card {
+    /* Justera höjden så att den är på samma nivå som de andra modalerna */
+    right: 100px;
+    /* Placera den mer till höger för att den inte ska vara förbi knappen */
+    width: 380px;
+    /* Se till att den är ovanpå andra element */
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 0 16px 80px 0 rgba(4, 15, 21, 0.15), 0 40px 20px -30px rgba(4, 15, 21, 0.1);
+    padding: 22px 24px;
+    position: absolute;
+    top: 60px;
+    z-index: 9999;
+}
+
+.notification-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 17px;
+}
+
+.notification-title {
+    color: #1a1926;
+    font-family: "Nunito", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.notification-count {
+    align-items: center;
+    background-color: #ff6640;
+    border-radius: 10px;
+    color: #fff;
+    display: flex;
+    font-family: "Nunito", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    height: 20px;
+    justify-content: center;
+    width: 20px;
+}
+
+.notification-divider {
+    background-color: #ebeef2;
+    border: none;
+    height: 1px;
+    margin: 0 0 17px;
+}
+
+.notification-item {
+    align-items: center;
+    background-color: #f5f7fa;
+    border-radius: 14px;
+    display: flex;
+    padding: 16px;
+    position: relative;
+}
+
+.app-icon-wrapper {
+    margin-right: 20px;
+}
+
+.notification-content {
+    flex-grow: 1;
+}
+
+.notification-message {
+    color: #1a1926;
+    font-family: "Nunito", sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    margin: 0 0 4px;
+}
+
+.notification-time {
+    color: #637085;
+    font-family: "Nunito", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #1a1926;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+    .notification-close:hover {
+        opacity: 0.8;
+    }
+
+/*Settings menu*/
+.settings-menu {
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 0px 16px 80px 0px rgba(4, 15, 21, 0.15), 0px 40px 20px -30px rgba(4, 15, 21, 0.1);
+    display: block;
+    padding: 8px;
+    position: absolute;
+    right: 60px;
+    top: 60px;
+    width: 300px;
+    z-index: 1000;
+}
+
+    .settings-menu[hidden] {
+        display: none !important;
+    }
+
+.settings-header {
+    align-items: center;
+    background-color: #f5f7fa;
+    border-radius: 14px;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+.settings-icon-large {
+    color: #1a1926;
+    font-size: 20px;
+}
+
+.settings-title {
+    color: #1a1926;
+    font-family: "Nunito", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* För förslag som visas */
+
+.suggestions-list {
+    margin: 4px 0 0 0;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #ebeef2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    left: 0;
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 8px 0;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 10;
+}
+
+    /* För varje list item */
+    .suggestions-list li {
+        /* Padding för varje förslag */
+        cursor: pointer;
+        color: #28263b;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        padding: 10px 14px;
+        transition: background-color 0.2s ease, font-weight 0.2s ease;
+    }
+
+        /* Hover och active förslag */
+        .suggestions-list li:hover,
+        .suggestions-list li.active {
+            background-color: #f0f4f8;
+            font-weight: 600;
+        }
+
+.sortby-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+.sortby-button {
+    align-items: center;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    color: #1a1926;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 8px;
+    padding: 8px 16px;
+    transition: background-color 0.2s ease;
+}
+
+    .sortby-button:hover {
+        background-color: #e2e8f0;
+    }
+
+.sortby-dropdown {
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    position: absolute;
+    right: 0;
+    top: 110%;
+    width: 160px;
+    z-index: 10;
+}
+
+.sortby-wrapper:hover .sortby-dropdown {
+    display: block;
+}
+
+.sortby-dropdown li {
+    color: #1a1926;
+    cursor: pointer;
+    font-family: "Nunito", sans-serif;
+    font-size: 14px;
+    padding: 10px 16px;
+    transition: background-color 0.2s ease;
+}
+
+    .sortby-dropdown li:hover {
+        background-color: #f5f7fa;
+        font-weight: 600;
+    }
+
+.dropdown-menu {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    padding: 0.5rem 1rem;
+    position: absolute;
+    right: 1rem;
+    top: 2.5rem;
+    z-index: 100;
+}
+
+/*Project page*/
+
+.dashboard {
+    background-color: #f8fafc;
+    display: flex;
+    font-family: "Inter", sans-serif;
+    min-height: 100vh;
+}
+
+.icon-button,
+.user-avatar-button {
+    user-select: none;
+}
+
+.project-member-avatar {
+    border-radius: 50%;
+    border: 2px solid #fff;
+    height: 24px;
+    width: 24px;
+}
+
+    .project-member-avatar + .project-member-avatar {
+        margin-left: -8px;
+    }
+
+.project-left {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    gap: 12px;
+}
+
+.project-card {
+    position: relative;
+}
+
+.project-form {
+    /* mindre padding */
+    display: flex;
+    align-items: stretch;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 40px 30px -30px rgba(4, 15, 21, 0.15), 0px 50px 50px 0px rgba(4, 15, 21, 0.15);
+    flex-direction: column;
+    padding: 20px;
+    user-select: none;
+    width: 100%;
+}
+
+.form-header {
+    /* eller vad modalens bakgrund är */
+    padding: 20px;
+    background-color: #fff;
+    color: #1a1926;
+    display: flex;
+    flex-wrap: wrap;
+    font-family: Nunito, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    gap: 20px;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    user-select: none;
+    z-index: 10;
+}
+
+.close-icon {
+    align-self: start;
+    aspect-ratio: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    object-fit: contain;
+    object-position: center;
+    width: 37px;
+}
+
+.close-icon-wrapper {
+    /* Gör knappen fast inom headern */
+    top: 16px;
+    /* Placera den 16px från högerkanten på headern */
+    display: inline-flex;
+    /* Placera den 16px från toppen på headern */
+    right: 16px;
+    /* Se till att den är ovanpå headerinnehållet */
+    align-items: center;
+    cursor: pointer;
+    height: fit-content;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    width: fit-content;
+    z-index: 101;
+}
+
+.image-upload-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 0px;
+    margin-bottom: 38px;
+}
+
+.upload-border {
+    align-items: center;
+    border-radius: 30px;
+    border: 1px dashed var(--Border-300, #c6c8cc);
+    display: flex;
+    flex-direction: column;
+    height: 150px;
+    justify-content: center;
+    padding: 30px;
+    width: 150px;
+}
+
+.upload-icon {
+    border-radius: 30px;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    width: 100%;
+}
+
+.wysiwyg-editor {
+    border-radius: 14px;
+    border: 1px solid var(--Border-100, #ebeef2);
+    display: flex;
+    flex-direction: column;
+    padding: 16px 1px;
+    width: 100%;
+}
+
+.editor-placeholder {
+    color: #637085;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 93px;
+    margin-left: 15px;
+}
+
+.editor-divider {
+    border: 1px solid var(--Border-100, #ebeef2);
+    height: 1px;
+    width: 100%;
+}
+
+.editor-toolbar {
+    align-items: stretch;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-left: 15px;
+    margin-top: 14px;
+    max-width: 100%;
+    width: 348px;
+}
+
+.toolbar-group {
+    align-items: stretch;
+    display: flex;
+    gap: 17px;
+}
+
+.toolbar-icon {
+    aspect-ratio: 1;
+    flex-shrink: 0;
+    margin: auto 0;
+    object-fit: contain;
+    object-position: center;
+    width: 16px;
+}
+
+.toolbar-divider {
+    border: 1px solid var(--Border-100, #ebeef2);
+    height: 20px;
+    transform: rotate(-90deg);
+    width: 1px;
+}
+
+.date-container {
+    display: flex;
+    flex-wrap: wrap;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    gap: 24px;
+}
+
+.date-input {
+    align-items: center;
+    border-radius: 14px;
+    border: 1px solid var(--Border-100, #ebeef2);
+    color: #28263b;
+    display: flex;
+    font-weight: 400;
+    gap: 18px;
+    justify-content: space-between;
+    padding: 12px 15px;
+}
+
+.calendar-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    object-position: center;
+    width: 20px;
+}
+
+/* För container av medlemmar */
+.members-input {
+    /* Ordning: text, tags, input */
+    gap: 8px;
+    /* Ta bort padding från wrappern */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+/* För taggarna */
+.members-tags {
+    /* Avstånd mellan taggarna och inputfältet */
+    padding: 0;
+    /* Ingen border här */
+    border: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.member-tag {
+    align-items: center;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+    display: flex;
+    gap: 8px;
+    padding: 7px;
+}
+
+.remove-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    width: 12px;
+}
+
+.add-member-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    width: 20px;
+}
+
+.budget-input {
+    align-items: center;
+    border-radius: 14px;
+    border: 1px solid var(--Border-100, #ebeef2);
+    display: flex;
+    gap: 10px;
+    padding: 14px;
+}
+
+.currency-icon {
+    aspect-ratio: 1;
+    object-fit: contain;
+    width: 20px;
+}
+
+.budget-field {
+    border: none;
+    color: #637085;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    outline: none;
+    width: 100%;
+}
+
+.submit-button {
+    background-color: #2d99ff;
+    border-radius: 14px;
+    border: 1px solid #fff;
+    box-shadow: 0px 4px 16px 0px rgba(0, 129, 255, 0.18);
+    color: #fff;
+    cursor: pointer;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 32px;
+    padding: 14px 24px;
+    text-align: center;
+    width: 100%;
+}
+
+.modal-overlay {
+    /* <- Lägg till detta om det inte redan är maxat */
+    padding: 20px;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+    inset: 0;
+    justify-content: center;
+    position: fixed;
+    z-index: 9999;
+}
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+.modal::-webkit-scrollbar {
+    display: none;
+}
+
+.modal {
+    /* Ser till att innehåll inom modalen kan positioneras relativt till den */
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    max-height: calc(100vh - 40px);
+    max-width: 800px;
+    overflow-y: auto;
+    position: relative;
+    width: 100%;
+    z-index: 100000 !important;
+}
+
+    .modal .project-form header {
+        padding: 16px;
+        position: relative;
+    }
+
+.ql-tooltip {
+    z-index: 100001 !important;
+}
+
+.upload-border:hover {
+    background-color: #f0f4f8;
+}
+
+.upload-text {
+    color: #637085;
+    font-size: 13px;
+    margin-top: 10px;
+    user-select: none;
+}
+
+/*quill*/
+
+#editor-container {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    height: 150px;
+}
+
+.ql-editor,
+.ql-editor * {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.ql-toolbar.ql-snow {
+    border-radius: 8px 8px 0 0;
+}
+
+.ql-container.ql-snow {
+    border-radius: 0 0 8px 8px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+}
+
+.date-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+    justify-content: space-between;
+    position: relative;
+    width: 150px;
+}
+
+.custom-date {
+    border-radius: 14px;
+    appearance: none;
+    border: 1px solid var(--Border-100, #ebeef2);
+    color: #637085;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    padding-right: 80px;
+    padding: 14px 16px;
+    width: 100%;
+}
+
+    .custom-date::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        height: 100%;
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        width: 100%;
+        z-index: 2;
+    }
+
+.calendar-icon-clickable {
+    height: 20px;
+    pointer-events: none;
+    position: absolute;
+    right: 16px;
+    width: 20px;
+}
+
+@keyframes shakeWithFakeBorder {
+    0% {
+        transform: translateX(0);
+        box-shadow: none;
+    }
+
+    20% {
+        transform: translateX(-4px);
+        box-shadow: 0 0 0 3px #ff0000;
+    }
+
+    40% {
+        transform: translateX(4px);
+        box-shadow: none;
+    }
+
+    60% {
+        transform: translateX(-4px);
+    }
+
+    80% {
+        transform: translateX(4px);
+        box-shadow: none;
+    }
+
+    100% {
+        transform: translateX(0);
+        box-shadow: none;
+    }
+}
+
+.shake-animation {
+    animation: shakeWithFakeBorder 0.4s ease;
+    box-shadow: 8px;
+}
+/* === Dropdown meny för trippelpunkter i projektkort === */
+
+.project-card {
+    position: relative;
+}
+
+.project-menu-button {
+    align-items: center;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    padding: 10px;
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    z-index: 10;
+}
+
+    .project-menu-button .dot {
+        background-color: #1a1926;
+        border-radius: 50%;
+        display: block;
+        height: 4px;
+        width: 4px;
+    }
+
+/* Dropdownmeny */
+.dropdown-menu {
+    background-color: #fff;
+    border-radius: 14px;
+    box-shadow: 0px 16px 80px 0px rgba(4, 15, 21, 0.15), 0px 40px 20px -30px rgba(4, 15, 21, 0.1);
+    display: none;
+    padding: 8px;
+    position: absolute;
+    right: 12px;
+    top: 52px;
+    width: 230px;
+    z-index: 20;
+}
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+.menu-item-edit {
+    /* spacing före Add Member */
+    margin-bottom: 4px;
+}
+
+.menu-text-delete {
+    color: #ff6640;
+}
+
+.icon-wrapper {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.icon {
+    flex-shrink: 0;
+    height: 20px;
+    width: 20px;
+}
+
+/*add memer tags*/
+/* För container av medlemmar */
+.members-input {
+    /* Ordning: text, tags, input */
+    gap: 8px;
+    /* Ta bort padding från wrappern */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+/* Inputfältet */
+.member-input {
+    /* Border endast på input text-fältet */
+    outline: none;
+    /* Full bredd för inputfältet */
+    padding: 8px;
+    /* Rundade hörn för inputen */
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ebeef2;
+    font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+    font-size: 15px;
+    width: 100%;
+}
+
+/* För varje tagg som läggs till */
+.member-tag {
+    align-items: center;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+    display: flex;
+    gap: 8px;
+    padding: 7px 10px;
+    white-space: nowrap;
+}
+
+/* Avatarbild i taggen */
+.member-avatar {
+    border-radius: 50%;
+    height: 150px;
+    object-fit: cover;
+    width: 150px;
+}
+
+/* Ta bort ikon i taggen */
+.remove-icon {
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+}
+
+.danger-button {
+    background-color: #ff4d4f !important;
+    border-color: #ff4d4f !important;
+    color: white !important;
+}
+
+.menu-button,
+.projects-menu-button,
+.project-menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .login-section {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .login-container {
+        padding: 30px;
+    }
+
+    .blur-overlay {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .welcome-section {
+        display: none;
+    }
+}
+
+@media (max-width: 991px) {
+    .member-card {
+        width: 280px;
+        height: 440px;
+    }
+}
+
+@media (max-width: 640px) {
+    .member-card {
+        width: 260px;
+        height: 420px;
+        padding: 40px 20px 24px;
+    }
+
+    .member-name {
+        font-size: 16px;
+    }
+
+    .member-title {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    .member-email,
+    .member-phone {
+        font-size: 14px;
+    }
+
+    .member-message-button {
+        height: 44px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 991px) {
+    .profile-menu {
+        width: 280px;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-menu {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 640px) {
+    .notification-card {
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .notification-item {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 991px) {
+    .member-card {
+        width: 280px;
+        height: 440px;
+    }
+}
+
+@media (max-width: 640px) {
+    .member-card {
+        width: 260px;
+        height: 420px;
+        padding: 40px 20px 24px;
+    }
+
+    .member-name {
+        font-size: 16px;
+    }
+
+    .member-title {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    .member-email,
+    .member-phone {
+        font-size: 14px;
+    }
+
+    .member-message-button {
+        height: 44px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 991px) {
+    .profile-menu {
+        width: 280px;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-menu {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 991px) {
+    .profile-menu {
+        width: 280px;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-menu {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 640px) {
+    .notification-card {
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .notification-item {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 991px) {
+    .member-card {
+        width: 280px;
+        height: 440px;
+    }
+}
+
+@media (max-width: 640px) {
+    .member-card {
+        width: 260px;
+        height: 420px;
+        padding: 40px 20px 24px;
+    }
+
+    .member-name {
+        font-size: 22px;
+    }
+
+    .member-title {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    .member-email,
+    .member-phone {
+        font-size: 14px;
+    }
+
+    .member-message-button {
+        height: 44px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 991px) {
+    .profile-menu {
+        width: 280px;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-menu {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 640px) {
+    .notification-card {
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .notification-item {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 991px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .project-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0px;
+    }
+
+    .nav-item {
+        padding: 8px;
+        width: 100%;
+    }
+
+    .main-content {
+        padding: 12px;
+    }
+
+    .project-card {
+        padding: 16px;
+    }
+
+    .project-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+}
+
+@media (max-width: 991px) {
+    .project-form {
+        padding: 20px;
+    }
+
+    .upload-border {
+        padding: 20px;
+    }
+
+    .editor-placeholder {
+        margin-left: 10px;
+    }
+
+    .editor-toolbar {
+        margin-left: 10px;
+    }
+
+    .submit-button {
+        padding: 14px 20px;
+    }
+
+    .editor-placeholder {
+        margin-bottom: 40px;
+    }
+}
+
+@media (max-width: 991px) {
+    .profile-menu {
+        width: 280px;
+    }
+}
+
+@media (max-width: 640px) {
+    .profile-menu {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 640px) {
+    .notification-card {
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .notification-item {
+        padding: 12px;
+    }
+}

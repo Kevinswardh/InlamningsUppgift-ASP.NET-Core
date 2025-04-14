@@ -1,0 +1,82 @@
+﻿# LayerInfo – #SecurityLayer
+
+## Syfte med lagret
+
+#SecurityLayer är ett dedikerat lager som hanterar allt som rör **autentisering,
+auktorisering, säkerhetspolicies och skydd mot sårbarheter** i applikationen. 
+Det fungerar som en samlingsplats för funktioner och tjänster som används 
+av andra lager för att säkra åtkomst, hantera identitet och upprätthålla säkerhetskrav.
+
+Detta lager är inte ansvarigt för användargränssnitt eller inloggningsflöden direkt, 
+utan fokuserar på logiken och teknikerna bakom säkerhetsfunktioner som t.ex. tokens, 
+rollhantering, behörighetskontroller, kryptering m.m.
+
+## Vanliga användningsområden
+
+- Hantering av JWT eller andra tokens
+- Kontroll av användarroller och rättigheter
+- Inloggningslogik, autentiseringstjänster
+- Tidsbegränsade access-nycklar och sessionshantering
+- Skapande och validering av tokens
+- Tvåfaktorsautentisering
+- Kryptering och dekryptering
+- Lösenordshantering och hashning
+- API-nycklar eller client secrets
+- CSRF-skydd eller anti-forgery tokens
+- Hantering av policyer och claims
+- Audit/loggning av inloggningsförsök
+
+## Använda teknologier och tekniker
+
+- ASP.NET Core Identity (om det används)
+- JWT (JSON Web Tokens)
+- OAuth2, OpenID Connect
+- Microsoft.AspNetCore.Authentication
+- Microsoft.AspNetCore.Authorization
+- Claims-baserad åtkomstkontroll
+- BCrypt / PBKDF2 för lösenordshashning
+- System.Security.Cryptography
+- SecureString / DataProtection API
+- Policies och attribut (ex. `[Authorize(Policy = "AdminOnly")]`)
+
+## Strukturella delar i lagret
+
+Exempel på vad detta lager innehåller:
+- AuthService / TokenService-klasser
+- Gränssnitt som `IAuthService`, `ITokenGenerator`
+- Implementeringar av policy- eller rolestrategier
+- Krypteringsklasser och säkerhetshelpers
+- Custom middleware eller attribut för t.ex. behörighetskontroll
+- Claims-förlängningar och context-access
+- Inställningar och konfiguration för autentisering
+- Token-inställningar (expiration, secrets)
+- Validerings- eller permissions-tjänster
+
+## Kopplingar till andra lager
+
+PresentationLayer:
+- Använder attribut, policies och tokens som definierats här
+- Kan trigga t.ex. login-funktion via detta lager
+
+ApplicationLayer:
+- Kontrollerar behörigheter innan känsliga operationer
+- Kan använda säkerhetstjänster eller claims-checkar
+
+DomainLayer:
+- Ska vara helt oberoende av detta lager
+
+InfrastructureLayer:
+- Kan behöva använda security-lagrets funktioner t.ex. vid mailbekräftelser, autentiserade API-anrop eller datakryptering
+
+DataAccessLayer:
+- Ska inte ha beroende hit, men hanterar ibland säker data som är krypterad eller hashad via detta lager
+
+## Syfte med separationen
+
+Att samla säkerhetslogik i ett separat lager:
+- Ger tydlig struktur och minskar risken för säkerhetsluckor
+- Möjliggör återanvändning av säkerhetsfunktioner över hela applikationen
+- Separerar säkerhetsmekanismer från affärslogik och presentation
+- Underlättar testning, uppgradering och byte av autentiseringsstrategi
+- Möjliggör central konfiguration av säkerhetsrelaterade policies
+

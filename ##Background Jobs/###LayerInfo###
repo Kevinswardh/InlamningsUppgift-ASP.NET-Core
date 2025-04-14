@@ -1,0 +1,69 @@
+﻿# LayerInfo – #Background Jobs
+
+## Syfte med lagret
+
+#Background Jobs är ett separat lager i lösningen som ansvarar för att hantera bakgrundsjobb, 
+schemalagda uppgifter, fördröjda uppgifter eller 
+tunga processer som inte bör köras direkt i användarens kontext. 
+Lagret förbättrar prestanda, minskar väntetider för användaren och hanterar 
+uppgifter som kan köras asynkront eller 
+periodiskt utan påverkan på det direkta användarflödet.
+
+Vanliga användningsområden:
+- Skicka e-post efter registrering eller bokning
+- Synkronisera data från externa API:er på ett schema
+- Generera rapporter eller statistik i bakgrunden
+- Säkerhetskopiera databaser eller filer
+- Skicka notiser eller aviseringar
+- Tömma temporära mappar, loggar eller data
+- Konvertera mediafiler (t.ex. bilder, video)
+
+## Använda teknologier
+
+Typiska teknologier och tekniker som används i detta lager:
+- Hangfire
+- Quartz.NET
+- .NET BackgroundService / HostedService
+- MediatR (valfritt) för kommandoflöden
+- Cron-uttryck eller schemaläggningsbibliotek
+
+## Strukturella delar i lagret
+
+Detta lager kan innehålla:
+- Jobb-klasser för enskilda uppgifter (t.ex. e-post, backup)
+- Tjänstklasser som hanterar upprepad eller schemalagd logik
+- Scheduler-setup eller registreringsklasser
+- Interfaces som t.ex. IJobScheduler
+- Payload- eller DTO-klasser för överföring av data till/från jobben
+- Konfigurationsklasser eller inställningsfiler (appsettings/BackgroundJobSettings)
+
+## Kopplingar till andra lager
+
+PresentationLayer:
+- Skickar ibland signal till ApplicationLayer som i sin tur triggar bakgrundsjobb
+- Ingen direkt beroende eller referens från #Background Jobs
+
+ApplicationLayer:
+- Startar jobb genom att anropa schemaläggare eller enqueue-tjänster
+- Innehåller inga implementeringar utan bara triggar
+
+DomainLayer:
+- I regel ingen direkt koppling
+- Kan använda value objects eller domänmodeller för datahantering i jobben
+
+InfrastructureLayer:
+- Vanligaste beroendet från #Background Jobs
+- Tjänster som e-post, loggning, databas, API-anrop används härifrån
+
+DataAccessLayer:
+- Aldrig direkt beroende
+- All åtkomst till databas sker via tjänster i InfrastructureLayer
+
+## Syfte med separationen
+
+Att separera bakgrundsjobb i ett eget lager:
+- Gör det lättare att isolera bakgrundsbeteenden
+- Underlättar testning, simulering och felsökning
+- Gör det möjligt att byta eller skala teknik (t.ex. Hangfire till Quartz)
+- Möjliggör att köra bakgrundsjobb i egna processer eller worker services
+

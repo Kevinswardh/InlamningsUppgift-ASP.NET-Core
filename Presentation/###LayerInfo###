@@ -1,0 +1,76 @@
+﻿# LayerInfo – 1.PresentationLayer
+
+## Syfte med lagret
+
+1.PresentationLayer är det yttersta lagret i applikationen och ansvarar 
+för att **hantera interaktion med användaren eller externa klienter**. 
+Det är detta lager som tar emot inkommande HTTP-förfrågningar via webbgränssnitt eller API och skickar svar tillbaka.
+
+Lagret samlar och presenterar data från underliggande lager (Application, Domain, etc.) 
+och innehåller inte affärslogik – endast flödeskontroll, vylogik, 
+modellbindning och UI-relaterade beslut.
+
+## Vanliga användningsområden
+
+- Hantera användarinmatning (formulär, URL-parametrar, headers)
+- Skicka vidare data till ApplicationLayer
+- Visa resultat (HTML-sidor eller JSON-svar)
+- Kontrollera åtkomst med attribut (ex. `[Authorize]`)
+- Visa felmeddelanden eller bekräftelser
+- Skicka notifieringar (t.ex. via TempData/ViewData)
+- Formatval (t.ex. returnera XML, JSON eller HTML beroende på förfrågan)
+- Client-side logik (JavaScript, React, Blazor eller Razor Pages – beroende på typ av projekt)
+
+## Använda teknologier och tekniker
+
+- ASP.NET Core MVC (Controller/Views)
+- Razor Pages
+- ASP.NET Core Web API (endpoints via controllers)
+- SignalR (för realtidskommunikation)
+- HTML/CSS/JS (i webbprojekt)
+- Tag Helpers, View Components, Partial Views
+- TempData, ViewData, ViewBag
+- Middleware och filters
+- Model Binding / Model Validation
+- Autentisering och auktorisering via attribut
+- Swagger (för dokumentation av API:er)
+
+## Strukturella delar i lagret
+
+Typiska komponenter i detta lager:
+- Controllers (ex. `ProjectController`, `AuthController`)
+- Razor Pages eller Views
+- API Endpoints
+- Request- och Response-DTOs
+- Valideringsattribut
+- Filters och action result modifiers
+- Layouts, templates, statiska resurser
+- JavaScript och klientfunktionalitet (om det är en fullständig webblösning)
+- Frontend-ramverk (om detta är en kombinerad lösning med React, Blazor m.m.)
+
+## Kopplingar till andra lager
+
+ApplicationLayer:
+- Detta är presentationens huvudsakliga beroende
+- Anropar tjänster, kommandon eller queries
+
+DomainLayer:
+- Ingen direkt koppling – all kontakt sker via ApplicationLayer
+
+InfrastructureLayer:
+- Presentation får aldrig direkt kontakta infrastruktur
+
+DataAccessLayer:
+- Presentation får aldrig kommunicera direkt med databas eller ORM
+
+Övriga #-lager:
+- Använder policies, attribut, validering och inställningar från ex. #SecurityLayer, #Cross-cutting Concerns
+
+## Syfte med separationen
+
+Att isolera presentationen i ett eget lager:
+- Gör det möjligt att byta ut användargränssnittet utan att påverka affärslogik
+- Underlättar testning av UI-flöden
+- Ger en tydlig struktur för ansvarsfördelning (UI vs logik)
+- Stödjer återanvändning av applikationslogik i olika typer av gränssnitt (ex. webb, mobil, API)
+

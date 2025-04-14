@@ -1,0 +1,76 @@
+﻿# LayerInfo – 2.ApplicationLayer (Service Layer)
+
+## Syfte med lagret
+
+2.ApplicationLayer är lagret som ansvarar för att 
+**samordna affärsflöden och dirigera data mellan PresentationLayer och DomainLayer**.
+Det fungerar som en mellanhand som exekverar "use cases" eller applikationslogik – 
+alltså det användaren faktiskt försöker göra, utan att innehålla själva affärsreglerna.
+
+Detta lager utgör applikationens motor och används för att samla logik kring vad 
+som ska hända i ett specifikt flöde (t.ex. "Skapa projekt", "Hämta profil", "Skicka meddelande") 
+och samverkar med externa tjänster via interfaces.
+
+## Vanliga användningsområden
+
+- Samla data från Presentation och skicka vidare till rätt domänkomponent
+- Koordinera anrop till domänmodeller och externa resurser
+- Exekvera kommandon eller hämta queries
+- Anropa validering, loggning eller andra cross-cutting-tjänster
+- Kontrollera rättigheter (via SecurityLayer eller policies)
+- Trigga events, bakgrundsjobb eller integrationer
+- Konvertera DTOs till och från domänobjekt
+
+## Använda teknologier och tekniker
+
+- Tjänsteklasser (ex. `ProjectService`, `UserService`)
+- Kommandon (Command/Query pattern)
+- Interfaces (ex. `IProjectService`)
+- DTOs och modeller
+- MediatR (för CQRS och central hantering)
+- FluentValidation (inputvalidering)
+- Automapper (mappa mellan DTO och domänmodell)
+- Event publishing (t.ex. domain events eller integration events)
+- Logging, caching, notifiering
+
+## Strukturella delar i lagret
+
+Vanliga strukturer och komponenter i ApplicationLayer:
+- Use Case-tjänster (ex. `RegisterUserService`)
+- Kommandon och queries (med eventuella handlers)
+- DTOs för request/response
+- Interfaces för domän- och infrastrukturberoenden (ex. `IUserRepository`, `IEmailService`)
+- Valideringslogik kopplad till request-objekt
+- Policies för åtkomstkontroll
+- Events och notifieringar
+- Mapper-tjänster (eller konfiguration)
+
+## Kopplingar till andra lager
+
+PresentationLayer:
+- Får anropa tjänster eller kommandon i detta lager
+
+DomainLayer:
+- Application anropar domänmodeller, entiteter, regler och events
+- Alla affärsregler ligger dock i DomainLayer
+
+InfrastructureLayer:
+- Application använder interfaces som implementeras i Infrastructure (t.ex. e-posttjänst, filsystem, externa API:er)
+- Själva implementationen finns i InfrastructureLayer, inte här
+
+DataAccessLayer:
+- Application refererar aldrig direkt till DAL
+- Använder istället abstraktioner, t.ex. `IUserRepository`
+
+Övriga #-lager:
+- Tjänster som validering, loggning, caching eller säkerhet kan injiceras här
+
+## Syfte med separationen
+
+Att ha ett dedikerat applikationslager:
+- Samlar alla användarflöden och applikationslogik på ett ställe
+- Gör domänlogiken återanvändbar och ren från flödeskontroll
+- Stödjer testning av use cases utan beroende till UI eller databas
+- Tillåter flexibla implementationer av externa tjänster
+- Underlättar integrering av säkerhet, loggning och bakgrundsjobb
+

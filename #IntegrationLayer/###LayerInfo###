@@ -1,0 +1,72 @@
+﻿# LayerInfo – #IntegrationLayer
+
+## Syfte med lagret
+
+#IntegrationLayer är ett separat lager som hanterar all 
+**kommunikation med externa system, tjänster eller API:er** utanför din egen applikation. 
+Det kan röra sig om både tredjepartsintegrationer (t.ex. externa betaltjänster, karttjänster, vädertjänster) 
+och integrationer mot andra interna system i organisationen.
+
+Detta lager syftar till att **isolera extern kommunikation** från övriga logiklager, vilket gör det enklare att:
+- testa applikationen utan beroenden
+- byta ut externa system
+- återanvända integrationslogik
+- hantera fel, retries och standardisering av externa svar
+
+## Vanliga användningsområden
+
+- Kalla externa REST- eller SOAP-API:er (t.ex. Google Maps, Skatteverket)
+- Kommunicera med mikroservicetjänster inom samma organisation
+- Skicka eller ta emot data via Webhooks
+- Hantera integration mot externa databaser, molntjänster eller ERP-system
+- Läsa eller skriva till externa filsystem (t.ex. SFTP)
+- Skicka data till tredjepartsloggning eller metrics-system
+
+## Använda teknologier och tekniker
+
+- HttpClient / IHttpClientFactory
+- Refit (REST-klient)
+- REST, SOAP, GraphQL
+- JsonSerializer / System.Text.Json / Newtonsoft.Json
+- Polly (för retries och fallback på externa anrop)
+- Circuit Breakers och Timeout-logik
+- AutoMapper eller egna DTO-mappningar
+- Webhooks (t.ex. POST-data vid händelser)
+
+## Strukturella delar i lagret
+
+Exempel på vad detta lager innehåller:
+- API-klientklasser (ex. `IVäderApiClient`, `GoogleMapsClient`)
+- Implementeringar som kapslar in externa anrop
+- Interfaces som används i ApplicationLayer (för DI och testbarhet)
+- DTOs och Response-modeller som matchar externa API:ers struktur
+- Mapper-klasser för att konvertera till interna modeller
+- Eventuell felhantering/logik för fallback vid fel
+
+## Kopplingar till andra lager
+
+PresentationLayer:
+- Har ingen direkt koppling hit
+
+ApplicationLayer:
+- Använder interfaces från detta lager för att hämta externa data
+- Injektion sker via beroendehantering (t.ex. DI-container)
+
+DomainLayer:
+- Ska inte kopplas till detta lager
+
+InfrastructureLayer:
+- Kan ibland vara beroende av gemensamma tekniska resurser som logger, konfiguration, token-tjänster
+
+DataAccessLayer:
+- Aldrig direkt beroende – men data från externa tjänster kan efter bearbetning sparas via DAL
+
+## Syfte med separationen
+
+Att ha ett dedikerat integrationslager:
+- Gör det enklare att byta eller uppdatera externa beroenden
+- Tillåter mocking eller stubbar vid testning
+- Ger tydlig separation mellan intern logik och extern kommunikation
+- Underlättar felsökning av externt beroende
+- Främjar ren kod genom tydliga ansvar
+

@@ -1,0 +1,73 @@
+﻿# LayerInfo – 3.DomainLayer (BusinessLogicLayer)
+
+## Syfte med lagret
+
+3.DomainLayer, även kallat BusinessLogicLayer, 
+är det mest centrala och stabila lagret i systemet. 
+Här finns **affärslogiken, reglerna och modellerna** 
+som definierar hur systemet ska fungera – 
+oavsett användargränssnitt, databas eller externa beroenden.
+
+Detta lager vet ingenting om andra lager och innehåller **inga beroenden alls** 
+till ramverk, databaser eller externa tekniker. Det fokuserar på **vad som får göras och hur regler ska tillämpas**, 
+inte hur det exekveras eller presenteras.
+
+## Vanliga användningsområden
+
+- Affärslogik (t.ex. “en användare får bara ha ett aktivt medlemskap”)
+- Entiteter och deras metoder/egenskaper
+- Value Objects (ex. Email, Address)
+- Interfaces för externa tjänster och datalagring (ex. `IUserRepository`)
+- Domänregler och constraints
+- Domänhändelser (Domain Events)
+- Aggregates (grupper av relaterade entiteter som uppträder som en enhet)
+- Enum-liknande klasser (t.ex. typ-säkra statusobjekt)
+
+## Använda teknologier och tekniker
+
+- Ren C# (utan beroenden)
+- Objektorienterad modellering (OOP)
+- DDD-principer (Domain-Driven Design)
+- Domain Events
+- Value Object pattern
+- Aggregates / Aggregate Root
+- Guard clauses för regelvalidering
+
+## Strukturella delar i lagret
+
+Vanliga komponenter i DomainLayer:
+- Entiteter (ex. `Project`, `User`, `Invoice`)
+- Value Objects (ex. `EmailAddress`, `Money`, `PhoneNumber`)
+- Interfaces för infrastruktur/dataåtkomst (ex. `IProjectRepository`, `IEmailService`)
+- Domänhändelser (ex. `UserRegisteredEvent`)
+- Business rules eller policies som kapslas i metoder
+- Exceptions relaterade till affärsregler
+- Enum-liknande klasser (status, typer etc.)
+
+## Kopplingar till andra lager
+
+PresentationLayer:
+- Har ingen koppling hit
+
+ApplicationLayer:
+- Är beroende av detta lager och anropar affärslogik via entiteter och services
+
+InfrastructureLayer:
+- Implementerar interfaces som definieras här, men är beroende – inte tvärtom
+
+DataAccessLayer:
+- Använder entiteterna som finns här vid t.ex. ORM-mappning
+- Domain känner dock inte till något om databasen
+
+Övriga #-lager:
+- Kan referera till värdeobjekt eller domänregler om det behövs
+- Har ingen direkt påverkan tillbaka
+
+## Syfte med separationen
+
+Att isolera affärslogiken i ett eget lager:
+- Skyddar affärsregler från tekniska detaljer
+- Möjliggör testbarhet och återanvändning
+- Gör systemet stabilt och lätt att underhålla även om teknik och gränssnitt förändras
+- Underlättar tydlig ansvarsfördelning mellan “vad som ska gälla” (Domain) och “hur det används” (Application)
+

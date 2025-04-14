@@ -1,0 +1,68 @@
+﻿# LayerInfo – 0.ConfigurationLayer
+
+## Syfte med lagret
+
+0.ConfigurationLayer är ett grundläggande lager som hanterar **centrala inställningar, konfigurationer och beroendeinjektion (DI)** för hela applikationen. Detta lager ansvarar för att registrera tjänster, policies, settings, externa resurser och miljöberoende beteenden i ett organiserat och återanvändbart format.
+
+Syftet är att undvika att sprida konfigurationskod över många projekt. Genom att centralisera denna logik i ett lager blir applikationen enklare att konfigurera, justera, underhålla och testa.
+
+## Vanliga användningsområden
+
+- Registrering av tjänster i `IServiceCollection`
+- Konfiguration av externa bibliotek (ex. AutoMapper, MediatR, FluentValidation)
+- Läsa in och binda sektioner från `appsettings.json`
+- Registrera middleware, policies och andra cross-cutting concerns
+- Inställningar för loggning, databaser, bakgrundsjobb, API-klienter m.m.
+- Miljöberoende konfigurationer (t.ex. `Development`, `Staging`, `Production`)
+
+## Använda teknologier och tekniker
+
+- Microsoft.Extensions.DependencyInjection
+- Microsoft.Extensions.Configuration
+- Microsoft.Extensions.Options
+- `appsettings.json`, `secrets.json`, miljövariabler
+- `ConfigureServices()` och `Configure()` i Program.cs / Startup.cs
+- Extension methods (t.ex. `services.AddMyCustomFeature();`)
+- Options pattern (`services.Configure<MySettings>(...)`)
+
+## Strukturella delar i lagret
+
+Detta lager kan innehålla:
+- Tjänsteregistrering (extension methods, ex. `AddApplicationServices()`)
+- Inställningsklasser (ex. `SmtpSettings`, `JwtSettings`)
+- Konfigurationsbindning (t.ex. från `appsettings.json`)
+- Environment checks och miljöspecifika konfigurationer
+- Setup för externa bibliotek
+- Registrering av middleware och cross-cutting features
+- Eventuellt initialisering av vissa resurser
+
+## Kopplingar till andra lager
+
+PresentationLayer:
+- Använder tjänster och settings som registrerats här
+- Middleware kan initieras utifrån konfiguration
+
+ApplicationLayer:
+- Tjänster, policies och valideringar registreras härifrån
+
+DomainLayer:
+- Har i regel inga beroenden hit, men inställningar kan påverka hur vissa domänbeteenden konfigureras via externa policies
+
+InfrastructureLayer:
+- Hämtar t.ex. databasinställningar, API-nycklar och andra config-värden härifrån
+
+DataAccessLayer:
+- Använder registrerad DbContext eller andra datakällor konfigurerade via detta lager
+
+Övriga #-lager:
+- Kan använda registrerade policies, logger, validerare och inställningar
+
+## Syfte med separationen
+
+Att separera konfigurationen i ett eget lager:
+- Ger central styrning över beroenden och inställningar
+- Minskar dubbletter och inkonsistent registrering
+- Möjliggör miljöanpassad konfiguration på ett tydligt sätt
+- Underlättar enhetstestning genom mock-registreringar
+- Gör applikationen mer skalbar och enklare att justera i större team eller projekt
+

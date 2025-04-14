@@ -1,0 +1,80 @@
+﻿# LayerInfo – #Cross-cutting Concerns
+
+## Syfte med lagret
+
+#Cross-cutting Concerns är ett lager som 
+innehåller funktionalitet som används av flera andra lager i systemet, 
+oavsett vilket affärsområde eller tekniskt område det gäller. 
+Dessa är så kallade "tvärgående" (cross-cutting) aspekter av programmet – kod 
+som **inte tillhör någon specifik domänlogik**, men som är **viktig för hela applikationens beteende och kvalitet**.
+
+Detta lager möjliggör **återanvändning, konsekvens och separation av ansvar** 
+för vanliga funktioner, samt **centraliserar implementeringar** som annars skulle behöva dupliceras i flera lager.
+
+## Vanliga användningsområden
+
+- Loggning av händelser, fel och prestanda
+- Felsökning och spårning (t.ex. stack traces, request logs)
+- Caching för att förbättra prestanda och minska databasbelastning
+- Validering av data (t.ex. inputvalidering före businesslogik)
+- Undantagshantering (exception handling)
+- Autentisering och auktorisering-stöd (komplement till Security-lagret)
+- Notifieringar och systemmeddelanden
+- Mätning och övervakning (t.ex. metrics, performance-timers)
+- Response shaping / standardisering av API-svar
+
+## Använda teknologier och tekniker
+
+Vanliga verktyg och ramverk som används här:
+- ILogger (Microsoft.Extensions.Logging)
+- Serilog, NLog, Log4Net (för loggning)
+- IMemoryCache eller IDistributedCache
+- FluentValidation eller liknande valideringsbibliotek
+- Exception filters, middleware eller attribut
+- Telemetry-system som Application Insights, OpenTelemetry eller Prometheus-exporters
+- Custom response wrappers
+- Polly (för retry/fault handling)
+- AOP-liknande tillvägagångssätt (Aspect Oriented Programming) via middleware, filters eller interceptors
+
+## Strukturella delar i lagret
+
+Exempel på vad detta lager innehåller:
+- Loggtjänster eller loggförlängningar
+- Cache-tjänster
+- Valideringslogik eller policies
+- Exception filters och hanteringsklasser
+- Middleware för logging, validering, auth eller felhantering
+- Interfaces och helpers som används globalt
+- Policies eller inställningar (t.ex. `ValidationOptions`, `CacheSettings`)
+- Formatter eller response-wrappers
+
+## Kopplingar till andra lager
+
+#Cross-cutting Concerns används av flera andra lager, men är **sällan beroende tillbaka**:
+
+PresentationLayer:
+- Använder ofta validering, felhantering, logging och formatters härifrån
+- Middleware eller filters från detta lager används direkt i API:n
+
+ApplicationLayer:
+- Kan anropa logging, caching eller valideringsfunktioner
+- Returnerar notifieringar eller valideringsresultat
+
+DomainLayer:
+- Använder normalt inte detta lager direkt, men valideringsklasser kan bygga på value objects eller regler från domänen
+
+InfrastructureLayer:
+- Kan använda loggning eller caching för tekniska operationer
+
+DataAccessLayer:
+- Indirekt påverkat – cache kan minska behov av databasoperationer
+
+## Syfte med separationen
+
+Att placera cross-cutting concerns i ett eget lager:
+- Minskar duplicering av kod
+- Förbättrar underhåll och struktur
+- Gör det lätt att byta loggnings- eller cachemotor utan att röra affärslogik
+- Möjliggör konsekvent hantering av återkommande systembehov
+- Stödjer central konfiguration och enhetlig logik för validering, fel, etc.
+
