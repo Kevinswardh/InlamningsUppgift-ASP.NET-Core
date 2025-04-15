@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home - Login Page";
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
 }
 <main class="login-page">
@@ -89,10 +89,12 @@
                         </div>
 
                         <!--Ändra till button senare i visiual studio-->
-                        <a href="projects.html" class="temporary-login-button">Log In</a>
+                        <a asp-controller="Projects" asp-action="Index" class="temporary-login-button">Log In</a>
+ 
 
                         <p class="signup-prompt">
                             Don’t have an account?
+
                             <a href="#" class="toggle-to-signup">Sign Up</a>
                         </p>
                     </form>
