@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>_4.infrastructureLayer</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\##Cross-cutting Concerns\_##Cross-cutting Concerns.csproj" />
+    <ProjectReference Include="..\#IntegrationLayer\_#IntegrationLayer.csproj" />
+    <ProjectReference Include="..\5.DataAccessLayer(DAL)\_5.DataAccessLayer(DAL).csproj" />
+    <ProjectReference Include="..\DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
+  </ItemGroup>
+
+</Project>
