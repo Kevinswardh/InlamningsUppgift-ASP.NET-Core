@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
+    <ProjectReference Include="..\_3.DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
   </ItemGroup>
 
 </Project>

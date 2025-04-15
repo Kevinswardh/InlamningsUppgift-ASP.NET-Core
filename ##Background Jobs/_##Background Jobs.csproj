@@ -11,6 +11,8 @@
     <ProjectReference Include="..\##Cross-cutting Concerns\_##Cross-cutting Concerns.csproj" />
     <ProjectReference Include="..\4.infrastructureLayer\_4.InfrastructureLayer.csproj" />
     <ProjectReference Include="..\DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
+    <ProjectReference Include="..\_3.DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
+    <ProjectReference Include="..\_4.InfrastructureLayer\_4.InfrastructureLayer.csproj" />
   </ItemGroup>
 
 </Project>

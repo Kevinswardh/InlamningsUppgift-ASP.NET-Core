@@ -7,9 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="CustomerReferences\" />
-    <Folder Include="Notes\" />
-    <Folder Include="UX&amp;UI\" />
+    <Compile Remove="CustomerReferences\**" />
+    <Compile Remove="Notes\**" />
+    <Compile Remove="UX&amp;UI\**" />
+    <EmbeddedResource Remove="CustomerReferences\**" />
+    <EmbeddedResource Remove="Notes\**" />
+    <EmbeddedResource Remove="UX&amp;UI\**" />
+    <None Remove="CustomerReferences\**" />
+    <None Remove="Notes\**" />
+    <None Remove="UX&amp;UI\**" />
   </ItemGroup>
 
 </Project>
