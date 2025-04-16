@@ -1,14 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Presentation.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<ProjectsController> _logger;
 
-        public ProjectsController(ILogger<LoginController> logger)
+        public ProjectsController(ILogger<ProjectsController> logger)
         {
             _logger = logger;
         }

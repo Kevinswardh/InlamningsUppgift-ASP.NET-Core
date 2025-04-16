@@ -7,7 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\##Cross-cutting Concerns\_##Cross-cutting Concerns.csproj" />
     <ProjectReference Include="..\ConfigurationLayer\_0.ConfigurationLayer.csproj" />
+    <ProjectReference Include="..\_0.ConfigurationLayer\_0.ConfigurationLayer.csproj" />
+    <ProjectReference Include="..\_2.ApplicationLayer(ServiceLayer)\_2.ApplicationLayer(ServiceLayer).csproj" />
+    <ProjectReference Include="..\_5.DataAccessLayer(DAL)\_5.DataAccessLayer(DAL).csproj" />
+	
   </ItemGroup>
 
 </Project>

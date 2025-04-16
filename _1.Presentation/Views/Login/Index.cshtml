@@ -1,6 +1,8 @@
-﻿@{
+﻿@model _1.PresentationLayer.ViewModels.LoginViewModel
+@{
     ViewData["Title"] = "Home - Login Page";
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
+
 }
 <main class="login-page">
     <div class="background-container">
@@ -60,25 +62,30 @@
                         <div class="divider-line"></div>
                     </div>
 
-                    <form class="login-form">
+                    <form asp-controller="Auth" asp-action="Login" method="post" class="login-form">
+
                         <div class="form-group">
                             <label for="login-email" class="form-label">Email</label>
                             <input type="email"
                                    id="login-email"
-                                   name="email"
+                                   name="Email"
                                    class="form-input"
                                    placeholder="Your email address"
                                    autocomplete="email" />
+                          
                         </div>
 
                         <div class="form-group mb-20">
                             <label for="login-password" class="form-label">Password</label>
                             <input type="password"
                                    id="login-password"
-                                   name="password"
+                                   name="Password"
                                    class="form-input"
                                    placeholder="Enter your password"
                                    autocomplete="current-password" />
+                         
+                        <div asp-validation-summary="All" style="color: red;"></div>
+
                         </div>
 
                         <div class="form-actions">
@@ -89,7 +96,7 @@
                         </div>
 
                         <!--Ändra till button senare i visiual studio-->
-                        <a asp-controller="Projects" asp-action="Index" class="temporary-login-button">Log In</a>
+                        <button type="submit" class="login-button">Log In</button>
  
 
                         <p class="signup-prompt">
@@ -137,18 +144,20 @@
                         <div class="divider-line"></div>
                     </div>
 
-                    <form class="signup-form">
+                    <form asp-controller="Auth" asp-action="Register" method="post" class="signup-form">
                         <div class="form-group">
-                            <label for="fullname" class="form-label">Full Name</label>
+                            <label for="username" class="form-label">Username</label>
                             <input type="text"
-                                   id="fullname"
+                                   name="UserName"
+                                   id="username"
                                    class="form-input"
-                                   placeholder="Your full name" />
+                                   placeholder="Your Username" />
                         </div>
 
                         <div class="form-group">
                             <label for="signup-email" class="form-label">Email</label>
                             <input type="email"
+                                   name="Email"
                                    id="signup-email"
                                    class="form-input"
                                    placeholder="Your email address" />
@@ -157,6 +166,7 @@
                         <div class="form-group">
                             <label for="signup-password" class="form-label">Password</label>
                             <input type="password"
+                                   name="Password"
                                    id="signup-password"
                                    class="form-input"
                                    placeholder="Enter your password" />
@@ -165,9 +175,19 @@
                         <div class="form-group">
                             <label for="confirm-password" class="form-label">Confirm Password</label>
                             <input type="password"
+                                   name="ConfirmPassword"
                                    id="confirm-password"
                                    class="form-input"
                                    placeholder="Confirm your password" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone-number" class="form-label">Phone Number</label>
+                            <input type="tel"
+                                   name="PhoneNumber"
+                                   id="phone-number"
+                                   class="form-input"
+                                   placeholder="Your phone number" />
                         </div>
 
                         <div class="form-actions">
@@ -186,11 +206,15 @@
                             <a href="#" class="toggle-to-login">Login</a>
                         </p>
                     </form>
+
                 </div>
             </div>
         </div>
     </section>
 </main>
+<script src="...jquery.min.js"></script>
+<script src="...jquery.validate.min.js"></script>
+<script src="...jquery.validate.unobtrusive.min.js"></script>
 
 <script>
     document
@@ -211,3 +235,67 @@
                 .classList.remove("show-signup");
         });
 </script>
+<script>
+    document.querySelector(".signup-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+
+        // Rensa gamla fel
+        form.querySelectorAll(".field-error").forEach(el => el.remove());
+
+        // Validera att Terms är checkad
+        const termsAccepted = form.querySelector("input[type='checkbox']").checked;
+        if (!termsAccepted) {
+            const checkboxLabel = form.querySelector(".remember-me");
+            const errorEl = document.createElement("div");
+            errorEl.className = "field-error";
+            errorEl.style.color = "red";
+            errorEl.textContent = "You must accept the terms and conditions.";
+            checkboxLabel.insertAdjacentElement("afterend", errorEl);
+            return; // stoppa skick
+        }
+
+        const data = {
+            Email: form.querySelector("[name='Email']").value,
+            Password: form.querySelector("[name='Password']").value,
+            ConfirmPassword: form.querySelector("[name='ConfirmPassword']").value,
+            UserName: form.querySelector("[name='UserName']").value,
+            PhoneNumber: form.querySelector("[name='PhoneNumber']").value
+        };
+
+        const response = await fetch("/Login/Register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            window.location.href = "/Projects";
+        } else {
+            const errors = await response.json();
+
+            for (let field in errors) {
+                const messages = errors[field];
+                const input = form.querySelector(`[name='${field}']`);
+                if (input) {
+                    const errorEl = document.createElement("div");
+                    errorEl.className = "field-error";
+                    errorEl.style.color = "red";
+                    errorEl.textContent = messages.join(", ");
+                    input.insertAdjacentElement("afterend", errorEl);
+                }
+            }
+
+            if (errors.generalErrors) {
+                const generalError = document.createElement("div");
+                generalError.className = "field-error";
+                generalError.style.color = "red";
+                generalError.style.marginTop = "10px";
+                generalError.textContent = errors.generalErrors.join("\n");
+                form.appendChild(generalError);
+            }
+        }
+    });
+</script>
+

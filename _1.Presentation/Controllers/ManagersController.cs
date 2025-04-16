@@ -6,9 +6,9 @@ namespace Presentation.Controllers
 {
     public class ManagersController : Controller
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<ManagersController> _logger;
 
-        public ManagersController(ILogger<LoginController> logger)
+        public ManagersController(ILogger<ManagersController> logger)
         {
             _logger = logger;
         }

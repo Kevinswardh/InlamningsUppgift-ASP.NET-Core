@@ -1,16 +1,25 @@
+﻿using _1.PresentationLayer.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
+using ApplicationLayer_ServiceLayer_.Authentication.AuthService;
 using Presentation.Models;
 using System.Diagnostics;
+using CrossCuttingConcerns.FormDTOs;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Presentation.Controllers
+namespace _1.PresentationLayer.Controllers
 {
+    [AllowAnonymous]
     public class LoginController : Controller
     {
         private readonly ILogger<LoginController> _logger;
+        private readonly IAuthService _authService;
 
-        public LoginController(ILogger<LoginController> logger)
+        public LoginController(ILogger<LoginController> logger, IAuthService authService)
         {
             _logger = logger;
+            _authService = authService;
         }
 
         public IActionResult Index()
@@ -18,6 +27,7 @@ namespace Presentation.Controllers
             return View();
         }
 
+ 
         public IActionResult Privacy()
         {
             return View();

@@ -6,9 +6,9 @@ namespace Presentation.Controllers
 {
     public class TeammembersController : Controller
     {
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<TeammembersController> _logger;
 
-        public TeammembersController(ILogger<LoginController> logger)
+        public TeammembersController(ILogger<TeammembersController> logger)
         {
             _logger = logger;
         }
