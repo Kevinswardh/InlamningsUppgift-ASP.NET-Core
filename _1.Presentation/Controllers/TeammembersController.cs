@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
 using System.Diagnostics;
 
 namespace Presentation.Controllers
 {
+    [Authorize]
     public class TeammembersController : Controller
     {
         private readonly ILogger<TeammembersController> _logger;

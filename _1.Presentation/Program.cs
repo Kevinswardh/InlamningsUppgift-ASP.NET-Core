@@ -1,7 +1,15 @@
-﻿using _5.DataAccessLayer_DAL_.Repositories.UserRepository;
-using _5.DataAccessLayer_DAL_.Repositories.UserRepository.Interface;
+﻿using __Cross_cutting_Concerns.ServiceInterfaces;
+using _4.infrastructureLayer.InfraServices.Statuses;
+using _4.infrastructureLayer.Repositories.AuthRepository;
+using _4.infrastructureLayer.Repositories.UserRepository;
 using ApplicationLayer_ServiceLayer_.Authentication.AuthService;
 using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
+using ApplicationLayer_ServiceLayer_.UserManagment.UserService;
+using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
+using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
+
+
+using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SecurityLayer.Identity;
@@ -39,8 +47,15 @@ builder.Services.ConfigureApplicationCookie(options =>
 // 2. Lägg till egna services
 // ========================================
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+//Services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IUserStatusService, UserStatusService>();
+
+
+//Repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 
 

@@ -241,10 +241,12 @@
 
         const form = e.target;
 
-        // Rensa gamla fel
+        // 🔁 Rensa gamla fel
         form.querySelectorAll(".field-error").forEach(el => el.remove());
 
-        // Validera att Terms är checkad
+        let hasError = false;
+
+        // 🟠 Terms måste vara ikryssad
         const termsAccepted = form.querySelector("input[type='checkbox']").checked;
         if (!termsAccepted) {
             const checkboxLabel = form.querySelector(".remember-me");
@@ -253,9 +255,39 @@
             errorEl.style.color = "red";
             errorEl.textContent = "You must accept the terms and conditions.";
             checkboxLabel.insertAdjacentElement("afterend", errorEl);
-            return; // stoppa skick
+            hasError = true;
         }
 
+        // 🟡 Validera obligatoriska fält
+        const requiredFields = ["UserName", "Email", "Password", "ConfirmPassword", "PhoneNumber"];
+        requiredFields.forEach(fieldName => {
+            const input = form.querySelector(`[name='${fieldName}']`);
+            if (!input.value.trim()) {
+                const errorEl = document.createElement("div");
+                errorEl.className = "field-error";
+                errorEl.style.color = "red";
+                errorEl.textContent = `${fieldName} is required.`;
+                input.insertAdjacentElement("afterend", errorEl);
+                hasError = true;
+            }
+        });
+
+        // 🟥 Lösenord måste matcha
+        const password = form.querySelector("[name='Password']").value.trim();
+        const confirmPassword = form.querySelector("[name='ConfirmPassword']").value.trim();
+        if (password && confirmPassword && password !== confirmPassword) {
+            const confirmInput = form.querySelector("[name='ConfirmPassword']");
+            const errorEl = document.createElement("div");
+            errorEl.className = "field-error";
+            errorEl.style.color = "red";
+            errorEl.textContent = "Passwords do not match.";
+            confirmInput.insertAdjacentElement("afterend", errorEl);
+            hasError = true;
+        }
+
+        if (hasError) return; // 🛑 Skicka inte till server
+
+        // 🟢 Allt OK – förbered data
         const data = {
             Email: form.querySelector("[name='Email']").value,
             Password: form.querySelector("[name='Password']").value,
@@ -264,7 +296,7 @@
             PhoneNumber: form.querySelector("[name='PhoneNumber']").value
         };
 
-        const response = await fetch("/Login/Register", {
+        const response = await fetch("/Auth/Register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -298,4 +330,5 @@
         }
     });
 </script>
+
 

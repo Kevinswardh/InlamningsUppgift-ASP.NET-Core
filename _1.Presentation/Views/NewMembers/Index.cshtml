@@ -1,0 +1,25 @@
+﻿@using _1.PresentationLayer.ViewModels.MembersViewModels
+@model NewMembersViewModel
+
+@{
+    ViewData["Title"] = "New Member page";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<section class="content-section">
+    <div class="section-header">
+        <h2 class="section-title">New members</h2>
+
+        @await Html.PartialAsync("Partials/_SortByDropdown", Model.SelectedSort)
+    </div>
+
+    @await Html.PartialAsync("Partials/_UserTabList", new TabListViewModel
+{
+    SelectedTab = Model.SelectedTab,
+    AllCount = Model.Members.Count,
+    OnlineCount = Model.Members.Count(u => u.IsOnline),
+    OfflineCount = Model.Members.Count(u => !u.IsOnline)
+})
+
+    @await Html.PartialAsync("Partials/_UserCardGrid", Model.Members)
+</section>

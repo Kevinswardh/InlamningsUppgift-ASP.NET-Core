@@ -1,0 +1,51 @@
+﻿@using _1.PresentationLayer.ViewModels.MembersViewModels
+
+
+
+@foreach (var member in Model)
+{
+    <article class="member-card">
+        <button class="member-menu-button" aria-label="Open menu">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </button>
+        <div class="dropdown-menu" style="display: none">
+            <button class="menu-item menu-item-edit">
+                <div class="icon-wrapper">
+                    <i class="ti ti-pencil"></i>
+                </div>
+                <span class="menu-text">Edit</span>
+            </button>
+
+            <div class="menu-divider"></div>
+
+            <button class="menu-item menu-item-delete">
+                <div class="icon-wrapper">
+                    <i class="ti ti-trash"></i>
+                </div>
+                <span class="menu-text menu-text-delete">Delete</span>
+            </button>
+        </div>
+
+        <div class="member-avatar-wrapper">
+            <div class="avatar-initials">
+                @(member.UserName?.Substring(0, 2).ToUpper())
+            </div>
+            <span class="status-indicator @(member.IsOnline ? "online" : "offline")"></span>
+        </div>
+
+
+        <h2 class="member-name">@member.UserName</h2>
+        <p class="member-title">@member.Position</p>
+        <address class="member-contact">
+            <p class="member-email">@member.Email</p>
+            <p class="member-phone">@member.PhoneNumber</p>
+        </address>
+
+
+        <button class="member-message-button" aria-label="Send message to @member.UserName">
+            Message
+        </button>
+    </article>
+}

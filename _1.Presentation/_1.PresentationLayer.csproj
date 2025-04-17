@@ -18,6 +18,7 @@
     <ProjectReference Include="..\ConfigurationLayer\_0.ConfigurationLayer.csproj" />
     <ProjectReference Include="..\_0.ConfigurationLayer\_0.ConfigurationLayer.csproj" />
     <ProjectReference Include="..\_2.ApplicationLayer(ServiceLayer)\_2.ApplicationLayer(ServiceLayer).csproj" />
+    <ProjectReference Include="..\_4.InfrastructureLayer\_4.InfrastructureLayer.csproj" />
     <ProjectReference Include="..\_5.DataAccessLayer(DAL)\_5.DataAccessLayer(DAL).csproj" />
 	
   </ItemGroup>

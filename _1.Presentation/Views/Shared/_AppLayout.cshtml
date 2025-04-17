@@ -48,6 +48,11 @@
                 <span>Customers</span>
             </a>
 
+            <a asp-controller="NewMembers" asp-action="Index" class="nav-item @(currentController == "NewMembers" ? "active" : "")">
+                <i class="ti ti-address-book"></i>
+                <span>New member</span>
+            </a>
+
 
         </nav>
         <main class="main-content">

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
 using System.Diagnostics;
 
 namespace Presentation.Controllers
 {
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly ILogger<CustomersController> _logger;

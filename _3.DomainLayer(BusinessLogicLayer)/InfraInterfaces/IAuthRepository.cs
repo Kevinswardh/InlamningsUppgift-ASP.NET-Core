@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _5.DataAccessLayer_DAL_.Repositories.UserRepository.Interface
+namespace DomainLayer_BusinessLogicLayer_.InfraInterfaces
 {
-    public interface IUserRepository
+    public interface IAuthRepository
     {
         Task<User?> GetUserByEmailAsync(string email);
         Task<bool> ValidatePasswordAsync(string email, string password);
+        Task<bool> CreateUserAsync(User user, string password); // bool är neutral, vi vill inte exponera IdentityResult här
     }
 }

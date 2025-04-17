@@ -8,5 +8,7 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface
     {
         Task<bool> LoginAsync(LoginForm model);
         Task<IdentityResult> RegisterUserAsync(RegisterForm model);
+        Task LogoutAsync(string email);
+
     }
 }

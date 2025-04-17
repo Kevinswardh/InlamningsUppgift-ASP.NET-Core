@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
-using ApplicationLayer_ServiceLayer_.Authentication.AuthService;
 using Presentation.Models;
 using System.Diagnostics;
 using CrossCuttingConcerns.FormDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using __Cross_cutting_Concerns.ServiceInterfaces;
+using System.Security.Claims;
 
 namespace _1.PresentationLayer.Controllers
 {
@@ -17,11 +18,16 @@ namespace _1.PresentationLayer.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IAuthService _authService;
+        private readonly IUserStatusService _statusService;
 
-        public AuthController(ILogger<AuthController> logger, IAuthService authService)
+        public AuthController(
+            ILogger<AuthController> logger,
+            IAuthService authService,
+            IUserStatusService statusService)
         {
             _logger = logger;
             _authService = authService;
+            _statusService = statusService;
         }
 
         [HttpPost]
@@ -49,8 +55,6 @@ namespace _1.PresentationLayer.Controllers
             return RedirectToAction("Index", "Projects");
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
@@ -63,7 +67,7 @@ namespace _1.PresentationLayer.Controllers
                         kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
                     );
 
-                return BadRequest(errors); // skickar JSON med valideringsfel
+                return BadRequest(errors);
             }
 
             var form = new RegisterForm
@@ -76,24 +80,26 @@ namespace _1.PresentationLayer.Controllers
             };
 
             var result = await _authService.RegisterUserAsync(form);
+
             if (!result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description).ToArray();
                 return BadRequest(new { generalErrors = errors });
             }
 
-            return Ok(); // 200 → JS kan redirecta
+            return Ok();
         }
-
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            var email = User.FindFirstValue(ClaimTypes.Email); // Viktigt: hämta korrekt claim
+
+            await _authService.LogoutAsync(email); // <- ny metod via service
+
             return RedirectToAction("Index", "Login");
         }
-
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
