@@ -1,4 +1,4 @@
-using _1.PresentationLayer.ViewModels.MembersViewModels;
+﻿using _1.PresentationLayer.ViewModels.MembersViewModels;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +21,18 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> Index(string search = "", string tab = "All", string sortBy = "Name", int page = 1)
         {
-            var result = await _userService.GetUsersFilteredAsync("User", search, tab, sortBy, page, 8);
+            // 1. Hämta alla användare för att räkna flikarna
+            var allUsers = await _userService.GetUsersFilteredAsync("User", search, "All", sortBy, 1, 9999);
 
-            var viewModel = new NewMembersViewModel
+            // 2. Hämta filtrerade + paginerade
+            var result = await _userService.GetUsersFilteredAsync("User", search, tab, sortBy, page, 10);
+
+            // 3. Bygg upp viewModel med inbäddad TabData
+            var viewModel = new UserListViewModel
             {
                 Members = result.Members.Select(m => new MemberItemViewModel
                 {
+                    Id = m.Id,
                     Email = m.Email,
                     UserName = m.UserName,
                     PhoneNumber = m.PhoneNumber,
@@ -35,16 +41,25 @@ namespace Presentation.Controllers
                     IsOnline = m.IsOnline
                 }).ToList(),
 
-                SelectedTab = tab,
                 SelectedSort = sortBy,
                 CurrentPage = result.CurrentPage,
                 TotalPages = result.TotalPages,
                 SearchQuery = search,
-                Filter = result.Filter
+                Filter = result.Filter,
+
+                TabData = new TabListViewModel
+                {
+                    SelectedTab = tab,
+                    AllCount = allUsers.Members.Count,
+                    OnlineCount = allUsers.Members.Count(m => m.IsOnline),
+                    OfflineCount = allUsers.Members.Count(m => !m.IsOnline),
+                    CurrentController = this.ControllerContext.RouteData.Values["controller"]?.ToString()
+                }
             };
 
             return View(viewModel);
         }
+
 
         public IActionResult Privacy()
         {

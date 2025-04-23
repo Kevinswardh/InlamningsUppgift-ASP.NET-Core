@@ -1,0 +1,211 @@
+﻿@* ============================= *@
+@*  _MemberModals.cshtml        *@
+@* ============================= *@
+
+<!-- EDIT MEMBER MODAL -->
+<div class="modal-overlay" id="editMemberModalOverlay">
+    <div class="modal" id="editMemberModal">
+        <header class="form-header">
+            <h1 class="form-title">Edit Member</h1>
+            <div class="close-icon-wrapper" onclick="closeEditMemberModal()">
+                <img src="@Url.Content("~/Pictures/Icons/Close.svg")" alt="Close" class="close-icon" />
+            </div>
+        </header>
+        <form id="editMemberForm" method="post" asp-controller="Users" asp-action="Edit" class="project-form">
+            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+            <input type="hidden" name="Id" id="editMemberId" />
+
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" name="UserName" id="editUserName" />
+                <div class="error-message" id="errorUserName"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" name="Email" id="editEmail" />
+                <div class="error-message" id="errorEmail"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="text" class="form-input" name="PhoneNumber" id="editPhone" />
+                <div class="error-message" id="errorPhone"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Position</label>
+                <input type="text" class="form-input" name="Position" id="editPosition" />
+                <div class="error-message" id="errorPosition"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Role</label>
+                <select class="form-input" name="Role" id="editRole">
+                    <option value="">Välj en roll</option>
+                    <option value="User">User</option>
+                    <option value="Customer">Customer</option>
+                    <option value="TeamMember">Team Member</option>
+                    <option value="Manager">Manager</option>
+                </select>
+                <div class="error-message" id="errorRole"></div>
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="submit-button">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DELETE MEMBER MODAL -->
+<div class="modal-overlay" id="deleteMemberModalOverlay">
+    <div class="modal" id="deleteMemberModal">
+        <header class="form-header">
+            <h1 class="form-title">Delete Member</h1>
+            <div class="close-icon-wrapper" onclick="closeDeleteMemberModal()">
+                <img src="@Url.Content("~/Pictures/Icons/Close.svg")" alt="Close" class="close-icon" />
+            </div>
+        </header>
+        <form id="deleteMemberForm" method="post" asp-controller="Users" asp-action="Delete" class="project-form">
+            <input type="hidden" name="Id" id="deleteMemberId" />
+            <label class="form-label" style="margin: 1rem 0;">Are you sure you want to delete this member?</label>
+            <div class="form-footer">
+                <button type="submit" class="submit-button danger-button">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .error-message {
+        color: red;
+        font-size: 0.85rem;
+        margin-top: 4px;
+        display: none;
+    }
+
+    .input-error {
+        border-color: red;
+    }
+</style>
+
+@Html.Raw(@"<script>
+    function openEditModal(member) {
+        document.getElementById('editMemberId').value = member.id;
+        document.getElementById('editUserName').value = member.username;
+        document.getElementById('editEmail').value = member.email;
+        document.getElementById('editPhone').value = member.phone;
+        document.getElementById('editPosition').value = member.position;
+        document.getElementById('editRole').value = member.role;
+        document.getElementById('editMemberModalOverlay').classList.add('active');
+    }
+
+    function closeEditMemberModal() {
+        document.getElementById('editMemberModalOverlay').classList.remove('active');
+        const errorIds = ['UserName', 'Email', 'Phone', 'Position', 'Role'];
+        errorIds.forEach(key => {
+            const error = document.getElementById('error' + key);
+            const input = document.getElementById('edit' + key);
+            if (error) {
+                error.textContent = '';
+                error.style.display = 'none';
+            }
+            if (input) {
+                input.classList.remove('input-error');
+            }
+        });
+    }
+
+    function openDeleteModal(memberId) {
+        document.getElementById('deleteMemberId').value = memberId;
+        document.getElementById('deleteMemberModalOverlay').classList.add('active');
+    }
+
+    function closeDeleteMemberModal() {
+        document.getElementById('deleteMemberModalOverlay').classList.remove('active');
+    }
+
+    document.getElementById('editMemberForm').addEventListener('submit', function (e) {
+        const fields = {
+            username: document.getElementById('editUserName'),
+            email: document.getElementById('editEmail'),
+            phone: document.getElementById('editPhone'),
+            position: document.getElementById('editPosition'),
+            role: document.getElementById('editRole')
+        };
+
+        const errors = {
+            username: document.getElementById('errorUserName'),
+            email: document.getElementById('errorEmail'),
+            phone: document.getElementById('errorPhone'),
+            position: document.getElementById('errorPosition'),
+            role: document.getElementById('errorRole')
+        };
+
+        let isValid = true;
+
+        for (const key in errors) {
+            errors[key].textContent = '';
+            errors[key].style.display = 'none';
+            fields[key].classList.remove('input-error');
+        }
+
+        const usernameTrimmed = fields.username.value.trim();
+        if (usernameTrimmed.length < 3) {
+            errors.username.textContent = 'Minst 3 tecken.';
+            errors.username.style.display = 'block';
+            fields.username.classList.add('input-error');
+            isValid = false;
+        }
+        if (/\\s/.test(fields.username.value)) {
+            errors.username.textContent = 'Användarnamn får inte innehålla mellanslag.';
+            errors.username.style.display = 'block';
+            fields.username.classList.add('input-error');
+            isValid = false;
+        }
+        const allowedUsernameRegex = /^[a-zA-Z0-9]+$/;
+        if (!allowedUsernameRegex.test(fields.username.value)) {
+            errors.username.textContent = 'Endast engelska bokstäver (A–Z, a–z) och siffror tillåtna.';
+            errors.username.style.display = 'block';
+            fields.username.classList.add('input-error');
+            isValid = false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(fields.email.value)) {
+            errors.email.textContent = 'Ogiltig e-postadress.';
+            errors.email.style.display = 'block';
+            fields.email.classList.add('input-error');
+            isValid = false;
+        }
+
+        const phoneRegex = /^[0-9\\-\\+\\s\\(\\)]*$/;
+        if (fields.phone.value && !phoneRegex.test(fields.phone.value)) {
+            errors.phone.textContent = 'Endast siffror och - + () tillåtet.';
+            errors.phone.style.display = 'block';
+            fields.phone.classList.add('input-error');
+            isValid = false;
+        }
+
+        if (!fields.position.value.trim()) {
+            errors.position.textContent = 'Position krävs.';
+            errors.position.style.display = 'block';
+            fields.position.classList.add('input-error');
+            isValid = false;
+        }
+
+        if (!fields.role.value) {
+            errors.role.textContent = 'Välj en roll.';
+            errors.role.style.display = 'block';
+            fields.role.classList.add('input-error');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+</script>")
+

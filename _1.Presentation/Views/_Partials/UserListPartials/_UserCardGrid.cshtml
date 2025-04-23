@@ -1,0 +1,86 @@
+﻿@* ============================= *@
+@*  _UserCardGrid.cshtml        *@
+@* ============================= *@
+
+@using _1.PresentationLayer.ViewModels.MembersViewModels
+
+<div class="member-card-grid">
+@foreach (var member in Model)
+{
+    var isAdmin = User.IsInRole("Admin");
+    var isManager = User.IsInRole("Manager");
+    var showMenu = isAdmin || (isManager && member.Role != "Manager");
+
+    <article class="member-card">
+        @if (showMenu)
+        {
+            <button class="member-menu-button" aria-label="Open menu">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </button>
+
+            <div class="dropdown-menu" style="display: none">
+                <button class="menu-item menu-item-edit"
+                        data-id="@member.Id"
+                        data-username="@member.UserName"
+                        data-email="@member.Email"
+                        data-phone="@member.PhoneNumber"
+                        data-position="@member.Position"
+                        data-role="@member.Role"
+                        onclick="handleEditClick(this)">
+
+
+                    <div class="icon-wrapper">
+                        <i class="ti ti-pencil"></i>
+                    </div>
+                    <span class="menu-text">Edit</span>
+                </button>
+
+
+                <div class="menu-divider"></div>
+
+                <button class="menu-item menu-item-delete"
+                        onclick='openDeleteModal("@member.Id")'>
+                    <div class="icon-wrapper">
+                        <i class="ti ti-trash"></i>
+                    </div>
+                    <span class="menu-text menu-text-delete">Delete</span>
+                </button>
+
+            </div>
+        }
+
+        <div class="member-avatar-wrapper">
+            <div class="avatar-initials">
+                @(member.UserName?.Substring(0, 2).ToUpper())
+            </div>
+            <span class="status-indicator @(member.IsOnline ? "online" : "offline")"></span>
+        </div>
+
+        <h2 class="member-name">@member.UserName</h2>
+        <p class="member-title">@member.Position</p>
+        <address class="member-contact">
+            <p class="member-email">@member.Email</p>
+            <p class="member-phone">@member.PhoneNumber</p>
+        </address>
+
+        <button class="member-message-button" aria-label="Send message to @member.UserName">
+            Message
+        </button>
+    </article>
+}
+</div>
+<script>
+    function handleEditClick(btn) {
+        const member = {
+            id: btn.dataset.id,
+            username: btn.dataset.username,
+            email: btn.dataset.email,
+            phone: btn.dataset.phone,
+            position: btn.dataset.position,
+            role: btn.dataset.role
+        };
+        openEditModal(member);
+    }
+</script>

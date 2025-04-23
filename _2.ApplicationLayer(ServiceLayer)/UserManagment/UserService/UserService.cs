@@ -1,13 +1,12 @@
-﻿using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
-using CrossCuttingConcerns.FormDTOs;
-using DomainLayer_BusinessLogicLayer_.Entities;
+﻿using DomainLayer_BusinessLogicLayer_.Entities;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
 using __Cross_cutting_Concerns.ServiceInterfaces;
+using CrossCuttingConcerns.FormDTOs;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using __Cross_cutting_Concerns.FormDTOs;
-using __Cross_cutting_Concerns.ServiceInterfaces;
 
 namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
 {
@@ -26,11 +25,8 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
         {
             var users = await _userRepo.GetUsersByRoleAsync(role);
 
-            // Uppdatera IsOnline här med hjälp av statusService
             foreach (var u in users)
-            {
                 u.IsOnline = _statusService.IsOnline(u.Email);
-            }
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -60,6 +56,7 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
             {
                 Members = paged.Select(u => new MemberItemDTO
                 {
+                    Id = u.Id,
                     Email = u.Email,
                     UserName = u.UserName,
                     PhoneNumber = u.PhoneNumber,
@@ -72,6 +69,36 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
                 SearchQuery = search,
                 Filter = role
             };
+        }
+
+        public async Task<User> GetUserByIdAsync(string id)
+        {
+            return await _userRepo.GetByIdAsync(id);
+        }
+
+        public async Task UpdateUserAsync(User updatedUser)
+        {
+            var existingUser = await _userRepo.GetByIdAsync(updatedUser.Id);
+            if (existingUser == null) return;
+
+            // Om rollen har ändrats, byt roll
+            if (existingUser.Role != updatedUser.Role)
+            {
+                await _userRepo.UpdateUserRoleAsync(updatedUser.Id, updatedUser.Role);
+            }
+
+            // Uppdatera övriga fält
+            await _userRepo.UpdateUserAsync(updatedUser);
+        }
+
+        public async Task DeleteUserAsync(string id)
+        {
+            await _userRepo.DeleteUserAsync(id);
+        }
+
+        public async Task<bool> IsInRoleAsync(User user, string role)
+        {
+            return await _userRepo.IsInRoleAsync(user, role);
         }
     }
 }

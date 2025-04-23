@@ -49,7 +49,12 @@ namespace _4.infrastructureLayer.Repositories.AuthRepository
             };
 
             var result = await _userManager.CreateAsync(identityUser, password);
-            return result.Succeeded;
+            if (!result.Succeeded) return false;
+
+            await _userManager.AddToRoleAsync(identityUser, user.Role);
+
+            return true;
         }
+
     }
 }

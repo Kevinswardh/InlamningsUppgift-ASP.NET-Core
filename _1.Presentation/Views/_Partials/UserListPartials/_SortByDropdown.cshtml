@@ -1,0 +1,22 @@
+﻿@model _1.PresentationLayer.ViewModels.MembersViewModels.SortViewModel
+
+<div class="sortby-wrapper">
+    <button class="sortby-button">
+        <i class="ti ti-arrows-sort"></i>
+        <span>Sort by</span>
+    </button>
+    <ul class="sortby-dropdown">
+        <li class="@(Model.SelectedSort == "Name" ? "active" : "")"
+            onclick="location.href='@Url.Action("Index", new { sortBy = "Name", tab = Model.SelectedTab, page = 1 })'">
+            Name
+        </li>
+        <li class="@(Model.SelectedSort == "Email" ? "active" : "")"
+            onclick="location.href='@Url.Action("Index", new { sortBy = "Email", tab = Model.SelectedTab, page = 1 })'">
+            Email
+        </li>
+        <li class="@(Model.SelectedSort == "Position" ? "active" : "")"
+            onclick="location.href='@Url.Action("Index", new { sortBy = "Position", tab = Model.SelectedTab, page = 1 })'">
+            Position
+        </li>
+    </ul>
+</div>

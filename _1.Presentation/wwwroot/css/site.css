@@ -790,6 +790,17 @@ svg {
     .message-button:hover {
         background-color: #e2e8f0;
     }
+.member-card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    max-height: calc(2 * 300px + 1.25rem); /* justera 300px till din kort-höjd */
+    overflow-y: auto; /* om du vill ha scroll om det ändå blir fler */
+}
+
+
 
 .member-card {
     align-items: center;
@@ -812,7 +823,7 @@ svg {
 
 .member-name {
     color: #1a1926;
-    font-size: 18px;
+    font-size: 22px;
     padding: 12px;
     font-weight: 700;
     margin: 0 0 0px;
@@ -893,6 +904,51 @@ svg {
         height: 4px;
         width: 4px;
     }
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+
+    .pagination li {
+        display: inline-block;
+    }
+
+.pagination-button {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background-color: #f1f5f9;
+    color: #1a1926;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid #d1d5db;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+    .pagination-button:hover {
+        background-color: #e2e8f0;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.06);
+    }
+
+    .pagination-button.active-page {
+        background-color: #0ea5e9;
+        color: #fff;
+        font-weight: 700;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3);
+    }
+
+
 
 /*Profile menu*/
 

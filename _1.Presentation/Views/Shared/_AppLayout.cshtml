@@ -1,4 +1,20 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var isUser = User.IsInRole("User");
+    var isManager = User.IsInRole("Manager");
+    var isTeamMember = User.IsInRole("TeamMember");
+    var isCustomer = User.IsInRole("Customer");
+    var isAdmin = User.IsInRole("Admin");
+
+    var canSeeProjects = isTeamMember || isCustomer || isManager || isAdmin;
+    var canSeeCustomers = isTeamMember || isManager || isAdmin;
+    var canSeeTeamMembers = isTeamMember || isCustomer || isManager || isAdmin;
+    var canSeeManagers = true;
+    var canSeeNewMembers = isManager || isAdmin;
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -20,41 +36,51 @@
     <div class="dashboard">
         <nav class="sidebar">
             <div class="sidebar-header">
-
                 <img src="@Url.Content("~/Pictures/Icons/Logo.svg")" alt="Logo" class="logo" />
                 <span class="logo-text">alpha</span>
             </div>
-            @{
-                var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+
+            @if (canSeeProjects)
+            {
+                <a asp-controller="Projects" asp-action="Index" class="nav-item @(currentController == "Projects" ? "active" : "")">
+                    <i class="ti ti-folder"></i>
+                    <span>Projects</span>
+                </a>
             }
 
-            <a asp-controller="Projects" asp-action="Index" class="nav-item @(currentController == "Projects" ? "active" : "")">
-                <i class="ti ti-folder"></i>
-                <span>Projects</span>
-            </a>
+            @if (canSeeManagers)
+            {
+                <a asp-controller="Managers" asp-action="Index" class="nav-item @(currentController == "Managers" ? "active" : "")">
+                    <i class="ti ti-user"></i>
+                    <span>Managers</span>
+                </a>
+            }
 
-            <a asp-controller="Managers" asp-action="Index" class="nav-item @(currentController == "Managers" ? "active" : "")">
-                <i class="ti ti-user"></i>
-                <span>Managers</span>
-            </a>
+            @if (canSeeTeamMembers)
+            {
+                <a asp-controller="Teammembers" asp-action="Index" class="nav-item @(currentController == "Teammembers" ? "active" : "")">
+                    <i class="ti ti-users"></i>
+                    <span>Team members</span>
+                </a>
+            }
 
-            <a asp-controller="Teammembers" asp-action="Index" class="nav-item @(currentController == "Teammembers" ? "active" : "")">
-                <i class="ti ti-users"></i>
-                <span>Team members</span>
-            </a>
+            @if (canSeeCustomers)
+            {
+                <a asp-controller="Customers" asp-action="Index" class="nav-item @(currentController == "Customers" ? "active" : "")">
+                    <i class="ti ti-address-book"></i>
+                    <span>Customers</span>
+                </a>
+            }
 
-            <a asp-controller="Customers" asp-action="Index" class="nav-item @(currentController == "Customers" ? "active" : "")">
-                <i class="ti ti-address-book"></i>
-                <span>Customers</span>
-            </a>
-
-            <a asp-controller="NewMembers" asp-action="Index" class="nav-item @(currentController == "NewMembers" ? "active" : "")">
-                <i class="ti ti-address-book"></i>
-                <span>New member</span>
-            </a>
-
-
+            @if (canSeeNewMembers)
+            {
+                <a asp-controller="NewMembers" asp-action="Index" class="nav-item @(currentController == "NewMembers" ? "active" : "")">
+                    <i class="ti ti-address-book"></i>
+                    <span>New member</span>
+                </a>
+            }
         </nav>
+
         <main class="main-content">
             <header class="top-bar">
                 <div class="search-container">

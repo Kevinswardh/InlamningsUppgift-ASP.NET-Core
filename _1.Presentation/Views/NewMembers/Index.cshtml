@@ -1,25 +1,64 @@
-﻿@using _1.PresentationLayer.ViewModels.MembersViewModels
-@model NewMembersViewModel
+﻿@* ============================= *@
+@*       Index.cshtml          *@
+@* ============================= *@
+
+@using _1.PresentationLayer.ViewModels.MembersViewModels
+@model UserListViewModel
 
 @{
-    ViewData["Title"] = "New Member page";
+    ViewData["Title"] = "New Members page";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
 <section class="content-section">
     <div class="section-header">
-        <h2 class="section-title">New members</h2>
+        <h2 class="section-title">Managers</h2>
+        @await Html.PartialAsync("~/Views/_Partials/UserListPartials/_SortByDropdown.cshtml",
+                 new SortViewModel
+        {
+            SelectedSort = Model.SelectedSort,
+            SelectedTab = Model.TabData.SelectedTab,
 
-        @await Html.PartialAsync("Partials/_SortByDropdown", Model.SelectedSort)
+        })
+
     </div>
 
-    @await Html.PartialAsync("Partials/_UserTabList", new TabListViewModel
-{
-    SelectedTab = Model.SelectedTab,
-    AllCount = Model.Members.Count,
-    OnlineCount = Model.Members.Count(u => u.IsOnline),
-    OfflineCount = Model.Members.Count(u => !u.IsOnline)
-})
+    @await Html.PartialAsync("~/Views/_Partials/UserListPartials/_UserTabList.cshtml", Model.TabData)
 
-    @await Html.PartialAsync("Partials/_UserCardGrid", Model.Members)
+
+
+    @await Html.PartialAsync("~/Views/_Partials/UserListPartials/_UserCardGrid.cshtml", Model.Members)
+
+    @await Html.PartialAsync("~/Views/_Partials/UserListPartials/_Pagination.cshtml", Model)
+
 </section>
+
+@await Html.PartialAsync("~/Views/_Partials/UserListPartials/_MemberModals.cshtml")
+
+@section Scripts {
+    <script>
+        document.querySelectorAll(".menu-item-edit").forEach(button => {
+            button.addEventListener("click", e => {
+                const memberId = button.dataset.id;
+                document.getElementById("editMemberId").value = memberId;
+                document.getElementById("editMemberModalOverlay").classList.add("active");
+            });
+        });
+
+        document.querySelectorAll(".menu-item-delete").forEach(button => {
+            button.addEventListener("click", e => {
+                const memberId = button.dataset.id;
+                document.getElementById("deleteMemberId").value = memberId;
+                document.getElementById("deleteMemberModalOverlay").classList.add("active");
+            });
+        });
+
+        function closeEditMemberModal() {
+            document.getElementById("editMemberModalOverlay").classList.remove("active");
+        }
+
+        function closeDeleteMemberModal() {
+            document.getElementById("deleteMemberModalOverlay").classList.remove("active");
+        }
+    </script>
+}

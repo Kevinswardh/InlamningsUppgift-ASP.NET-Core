@@ -1,0 +1,21 @@
+﻿@using _1.PresentationLayer.ViewModels.MembersViewModels
+@model TabListViewModel
+
+<div class="tab-list">
+    <a class="tab-item @(Model.SelectedTab == "All" ? "active-tab" : "")"
+       href="@Url.Action("Index", Model.CurrentController, new { tab = "All", page = 1, sortBy = "Name" })">
+        ALL [@Model.AllCount]
+    </a>
+
+    <a class="tab-item @(Model.SelectedTab == "Online" ? "active-tab" : "")"
+       href="@Url.Action("Index", Model.CurrentController, new { tab = "Online", page = 1, sortBy = "Name" })">
+        ONLINE [@Model.OnlineCount]
+    </a>
+
+    <a class="tab-item @(Model.SelectedTab == "Offline" ? "active-tab" : "")"
+       href="@Url.Action("Index", Model.CurrentController, new { tab = "Offline", page = 1, sortBy = "Name" })">
+        OFFLINE [@Model.OfflineCount]
+    </a>
+
+</div>
+
