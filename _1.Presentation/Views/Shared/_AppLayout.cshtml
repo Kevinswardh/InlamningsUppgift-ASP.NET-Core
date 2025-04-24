@@ -217,27 +217,54 @@
                             </button>
                         </nav>
                     </article>
-
                     <button class="user-avatar-button"
                             id="profileToggle"
                             aria-label="Toggle profile menu">
-                        <img src="@Url.Content("~/Pictures/Icons/profilepicture.png")" alt="User" />
+                        <div class="avatar-container">
+                            @if (!string.IsNullOrEmpty(ViewBag.ProfileImage as string))
+                            {
+                                <img src="@ViewBag.ProfileImage" alt="Avatar" class="avatar-img" />
+                            }
+                            else
+                            {
+                                <div class="avatar-initials">
+                                    @((ViewBag.UserName as string)?.Substring(0, 2).ToUpper())
+                                </div>
+                            }
+                        </div>
                     </button>
+
+
+
                 </div>
                 <article class="profile-menu" id="profileMenu" hidden>
                     <header class="profile-header">
                         <div class="avatar-container">
-                            <img src="@Url.Content("~/Pictures/Icons/profilepicture.png")"
-                                 alt="Avatar"
-                                 class="avatar-img" />
+                            @if (!string.IsNullOrEmpty(ViewBag.ProfileImage as string))
+                            {
+                                <img src="@ViewBag.ProfileImage" alt="Avatar" class="avatar-img" />
+                            }
+                            else
+                            {
+                                <div class="avatar-initials">
+                                    @((ViewBag.UserName as string)?.Substring(0, 2).ToUpper())
+                                </div>
+                            }
                         </div>
 
-                        <h2 class="profile-name">Tommy Mattin-Lassei</h2>
+
+                        <h2 class="profile-name">@User.Identity?.Name</h2>
+
                     </header>
 
                     <hr class="menu-divider" />
 
                     <nav class="menu-options">
+                        <button class="menu-item settings-item" onclick="location.href='@Url.Action("Index", "MinaSidor")'">
+                            <i class="ti ti-user"></i>
+                            <span class="menu-text">Mina sidor</span>
+                        </button>
+
                         <form asp-controller="Auth" asp-action="Logout" method="post">
                             <button class="menu-item logout-item" type="submit">
                                 <i class="ti ti-logout"></i>

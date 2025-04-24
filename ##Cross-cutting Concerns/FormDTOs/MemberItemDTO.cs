@@ -15,5 +15,7 @@ namespace __Cross_cutting_Concerns.FormDTOs
         public string Position { get; set; }
         public string Role { get; set; }
         public bool IsOnline { get; set; }
+        public string? ImageUrl { get; set; }
+
     }
 }

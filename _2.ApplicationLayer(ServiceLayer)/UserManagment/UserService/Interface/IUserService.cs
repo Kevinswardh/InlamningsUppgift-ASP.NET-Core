@@ -1,6 +1,7 @@
 ﻿using __Cross_cutting_Concerns.FormDTOs;
 using CrossCuttingConcerns.FormDTOs;
 using DomainLayer_BusinessLogicLayer_.Entities;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface
@@ -12,5 +13,7 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(string id);
         Task<bool> IsInRoleAsync(User user, string role);
+        Task<(string? ImageUrl, string? UserName)> GetUserProfileForLayoutAsync(ClaimsPrincipal user);
+
     }
 }

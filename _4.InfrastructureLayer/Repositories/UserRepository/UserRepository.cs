@@ -12,10 +12,12 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IdentityDbContext _dbContext;
 
-        public UserRepository(UserManager<ApplicationUser> userManager)
+        public UserRepository(UserManager<ApplicationUser> userManager, IdentityDbContext dbContext)
         {
             _userManager = userManager;
+            _dbContext = dbContext;
         }
 
         public async Task<List<User>> GetUsersByRoleAsync(string roleName)
@@ -29,7 +31,8 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 UserName = u.UserName,
                 PhoneNumber = u.PhoneNumber,
                 Position = u.Position,
-                Role = roleName
+                Role = roleName,
+                ImageUrl = u.ImageUrl
             }).ToList();
         }
 
@@ -46,37 +49,50 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 UserName = identityUser.UserName,
                 PhoneNumber = identityUser.PhoneNumber,
                 Position = identityUser.Position,
-                Role = roles.FirstOrDefault() ?? "User"
+                Role = roles.FirstOrDefault() ?? "User",
+                ImageUrl = identityUser.ImageUrl
             };
         }
 
         public async Task UpdateUserAsync(User user)
         {
-            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
-            if (identityUser == null) return;
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
-            // Uppdatera fält
-            identityUser.UserName = user.UserName;
-            identityUser.Email = user.Email;
-            identityUser.PhoneNumber = user.PhoneNumber;
-            identityUser.Position = user.Position;
-
-            // Hämta aktuell roll
-            var currentRoles = await _userManager.GetRolesAsync(identityUser);
-            var currentRole = currentRoles.FirstOrDefault();
-
-            // Om rollen har ändrats, byt roll
-            if (!string.IsNullOrEmpty(user.Role) && user.Role != currentRole)
+            try
             {
-                if (currentRoles.Any())
-                    await _userManager.RemoveFromRolesAsync(identityUser, currentRoles);
+                var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+                if (identityUser == null) return;
 
-                await _userManager.AddToRoleAsync(identityUser, user.Role);
+                // Uppdatera fält
+                identityUser.UserName = user.UserName;
+                identityUser.Email = user.Email;
+                identityUser.PhoneNumber = user.PhoneNumber;
+                identityUser.Position = user.Position;
+                identityUser.ImageUrl = user.ImageUrl;
+
+                // Hämta aktuell roll
+                var currentRoles = await _userManager.GetRolesAsync(identityUser);
+                var currentRole = currentRoles.FirstOrDefault();
+
+                // Om rollen har ändrats, byt roll
+                if (!string.IsNullOrEmpty(user.Role) && user.Role != currentRole)
+                {
+                    if (currentRoles.Any())
+                        await _userManager.RemoveFromRolesAsync(identityUser, currentRoles);
+
+                    await _userManager.AddToRoleAsync(identityUser, user.Role);
+                }
+
+                await _userManager.UpdateAsync(identityUser);
+
+                await transaction.CommitAsync();
             }
-
-            await _userManager.UpdateAsync(identityUser);
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
-
 
         public async Task DeleteUserAsync(string id)
         {

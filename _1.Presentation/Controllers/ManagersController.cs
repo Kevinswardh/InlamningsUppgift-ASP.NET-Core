@@ -21,6 +21,10 @@ namespace Presentation.Controllers
 
         public async Task<IActionResult> Index(string search = "", string tab = "All", string sortBy = "Name", int page = 1)
         {
+            var (image, name) = await _userService.GetUserProfileForLayoutAsync(User);
+            ViewBag.ProfileImage = image;
+            ViewBag.UserName = name;
+
             // 1. Hämta alla användare för att räkna flikarna
             var allUsers = await _userService.GetUsersFilteredAsync("Manager", search, "All", sortBy, 1, 9999);
 
@@ -38,7 +42,8 @@ namespace Presentation.Controllers
                     PhoneNumber = m.PhoneNumber,
                     Position = m.Position,
                     Role = m.Role,
-                    IsOnline = m.IsOnline
+                    IsOnline = m.IsOnline,
+                    ImageUrl = m.ImageUrl
                 }).ToList(),
 
                 SelectedSort = sortBy,

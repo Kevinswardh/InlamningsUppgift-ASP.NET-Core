@@ -21,4 +21,9 @@
 	
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Pictures\Profiles\" />
+    <Folder Include="wwwroot\Pictures\Profiles\d7722838-e286-45db-9a2b-8dd813eb390b\" />
+  </ItemGroup>
+
 </Project>

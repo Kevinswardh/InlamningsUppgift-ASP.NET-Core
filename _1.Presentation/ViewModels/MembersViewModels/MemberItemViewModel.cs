@@ -9,5 +9,8 @@
         public string Position { get; set; }
         public string Role { get; set; }
         public bool IsOnline { get; set; }
+        public IFormFile? ProfileImage { get; set; } // för POST (uppladdning)
+        public string? ImageUrl { get; set; } // för att visa bilden
+
     }
 }

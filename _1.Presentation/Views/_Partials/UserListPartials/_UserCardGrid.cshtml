@@ -50,13 +50,23 @@
 
             </div>
         }
-
-        <div class="member-avatar-wrapper">
-            <div class="avatar-initials">
-                @(member.UserName?.Substring(0, 2).ToUpper())
+            <div class="member-avatar-wrapper">
+                @if (!string.IsNullOrEmpty(member.ImageUrl))
+                {
+                    <div class="avatar-initials">
+                        <img src="@member.ImageUrl" alt="Profilbild" class="avatar-img" />
+                    </div>
+                }
+                else
+                {
+                    <div class="avatar-initials">
+                        @(member.UserName?.Substring(0, 2).ToUpper())
+                    </div>
+                }
+                <span class="status-indicator @(member.IsOnline ? "online" : "offline")"></span>
             </div>
-            <span class="status-indicator @(member.IsOnline ? "online" : "offline")"></span>
-        </div>
+
+
 
         <h2 class="member-name">@member.UserName</h2>
         <p class="member-title">@member.Position</p>

@@ -1,12 +1,13 @@
-﻿using DomainLayer_BusinessLogicLayer_.Entities;
-using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
-using __Cross_cutting_Concerns.ServiceInterfaces;
-using CrossCuttingConcerns.FormDTOs;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
+using CrossCuttingConcerns.FormDTOs;
+using __Cross_cutting_Concerns.ServiceInterfaces;
+using DomainLayer_BusinessLogicLayer_.Entities;
+using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
 using __Cross_cutting_Concerns.FormDTOs;
+using System.Security.Claims;
 
 namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
 {
@@ -62,7 +63,8 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
                     PhoneNumber = u.PhoneNumber,
                     Position = u.Position,
                     Role = u.Role,
-                    IsOnline = u.IsOnline
+                    IsOnline = u.IsOnline,
+                    ImageUrl = u.ImageUrl
                 }).ToList(),
                 CurrentPage = page,
                 TotalPages = totalPages,
@@ -81,13 +83,11 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
             var existingUser = await _userRepo.GetByIdAsync(updatedUser.Id);
             if (existingUser == null) return;
 
-            // Om rollen har ändrats, byt roll
             if (existingUser.Role != updatedUser.Role)
             {
                 await _userRepo.UpdateUserRoleAsync(updatedUser.Id, updatedUser.Role);
             }
 
-            // Uppdatera övriga fält
             await _userRepo.UpdateUserAsync(updatedUser);
         }
 
@@ -100,5 +100,16 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
         {
             return await _userRepo.IsInRoleAsync(user, role);
         }
+        public async Task<(string? ImageUrl, string? UserName)> GetUserProfileForLayoutAsync(ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return (null, null);
+
+            var entity = await _userRepo.GetByIdAsync(userId);
+            if (entity == null) return (null, null);
+
+            return (entity.ImageUrl, entity.UserName);
+        }
+
     }
 }
