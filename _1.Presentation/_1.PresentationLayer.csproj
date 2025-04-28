@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -7,21 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="8.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
+		
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\##Cross-cutting Concerns\_##Cross-cutting Concerns.csproj" />
-    <ProjectReference Include="..\ConfigurationLayer\_0.ConfigurationLayer.csproj" />
-    <ProjectReference Include="..\_0.ConfigurationLayer\_0.ConfigurationLayer.csproj" />
-    <ProjectReference Include="..\_2.ApplicationLayer(ServiceLayer)\_2.ApplicationLayer(ServiceLayer).csproj" />
-	
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\##Cross-cutting Concerns\_##Cross-cutting Concerns.csproj" />
+		<ProjectReference Include="..\_0.ConfigurationLayer\_0.ConfigurationLayer.csproj" />
+		<ProjectReference Include="..\_2.ApplicationLayer(ServiceLayer)\_2.ApplicationLayer(ServiceLayer).csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
+
+	<ItemGroup>
     <Folder Include="wwwroot\Pictures\Profiles\" />
     <Folder Include="wwwroot\Pictures\Profiles\d7722838-e286-45db-9a2b-8dd813eb390b\" />
   </ItemGroup>

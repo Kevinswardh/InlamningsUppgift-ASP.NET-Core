@@ -11,6 +11,8 @@
         public bool IsOnline { get; set; }
         public IFormFile? ProfileImage { get; set; } // för POST (uppladdning)
         public string? ImageUrl { get; set; } // för att visa bilden
+        public string? LoginProvider { get; set; }
+
 
     }
 }

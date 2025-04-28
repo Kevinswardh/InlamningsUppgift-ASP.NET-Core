@@ -40,13 +40,16 @@
 
                 <div class="menu-divider"></div>
 
-                <button class="menu-item menu-item-delete"
-                        onclick='openDeleteModal("@member.Id")'>
-                    <div class="icon-wrapper">
-                        <i class="ti ti-trash"></i>
-                    </div>
-                    <span class="menu-text menu-text-delete">Delete</span>
-                </button>
+                    <button class="menu-item menu-item-delete"
+                            data-id="@member.Id"
+                            onclick='handleDeleteClick(this)'>
+                        <div class="icon-wrapper">
+                            <i class="ti ti-trash"></i>
+                        </div>
+                        <span class="menu-text menu-text-delete">Delete</span>
+                    </button>
+
+
 
             </div>
         }
@@ -93,4 +96,9 @@
         };
         openEditModal(member);
     }
+    function handleDeleteClick(btn) {
+        const memberId = btn.dataset.id;  // Hämta ID:t från data-id attributet
+        openDeleteModal(memberId);        // Öppna delete modal med rätt ID
+    }
+
 </script>

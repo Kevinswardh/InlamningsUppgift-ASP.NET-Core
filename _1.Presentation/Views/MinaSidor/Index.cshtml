@@ -59,7 +59,7 @@
 
             <button type="submit" class="submit-button">Spara ändringar</button>
         </form>
-
+        <div>
         <!-- 🖼️ Formulär: profilbild -->
         <form asp-controller="Users" asp-action="UploadProfileImage" method="post" enctype="multipart/form-data" class="profile-sidebar">
             @Html.AntiForgeryToken()
@@ -85,9 +85,29 @@
             <input asp-for="ProfileImage" type="file" class="form-input" id="profileImageInput" />
 
             <button type="submit" class="submit-button" style="margin-top: 12px;">Ladda upp bild</button>
-        </form>
 
-    
+        </form>
+            @if (!string.IsNullOrEmpty(Model.LoginProvider))
+            {
+                var provider = Model.LoginProvider.ToLower();
+
+                string buttonText = provider switch
+                {
+                    "google" => "Använd Google-profilbild",
+                    "microsoft" => "Använd Microsoft-profilbild",
+                    "github" => "Använd GitHub-profilbild",
+                    "facebook" => "Använd Facebook-profilbild",
+                    _ => $"Använd {Model.LoginProvider}-profilbild"
+                };
+
+                <form asp-controller="Users" asp-action="UseExternalProfilePicture" method="post" class="profile-sidebar" style="margin-top: 12px;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <button style="margin-top: 0px;" type="submit" class="submit-button">@buttonText</button>
+                </form>
+            }
+
+        </div>
     </div>
 </section>
 

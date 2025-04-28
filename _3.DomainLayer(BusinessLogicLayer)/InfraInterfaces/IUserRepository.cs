@@ -17,5 +17,7 @@ namespace DomainLayer_BusinessLogicLayer_.InfraInterfaces
         // Roll-hantering (kan användas internt vid behov)
         Task<bool> IsInRoleAsync(User user, string role);
         Task UpdateUserRoleAsync(string userId, string newRole);
+        Task UpdateExternalImageUrlAsync(string userId, string externalImageUrl);
+
     }
 }

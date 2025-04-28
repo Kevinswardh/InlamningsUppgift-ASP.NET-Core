@@ -14,6 +14,8 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface
         Task DeleteUserAsync(string id);
         Task<bool> IsInRoleAsync(User user, string role);
         Task<(string? ImageUrl, string? UserName)> GetUserProfileForLayoutAsync(ClaimsPrincipal user);
+        Task<bool> UseExternalProfilePictureAsync(string userId);
+
 
     }
 }

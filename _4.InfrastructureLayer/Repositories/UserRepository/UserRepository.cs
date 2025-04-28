@@ -50,7 +50,8 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 PhoneNumber = identityUser.PhoneNumber,
                 Position = identityUser.Position,
                 Role = roles.FirstOrDefault() ?? "User",
-                ImageUrl = identityUser.ImageUrl
+                ImageUrl = identityUser.ImageUrl,
+                ExternalImageUrl = identityUser.ExternalImageUrl // ✅ nytt!
             };
         }
 
@@ -63,18 +64,18 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
                 if (identityUser == null) return;
 
-                // Uppdatera fält
+                // ✅ Uppdatera alla fält
                 identityUser.UserName = user.UserName;
                 identityUser.Email = user.Email;
                 identityUser.PhoneNumber = user.PhoneNumber;
                 identityUser.Position = user.Position;
                 identityUser.ImageUrl = user.ImageUrl;
+                identityUser.ExternalImageUrl = user.ExternalImageUrl; // ✅ nytt!
 
-                // Hämta aktuell roll
+                // 🎭 Rollhantering
                 var currentRoles = await _userManager.GetRolesAsync(identityUser);
                 var currentRole = currentRoles.FirstOrDefault();
 
-                // Om rollen har ändrats, byt roll
                 if (!string.IsNullOrEmpty(user.Role) && user.Role != currentRole)
                 {
                     if (currentRoles.Any())
@@ -84,7 +85,6 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 }
 
                 await _userManager.UpdateAsync(identityUser);
-
                 await transaction.CommitAsync();
             }
             catch
@@ -93,6 +93,7 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 throw;
             }
         }
+
 
         public async Task DeleteUserAsync(string id)
         {
@@ -120,5 +121,15 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
             await _userManager.RemoveFromRolesAsync(identityUser, currentRoles);
             await _userManager.AddToRoleAsync(identityUser, newRole);
         }
+        public async Task UpdateExternalImageUrlAsync(string userId, string externalImageUrl)
+        {
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (identityUser != null)
+            {
+                identityUser.ExternalImageUrl = externalImageUrl;
+                await _userManager.UpdateAsync(identityUser);
+            }
+        }
+
     }
 }

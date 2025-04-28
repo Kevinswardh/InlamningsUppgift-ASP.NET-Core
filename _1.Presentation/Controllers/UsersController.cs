@@ -1,6 +1,8 @@
 ﻿using _1.PresentationLayer.ViewModels.MembersViewModels;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -146,6 +148,29 @@ public class UsersController : Controller
     }
 
 
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UseExternalProfilePicture()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+            return RedirectToAction("Index", "MinaSidor");
+
+        var success = await _userService.UseExternalProfilePictureAsync(userId);
+
+        if (!success)
+        {
+            TempData["ErrorMessage"] = "Kunde inte uppdatera profilbilden från extern inloggning.";
+        }
+        else
+        {
+            TempData["SuccessMessage"] = "Profilbilden uppdaterades från extern inloggning.";
+        }
+
+        return RedirectToAction("Index", "MinaSidor");
+    }
+
 
 
 
@@ -176,7 +201,7 @@ public class UsersController : Controller
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete(string id, string returnUrl)
     {
         var user = await _userService.GetUserByIdAsync(id);
         if (user == null) return NotFound();
@@ -186,6 +211,8 @@ public class UsersController : Controller
 
         await _userService.DeleteUserAsync(id);
 
-        return RedirectToAction("NewMembers");
+        // Redirect to returnUrl, or default to NewMembers
+        return Redirect(string.IsNullOrEmpty(returnUrl) ? "/NewMembers" : returnUrl);
     }
+
 }

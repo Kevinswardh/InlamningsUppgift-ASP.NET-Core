@@ -29,30 +29,42 @@
                 <div class="login-form-wrapper">
                     <h2 class="login-header">Login</h2>
                     <div class="oauth-grid">
-                        <button class="oauth-button">
-                            <img src="@Url.Content("~/Pictures/Icons/LoginIcons/google-icon-logo-svgrepo-com.svg")"
-                                 alt="Signup icon"
-                                 class="google-icon" />
-                            <span>Google</span>
-                        </button>
-                        <button class="oauth-button">
+                        <form asp-controller="Auth" asp-action="ExternalLogin" method="post" class="oauth-button-form">
+                            <input type="hidden" name="provider" value="Google" />
+                            <button type="submit" class="oauth-button">
+                                <img src="@Url.Content("~/Pictures/Icons/LoginIcons/google-icon-logo-svgrepo-com.svg")"
+                                     alt="Google login"
+                                     class="google-icon" />
+                                <span>Google</span>
+                            </button>
+                        </form>
+
+                        <!-- Väljer att inte köra facebook pga godkännande av sida för att använda email scope-->
+                        <button type="button" class="oauth-button" disabled style="opacity: 0.5; cursor: not-allowed;">
                             <img src="@Url.Content("~/Pictures/Icons/LoginIcons/facebook-svgrepo-com.svg")"
-                                 alt="Signup icon"
+                                 alt="Facebook login"
                                  class="google-icon" />
                             <span>Facebook</span>
                         </button>
-                        <button class="oauth-button">
+
+                        <!--Väljer att inte använda microsoft pga kortkopplingen till Entra ID.-->
+                        <button type="button" class="oauth-button" disabled style="opacity: 0.5; cursor: not-allowed;">
                             <img src="@Url.Content("~/Pictures/Icons/LoginIcons/microsoft-svgrepo-com.svg")"
-                                 alt="Signup icon"
+                                 alt="Microsoft login"
                                  class="google-icon" />
                             <span>Microsoft</span>
                         </button>
-                        <button class="oauth-button">
-                            <img src="@Url.Content("~/Pictures/Icons/LoginIcons/github-svgrepo-com.svg")"
-                                 alt="Signup icon"
-                                 class="google-icon" />
-                            <span>GitHub</span>
-                        </button>
+
+                        <form asp-controller="Auth" asp-action="ExternalLogin" method="post" class="oauth-button-form">
+                            <input type="hidden" name="provider" value="GitHub" />
+                            <button type="submit" class="oauth-button">
+                                <img src="@Url.Content("~/Pictures/Icons/LoginIcons/github-svgrepo-com.svg")"
+                                     alt="GitHub login"
+                                     class="google-icon" />
+                                <span>GitHub</span>
+                            </button>
+                        </form>
+
                     </div>
 
 
@@ -110,39 +122,7 @@
                 <!-- Signup Form -->
                 <div class="signup-form-wrapper">
                     <h2 class="signup-title">Create Account</h2>
-                    <div class="oauth-grid">
-                        <button class="oauth-button">
-                            <img src="@Url.Content("~/Pictures/Icons/LoginIcons/google-icon-logo-svgrepo-com.svg")"
-                                 alt="Signup icon"
-                                 class="google-icon" />
-                            <span>Google</span>
-                        </button>
-                        <button class="oauth-button">
-                            <img src="@Url.Content("~/Pictures/Icons/LoginIcons/facebook-svgrepo-com.svg")"
-                                 alt="Signup icon"
-                                 class="google-icon" />
-                            <span>Facebook</span>
-                        </button>
-                        <button class="oauth-button">
-                            <img src="@Url.Content("~/Pictures/Icons/LoginIcons/microsoft-svgrepo-com.svg")"
-                                 alt="Signup icon"
-                                 class="google-icon" />
-                            <span>Microsoft</span>
-                        </button>
-                        <button class="oauth-button">
-                            <img src="@Url.Content("~/Pictures/Icons/LoginIcons/github-svgrepo-com.svg")"
-                                 alt="Signup icon"
-                                 class="google-icon" />
-                            <span>GitHub</span>
-                        </button>
-                    </div>
-
-
-                    <div class="divider">
-                        <div class="divider-line"></div>
-                        <span class="divider-text">OR</span>
-                        <div class="divider-line"></div>
-                    </div>
+       
 
                     <form asp-controller="Auth" asp-action="Register" method="post" class="signup-form">
                         <div class="form-group">

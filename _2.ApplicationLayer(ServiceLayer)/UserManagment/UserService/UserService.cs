@@ -110,6 +110,18 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
 
             return (entity.ImageUrl, entity.UserName);
         }
+        public async Task<bool> UseExternalProfilePictureAsync(string userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null || string.IsNullOrEmpty(user.ExternalImageUrl))
+                return false;
+
+            user.ImageUrl = user.ExternalImageUrl;
+            await _userRepo.UpdateUserAsync(user); // ✅ rätt metod
+
+            return true;
+        }
+
 
     }
 }

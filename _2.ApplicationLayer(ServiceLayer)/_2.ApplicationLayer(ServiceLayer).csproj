@@ -8,12 +8,8 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\##Cross-cutting Concerns\_##Cross-cutting Concerns.csproj" />
+		<ProjectReference Include="..\#IntegrationLayer\_#IntegrationLayer.csproj" />
 		<ProjectReference Include="..\#SecurityLayer\_#SecurityLayer.csproj" />
 		<ProjectReference Include="..\DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
 		<ProjectReference Include="..\_3.DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />

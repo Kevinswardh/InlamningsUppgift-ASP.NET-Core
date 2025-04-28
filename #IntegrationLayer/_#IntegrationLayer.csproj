@@ -9,8 +9,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\##Cross-cutting Concerns\_##Cross-cutting Concerns.csproj" />
+    <ProjectReference Include="..\#SecurityLayer\_#SecurityLayer.csproj" />
     <ProjectReference Include="..\DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
-    <ProjectReference Include="..\_3.DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
   </ItemGroup>
 
 </Project>

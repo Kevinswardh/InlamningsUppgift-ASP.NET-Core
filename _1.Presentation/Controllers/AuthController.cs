@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using __Cross_cutting_Concerns.ServiceInterfaces;
 using System.Security.Claims;
+using SecurityLayer.Identity;
 
 namespace _1.PresentationLayer.Controllers
 {
@@ -89,6 +90,48 @@ namespace _1.PresentationLayer.Controllers
 
             return Ok();
         }
+
+        // External login method
+        [HttpPost]
+        public async Task<IActionResult> ExternalLogin(string provider, string? returnUrl = null)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Auth", new { returnUrl });
+
+            // Await the method to get the AuthenticationProperties
+            var properties = await _authService.GetExternalLoginProperties(provider, redirectUrl);
+
+            // Pass the properties to Challenge() method
+            return Challenge(properties, provider);
+        }
+
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+        {
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"External provider error: {remoteError}");
+                return RedirectToAction("Index", "Login");
+            }
+
+            var result = await _authService.ExternalLoginSignInAsync();
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Projects");
+            }
+
+            var (createResult, user, info) = await _authService.CreateExternalUserAsync();
+            if (createResult.Succeeded)
+            {
+                return RedirectToAction("Index", "Projects");
+            }
+
+            foreach (var error in createResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
 
         [Authorize]
         [HttpPost]

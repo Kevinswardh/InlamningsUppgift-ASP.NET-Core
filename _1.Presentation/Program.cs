@@ -7,68 +7,114 @@ using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
-
-
-using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SecurityLayer.Identity;
+using SecurityLayer.SecurityServices.SecurityAuthService;
+using SecurityLayer.SecurityServices.SecurityAuthService.Interface;
+using _IntegrationLayer.ExternalAuthService;
+using _IntegrationLayer.ExternalAuthService.Interface;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔥 Lägg till configuration från ConfigurationLayer
+// ========================================
+// 0. Lägg till konfiguration från ConfigurationLayer
+// ========================================
 builder.Host.ConfigureAppConfiguration((context, config) =>
 {
     var path = Path.Combine(Directory.GetCurrentDirectory(), "..", "_0.ConfigurationLayer", "appsettings.json");
     config.AddJsonFile(path, optional: false, reloadOnChange: true);
 });
 
-
-
-
 // ========================================
 // 1. Lägg till EF Core och Identity
 // ========================================
-
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<IdentityDbContext>()
     .AddDefaultTokenProviders();
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Login/Index";          // Omdirigering vid [Authorize]
-    options.LogoutPath = "/Auth/Logout";         // Inte ett måste men nice
-    options.AccessDeniedPath = "/Login/Index";   // Om användaren saknar roll etc
+    options.LoginPath = "/Login/Index";
+    options.LogoutPath = "/Auth/Logout";
+    options.AccessDeniedPath = "/Login/Index";
 });
 
 // ========================================
-// 2. Lägg till egna services
+// 2. Lägg till egna services & repositories
 // ========================================
 
-//Services
+// SECURITY services först
+builder.Services.AddScoped<ISecurityAuthService, SecurityAuthService>();
+
+// INTEGRATION services
+builder.Services.AddScoped<IExternalAuthService, ExternalAuthService>();
+
+// APPLICATION services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IUserStatusService, UserStatusService>();
 
-
-//Repositories
+// REPOSITORIES
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 
 
+// ========================================
+// 3. Lägg till externa login providers
+// ========================================
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme; // <-- Lägg till detta
+})
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    options.Scope.Add("profile");
+    options.ClaimActions.MapJsonKey("picture", "picture", "url");
+})
+.AddGitHub(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+    options.SaveTokens = true;
 
+    options.Scope.Add("user:email"); // detta scope är viktigt för GitHub
+    options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+    options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+    options.ClaimActions.MapJsonKey("picture", "avatar_url");
+})
+.AddFacebook(options =>
+{
+    options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+    options.Fields.Add("picture");
+    options.ClaimActions.MapJsonSubKey("picture", "data", "url");
+});
+Console.WriteLine($"Google ClientId: {builder.Configuration["Authentication:Google:ClientId"]}");
+Console.WriteLine($"GitHub ClientId: {builder.Configuration["Authentication:GitHub:ClientId"]}");
+Console.WriteLine($"Facebook AppId: {builder.Configuration["Authentication:Facebook:AppId"]}");
+
+// ========================================
+// 4. Lägg till MVC
+// ========================================
 builder.Services.AddControllersWithViews();
 
 // ========================================
-// 3. Bygg appen
+// 5. Bygg appen
 // ========================================
 var app = builder.Build();
 
 // ========================================
-// 4. Skapa Admin-användare om den saknas
+// 6. Skapa Admin-användare om den saknas
 // ========================================
 using (var scope = app.Services.CreateScope())
 {
@@ -78,7 +124,6 @@ using (var scope = app.Services.CreateScope())
     var adminEmail = "admin@admin.com";
     var adminPassword = "Admin123!";
 
-    // Skapa roller om de inte finns
     string[] roles = { "Admin", "Manager", "TeamMember", "Customer", "User" };
     foreach (var role in roles)
     {
@@ -107,9 +152,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ========================================
-// 5. Middleware pipeline
+// 7. Middleware pipeline
 // ========================================
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -121,7 +165,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // 🧠 Glöm inte denna!
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

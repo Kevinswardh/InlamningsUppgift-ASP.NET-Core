@@ -16,7 +16,7 @@ namespace DomainLayer_BusinessLogicLayer_.Entities
         public string Role { get; set; }
         public bool IsOnline { get; set; }
         public string? ImageUrl { get; set; }
-
+        public string? ExternalImageUrl { get; set; }
 
     }
 }
