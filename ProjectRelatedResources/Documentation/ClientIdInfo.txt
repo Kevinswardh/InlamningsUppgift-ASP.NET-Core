@@ -1,0 +1,4 @@
+﻿Vi valde att utelämna clientid och secret pågithub med allowed som test, vi tar sedan bort dessa "appar" 
+från interfacen på de externa providers hemsidor. Fräsmt för att vi commita med dem och det inte gick och rebase utan att
+bli av med viktigt kod. Se till att i framtida project attid ha gitignore på appsettings
+eller ha en separat settingsfil för clientid/secrets.
