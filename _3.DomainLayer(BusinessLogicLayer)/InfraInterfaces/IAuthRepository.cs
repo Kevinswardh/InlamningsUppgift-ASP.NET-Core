@@ -1,4 +1,4 @@
-﻿using DomainLayer_BusinessLogicLayer_.Entities;
+﻿using DomainLayer_BusinessLogicLayer_.DomainModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
 ﻿using __Cross_cutting_Concerns.FormDTOs;
 using CrossCuttingConcerns.FormDTOs;
-using DomainLayer_BusinessLogicLayer_.Entities;
+using DomainLayer_BusinessLogicLayer_.DomainModel;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -15,6 +15,8 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface
         Task<bool> IsInRoleAsync(User user, string role);
         Task<(string? ImageUrl, string? UserName)> GetUserProfileForLayoutAsync(ClaimsPrincipal user);
         Task<bool> UseExternalProfilePictureAsync(string userId);
+        Task<List<string>> GetUserRolesAsync(ClaimsPrincipal user);
+        string GetUserId(ClaimsPrincipal user);
 
 
     }

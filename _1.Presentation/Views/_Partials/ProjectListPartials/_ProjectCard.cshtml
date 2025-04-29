@@ -1,0 +1,34 @@
+﻿@model _1.PresentationLayer.ViewModels.ProjectsViewModels.ProjectViewModel
+
+<article class="project-card">
+    <div class="project-header">
+        <div class="project-left">
+            <div class="company-logo">
+                <img src="@Url.Content(Model.ImageUrl ?? "~/Pictures/Icons/projectlogo.svg")" alt="Project Icon" />
+            </div>
+            <div class="project-text">
+                <h3 class="project-title">@Model.Name</h3>
+                <p class="company-name">@Model.ClientName</p>
+            </div>
+        </div>
+        <button class="projects-menu-button" aria-label="Open menu">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </button>
+    </div>
+
+    <p class="project-description">@Model.Description</p>
+
+    <div class="project-footer">
+        <div class="time-remaining">
+            <i class="ti ti-clock"></i>
+            <span>@Model.TimeLeft</span>
+        </div>
+        <div class="team-members">
+            @foreach (var member in Model.Members)
+            {
+                <img src="@Url.Content(member.ImageUrl ?? "https://placehold.co/24x24")" alt="@member.UserName" class="project-member-avatar" />
+            }
+        </div>
+    </div>
+</article>
+

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainLayer_BusinessLogicLayer_.Entities
+namespace DomainLayer_BusinessLogicLayer_.DomainModel
 {
     public class User
     {

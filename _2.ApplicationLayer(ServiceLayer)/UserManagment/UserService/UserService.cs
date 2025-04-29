@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using CrossCuttingConcerns.FormDTOs;
 using __Cross_cutting_Concerns.ServiceInterfaces;
-using DomainLayer_BusinessLogicLayer_.Entities;
+using DomainLayer_BusinessLogicLayer_.DomainModel;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
 using __Cross_cutting_Concerns.FormDTOs;
 using System.Security.Claims;
@@ -122,6 +122,22 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
             return true;
         }
 
+        public async Task<List<string>> GetUserRolesAsync(ClaimsPrincipal user)
+        {
+            var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return new List<string>();
+
+            var userEntity = await _userRepo.GetByIdAsync(userId);
+            if (userEntity == null)
+                return new List<string>();
+
+            return new List<string> { userEntity.Role };
+        }
+        public string GetUserId(ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
     }
 }

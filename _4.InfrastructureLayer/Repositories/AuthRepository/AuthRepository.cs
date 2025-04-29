@@ -1,4 +1,4 @@
-﻿using DomainLayer_BusinessLogicLayer_.Entities;
+﻿using DomainLayer_BusinessLogicLayer_.DomainModel;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

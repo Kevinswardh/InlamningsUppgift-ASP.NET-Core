@@ -16,6 +16,12 @@ using SecurityLayer.SecurityServices.SecurityAuthService.Interface;
 using _IntegrationLayer.ExternalAuthService;
 using _IntegrationLayer.ExternalAuthService.Interface;
 using System.Security.Claims;
+using _5.DataAccessLayer_DAL_;
+using ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interface;
+using ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService;
+using _4.infrastructureLayer.Repositories.ProjectRepository;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +37,15 @@ builder.Host.ConfigureAppConfiguration((context, config) =>
 // ========================================
 // 1. Lägg till EF Core och Identity
 // ========================================
+
+//Identity Databas
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//ProjectsDatabas
+builder.Services.AddDbContext<ApplicationProjectDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectConnection")));
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<IdentityDbContext>()
@@ -59,11 +72,13 @@ builder.Services.AddScoped<IExternalAuthService, ExternalAuthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IUserStatusService, UserStatusService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
 
 // REPOSITORIES
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 
 // ========================================

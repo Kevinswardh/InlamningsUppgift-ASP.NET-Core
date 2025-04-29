@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using __Cross_cutting_Concerns.ServiceInterfaces;
 using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
-using DomainLayer_BusinessLogicLayer_.Entities;
+using DomainLayer_BusinessLogicLayer_.DomainModel;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
 using _4.infrastructureLayer.Repositories.UserRepository;
 
