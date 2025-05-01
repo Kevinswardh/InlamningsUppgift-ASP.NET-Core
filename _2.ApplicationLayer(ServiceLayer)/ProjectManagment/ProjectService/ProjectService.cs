@@ -1,36 +1,32 @@
 ﻿using ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interface;
-using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
+using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using __Cross_cutting_Concerns.FormDTOs;
 using DomainLayer_BusinessLogicLayer_.DomainModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
+using System.Security.Claims;
 
 namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
 {
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
+        private readonly IUserService _userService;
 
-        public ProjectService(IProjectRepository projectRepository)
+        public ProjectService(IProjectRepository projectRepository, IUserService userService)
         {
             _projectRepository = projectRepository;
+            _userService = userService;
         }
-
         public async Task<IEnumerable<ProjectForm>> GetProjectsForUserRoleAsync(IEnumerable<string> roles, string userId)
         {
-            var isAdminOrManager = roles.Contains("Admin") || roles.Contains("Manager");
+            var isManager = roles.Contains("Admin") || roles.Contains("Manager");
 
-            IEnumerable<Project> projects;
-            if (isAdminOrManager)
-            {
-                projects = await _projectRepository.GetAllAsync();
-            }
-            else
-            {
-                projects = await _projectRepository.GetProjectsByUserIdAsync(userId);
-            }
+            var projects = isManager
+                ? await _projectRepository.GetAllAsync()
+                : await _projectRepository.GetProjectsByUserIdAsync(userId);
+
+            // 🔄 Hämta alla användare från Identity via UserService
+            var allUsers = await _userService.GetAllUsersAsync(); // innehåller ImageUrl, Email osv.
 
             return projects.Select(p => new ProjectForm
             {
@@ -38,151 +34,146 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
                 Name = p.Name,
                 Description = p.Description,
                 ImageUrl = p.ImageUrl ?? "~/Pictures/Icons/projectlogo.svg",
+                StartDate = p.StartDate,
                 EndDate = p.EndDate,
-                Members = p.Users.Select(m => new MemberItemDTO
+                Budget = p.Budget,
+                CreatedByUserId = p.CreatedByUserId,
+                ClientEmail = p.Customer?.Email ?? "",
+                Members = p.ProjectMembers.Select(pm =>
                 {
-                    Id = m.Id,
-                    UserName = m.UserName,
-                    Email = m.Email,
-                    PhoneNumber = m.PhoneNumber,
-                    Position = m.Position,
-                    Role = m.Role,
-                    ImageUrl = m.ImageUrl,
-                    IsOnline = m.IsOnline
+                    var matchingUser = allUsers.FirstOrDefault(u => u.Email == pm.TeamMember.Email);
+
+                    return new MemberItemDTO
+                    {
+                        Id = pm.TeamMember.ExternalUserId,
+                        Email = pm.TeamMember.Email,
+                        UserName = pm.TeamMember.Name,
+                        ImageUrl = matchingUser?.ImageUrl, // 💡 Hämta från Identity om möjligt
+                        IsOnline = matchingUser?.IsOnline ?? false
+                    };
                 }).ToList(),
-                IsCompleted = p.EndDate <= DateTime.UtcNow
+                IsCompleted = p.IsCompleted
             }).ToList();
         }
 
-        // Skapa ett nytt projekt
-        public async Task<ProjectForm> CreateProjectAsync(ProjectForm projectForm)
-        {
-            var project = new Project
-            {
-                Name = projectForm.Name,
-                Description = projectForm.Description,
-                ImageUrl = projectForm.ImageUrl,
-                StartDate = DateTime.UtcNow,
-                EndDate = projectForm.EndDate,
-                Users = projectForm.Members.Select(m => new User
-                {
-                    Id = m.Id,
-                    UserName = m.UserName,
-                    Email = m.Email,
-                    PhoneNumber = m.PhoneNumber,
-                    Position = m.Position,
-                    Role = m.Role,
-                    ImageUrl = m.ImageUrl,
-                    IsOnline = m.IsOnline
-                }).ToList()
-            };
-
-            var createdProject = await _projectRepository.CreateProjectAsync(project);
-
-            return new ProjectForm
-            {
-                Id = createdProject.Id,
-                Name = createdProject.Name,
-                Description = createdProject.Description,
-                ImageUrl = createdProject.ImageUrl,
-                EndDate = createdProject.EndDate,
-                Members = createdProject.Users.Select(u => new MemberItemDTO
-                {
-                    Id = u.Id,
-                    UserName = u.UserName,
-                    Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
-                    Position = u.Position,
-                    Role = u.Role,
-                    ImageUrl = u.ImageUrl,
-                    IsOnline = u.IsOnline
-                }).ToList(),
-                IsCompleted = createdProject.EndDate <= DateTime.UtcNow
-            };
-        }
-
-        // Uppdatera ett projekt
-        public async Task<ProjectForm> UpdateProjectAsync(ProjectForm projectForm)
-        {
-            var project = await _projectRepository.GetByIdAsync(projectForm.Id);
-            if (project == null)
-            {
-                return null; // Projektet finns inte
-            }
-
-            project.Name = projectForm.Name;
-            project.Description = projectForm.Description;
-            project.ImageUrl = projectForm.ImageUrl;
-            project.EndDate = projectForm.EndDate;
-            project.Users = projectForm.Members.Select(m => new User
-            {
-                Id = m.Id,
-                UserName = m.UserName,
-                Email = m.Email,
-                PhoneNumber = m.PhoneNumber,
-                Position = m.Position,
-                Role = m.Role,
-                ImageUrl = m.ImageUrl,
-                IsOnline = m.IsOnline
-            }).ToList();
-
-            var updatedProject = await _projectRepository.UpdateProjectAsync(project);
-
-            return new ProjectForm
-            {
-                Id = updatedProject.Id,
-                Name = updatedProject.Name,
-                Description = updatedProject.Description,
-                ImageUrl = updatedProject.ImageUrl,
-                EndDate = updatedProject.EndDate,
-                Members = updatedProject.Users.Select(u => new MemberItemDTO
-                {
-                    Id = u.Id,
-                    UserName = u.UserName,
-                    Email = u.Email,
-                    PhoneNumber = u.PhoneNumber,
-                    Position = u.Position,
-                    Role = u.Role,
-                    ImageUrl = u.ImageUrl,
-                    IsOnline = u.IsOnline
-                }).ToList(),
-                IsCompleted = updatedProject.EndDate <= DateTime.UtcNow
-            };
-        }
-
-        // Ta bort ett projekt
-        public async Task<bool> DeleteProjectAsync(int projectId)
-        {
-            return await _projectRepository.DeleteProjectAsync(projectId);
-        }
-
-        // Hämta projekt baserat på ID
         public async Task<ProjectForm> GetProjectByIdAsync(int projectId)
         {
             var project = await _projectRepository.GetByIdAsync(projectId);
-            if (project == null)
-                return null;
+            if (project == null) return null;
 
             return new ProjectForm
             {
                 Id = project.Id,
                 Name = project.Name,
                 Description = project.Description,
-                ImageUrl = project.ImageUrl ?? "~/Pictures/Icons/projectlogo.svg",
+                ImageUrl = project.ImageUrl,
+                StartDate = project.StartDate,
                 EndDate = project.EndDate,
-                Members = project.Users.Select(m => new MemberItemDTO
+                Budget = project.Budget,
+                CreatedByUserId = project.CreatedByUserId,
+                ClientEmail = project.Customer?.Email ?? "",
+                Members = project.ProjectMembers.Select(pm => new MemberItemDTO
                 {
-                    Id = m.Id,
-                    UserName = m.UserName,
-                    Email = m.Email,
-                    PhoneNumber = m.PhoneNumber,
-                    Position = m.Position,
-                    Role = m.Role,
-                    ImageUrl = m.ImageUrl,
-                    IsOnline = m.IsOnline
+                    Id = pm.TeamMember.ExternalUserId,
+                    Email = pm.TeamMember.Email,
+                    UserName = pm.TeamMember.Name,
+                    ImageUrl = "",
+                    IsOnline = false
                 }).ToList(),
                 IsCompleted = project.EndDate <= DateTime.UtcNow
             };
         }
+
+        public async Task CreateProjectWithUsersAsync(ProjectForm form, ClaimsPrincipal user)
+        {
+            var userId = form.CreatedByUserId;
+
+            var customer = await _userService.GetUserByEmailAsync(form.ClientEmail);
+            if (customer == null)
+                throw new Exception("Kund hittades inte med angiven e-post.");
+
+            var customerEntity = new CustomerEntity
+            {
+                Email = customer.Email,
+                Name = customer.UserName
+            };
+
+            var teamMemberTasks = form.Members.Select(m => _userService.GetUserByIdAsync(m.Id));
+            var teamMemberUsers = await Task.WhenAll(teamMemberTasks);
+
+            var projectMembers = teamMemberUsers.Select(u => new ProjectMemberEntity
+            {
+                TeamMember = new TeamMemberEntity
+                {
+                    ExternalUserId = u.Id,
+                    Email = u.Email,
+                    Name = u.UserName
+                }
+            }).ToList();
+
+            var project = new ProjectEntity
+            {
+                Name = form.Name,
+                Description = form.Description,
+                ImageUrl = form.ImageUrl,
+                StartDate = form.StartDate,
+                EndDate = form.EndDate,
+                Budget = form.Budget,
+                CreatedByUserId = userId,
+                Customer = customerEntity,
+                ProjectMembers = projectMembers
+            };
+
+            await _projectRepository.CreateProjectAsync(project);
+        }
+
+        public async Task<ProjectForm> UpdateProjectAsync(ProjectForm form)
+        {
+            var project = await _projectRepository.GetByIdAsync(form.Id);
+            if (project == null) return null;
+
+            var teamMemberTasks = form.Members.Select(m => _userService.GetUserByIdAsync(m.Id));
+            var teamMemberUsers = await Task.WhenAll(teamMemberTasks);
+
+            var projectMembers = teamMemberUsers.Select(u => new ProjectMemberEntity
+            {
+                TeamMember = new TeamMemberEntity
+                {
+                    ExternalUserId = u.Id,
+                    Email = u.Email,
+                    Name = u.UserName
+                },
+                ProjectId = form.Id
+            }).ToList();
+
+            project.Name = form.Name;
+            project.Description = form.Description;
+            project.ImageUrl = form.ImageUrl;
+            project.EndDate = form.EndDate;
+            project.Budget = form.Budget;
+            project.IsCompleted = form.EndDate <= DateTime.UtcNow;
+            project.ProjectMembers = projectMembers;
+
+            var updated = await _projectRepository.UpdateProjectAsync(project);
+
+            return await GetProjectByIdAsync(updated.Id);
+        }
+
+        public async Task<bool> DeleteProjectAsync(int projectId)
+        {
+            return await _projectRepository.DeleteProjectAsync(projectId);
+        }
+        public async Task<bool> MarkProjectAsCompletedAsync(int projectId)
+        {
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            if (project == null) return false;
+
+            project.IsCompleted = true;
+            await _projectRepository.UpdateProjectAsync(project);
+
+            return true;
+        }
+
+
     }
 }

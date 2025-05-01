@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DomainLayer_BusinessLogicLayer_.DomainModel
 {
-    public class User
+    public class UserEntity
     {
         public string Id { get; set; }
         public string UserName { get; set; }

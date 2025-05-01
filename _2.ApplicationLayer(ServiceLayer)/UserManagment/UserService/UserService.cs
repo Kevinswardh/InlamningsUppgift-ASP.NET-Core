@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using System.Collections.Generic;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
-using CrossCuttingConcerns.FormDTOs;
 using __Cross_cutting_Concerns.ServiceInterfaces;
+using __Cross_cutting_Concerns.FormDTOs;
+using CrossCuttingConcerns.FormDTOs;
 using DomainLayer_BusinessLogicLayer_.DomainModel;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
-using __Cross_cutting_Concerns.FormDTOs;
-using System.Security.Claims;
 
 namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
 {
@@ -73,12 +74,12 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
             };
         }
 
-        public async Task<User> GetUserByIdAsync(string id)
+        public async Task<UserEntity> GetUserByIdAsync(string id)
         {
             return await _userRepo.GetByIdAsync(id);
         }
 
-        public async Task UpdateUserAsync(User updatedUser)
+        public async Task UpdateUserAsync(UserEntity updatedUser)
         {
             var existingUser = await _userRepo.GetByIdAsync(updatedUser.Id);
             if (existingUser == null) return;
@@ -96,10 +97,11 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
             await _userRepo.DeleteUserAsync(id);
         }
 
-        public async Task<bool> IsInRoleAsync(User user, string role)
+        public async Task<bool> IsInRoleAsync(UserEntity user, string role)
         {
             return await _userRepo.IsInRoleAsync(user, role);
         }
+
         public async Task<(string? ImageUrl, string? UserName)> GetUserProfileForLayoutAsync(ClaimsPrincipal user)
         {
             var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -110,6 +112,7 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
 
             return (entity.ImageUrl, entity.UserName);
         }
+
         public async Task<bool> UseExternalProfilePictureAsync(string userId)
         {
             var user = await _userRepo.GetByIdAsync(userId);
@@ -117,7 +120,7 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
                 return false;
 
             user.ImageUrl = user.ExternalImageUrl;
-            await _userRepo.UpdateUserAsync(user); // ✅ rätt metod
+            await _userRepo.UpdateUserAsync(user);
 
             return true;
         }
@@ -134,10 +137,31 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
 
             return new List<string> { userEntity.Role };
         }
+
         public string GetUserId(ClaimsPrincipal user)
         {
             return user.FindFirstValue(ClaimTypes.NameIdentifier);
         }
 
+        public async Task<List<MemberItemDTO>> GetAllUsersAsync()
+        {
+            var users = await _userRepo.GetAllUsersAsync();
+            return users.Select(u => new MemberItemDTO
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                Position = u.Position,
+                Role = u.Role,
+                IsOnline = u.IsOnline,
+                ImageUrl = u.ImageUrl
+            }).ToList();
+        }
+
+        public async Task<UserEntity?> GetUserByEmailAsync(string email)
+        {
+            return await _userRepo.GetUserByEmailAsync(email);
+        }
     }
 }

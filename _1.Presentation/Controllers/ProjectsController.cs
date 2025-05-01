@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Presentation.Models;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
-using _1.PresentationLayer.ViewModels.MembersViewModels;
-using _1.PresentationLayer.ViewModels.ProjectsViewModels;
 using ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interface;
 using __Cross_cutting_Concerns.FormDTOs;
+using _1.PresentationLayer.ViewModels.MembersViewModels;
+using _1.PresentationLayer.ViewModels.ProjectsViewModels;
 
 namespace Presentation.Controllers
 {
@@ -16,39 +14,57 @@ namespace Presentation.Controllers
         private readonly ILogger<ProjectsController> _logger;
         private readonly IUserService _userService;
         private readonly IProjectService _projectService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProjectsController(ILogger<ProjectsController> logger, IUserService userService, IProjectService projectService, IHttpContextAccessor httpContextAccessor)
+        public ProjectsController(
+            ILogger<ProjectsController> logger,
+            IUserService userService,
+            IProjectService projectService)
         {
             _logger = logger;
             _userService = userService;
             _projectService = projectService;
-            _httpContextAccessor = httpContextAccessor;
         }
 
-        // Index - Visa alla projekt
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string tab = "All", int page = 1)
         {
-            var (image, name) = await _userService.GetUserProfileForLayoutAsync(User);
-            ViewBag.ProfileImage = image;
-            ViewBag.UserName = name;
-
             var roles = await _userService.GetUserRolesAsync(User);
-            if (roles.Contains("User"))
-            {
-                return Forbid(); // 🚫 NewMembers (User) får ej access
-            }
+            if (roles.Contains("User")) return Forbid();
 
             var userId = _userService.GetUserId(User);
-            var projects = await _projectService.GetProjectsForUserRoleAsync(roles, userId);
+            var allProjects = await _projectService.GetProjectsForUserRoleAsync(roles, userId);
+            var allUsers = await _userService.GetAllUsersAsync();
+
+            var allMembers = allUsers.Select(u => new MemberItemViewModel
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                Position = u.Position,
+                Role = u.Role,
+                IsOnline = u.IsOnline,
+                ImageUrl = u.ImageUrl
+            }).ToList();
+
+            // Filtrera efter vald tab
+            var filtered = tab switch
+            {
+                "Started" => allProjects.Where(p => !p.IsCompleted).ToList(),
+                "Completed" => allProjects.Where(p => p.IsCompleted).ToList(),
+                _ => allProjects.ToList()
+            };
+
+            int pageSize = 8;
+            int totalProjects = filtered.Count;
+            var paginated = filtered.Skip((page - 1) * pageSize).Take(pageSize);
 
             var viewModel = new ProjectsViewModel
             {
-                Projects = projects.Select(project => new ProjectViewModel
+                Projects = paginated.Select(project => new ProjectViewModel
                 {
                     Id = project.Id,
                     Name = project.Name,
-                    ClientName = project.ClientName,
+                    ClientEmail = project.ClientEmail,
                     Description = project.Description,
                     ImageUrl = project.ImageUrl,
                     TimeLeft = CalculateTimeLeft(project.EndDate),
@@ -60,88 +76,128 @@ namespace Presentation.Controllers
                         ImageUrl = m.ImageUrl
                     }).ToList(),
                     IsCompleted = project.IsCompleted
-                }).ToList()
+                }).ToList(),
+
+                AllMembers = allMembers,
+                SelectedTab = tab,
+                AllCount = allProjects.Count(),
+                StartedCount = allProjects.Count(p => !p.IsCompleted),
+                CompletedCount = allProjects.Count(p => p.IsCompleted),
+                PageSize = pageSize,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling((double)totalProjects / pageSize)
             };
 
-            ViewBag.CanAddProject = roles.Any(r => r == "Admin" || r == "Manager" || r == "TeamMember");
+            ViewBag.CanAddProject = roles.Any(r => r is "Admin" or "Manager" or "TeamMember");
+
+            var (image, name) = await _userService.GetUserProfileForLayoutAsync(User);
+            ViewBag.ProfileImage = image;
+            ViewBag.UserName = name;
 
             return View(viewModel);
         }
 
-        // Create - Skapa nytt projekt
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Create(ProjectForm projectForm)
+        public async Task<IActionResult> Create(CreateProjectViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var createdProject = await _projectService.CreateProjectAsync(projectForm);
+                TempData["FormError"] = "Något gick fel i formuläret.";
                 return RedirectToAction("Index");
             }
 
-            return View(projectForm);
-        }
+            var userId = _userService.GetUserId(User);
+            var projectId = Guid.NewGuid().ToString();
 
-        // Edit - Uppdatera projekt
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
+            string? imageUrl = null;
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
             {
-                return NotFound();
+                var uploadsFolder = Path.Combine("wwwroot", "Pictures", "ProjectPictures", projectId);
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = $"{projectId}{Path.GetExtension(model.ImageFile.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                    await model.ImageFile.CopyToAsync(stream);
+
+                imageUrl = $"/Pictures/ProjectPictures/{projectId}/{uniqueFileName}";
             }
 
-            var projectForm = new ProjectForm
+            var allUsers = await _userService.GetAllUsersAsync();
+            var selectedMembers = allUsers.Where(u => model.MemberIds.Contains(u.Id)).ToList();
+
+            var memberDTOs = selectedMembers.Select(u => new MemberItemDTO
             {
-                Id = project.Id,
-                Name = project.Name,
-                ClientName = project.ClientName,
-                Description = project.Description,
-                ImageUrl = project.ImageUrl,
-                EndDate = project.EndDate,
-                Members = project.Members
+                Id = u.Id,
+                Email = u.Email,
+                ImageUrl = u.ImageUrl
+            }).ToList();
+
+            var form = new ProjectForm
+            {
+                Id = 0,
+                Name = model.Name,
+                Description = model.Description,
+                ClientEmail = model.ClientEmail,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate,
+                Budget = model.Budget,
+                ImageUrl = imageUrl,
+                CreatedByUserId = userId,
+                Members = memberDTOs,
+                IsCompleted = false
             };
 
-            return View(projectForm);
+            await _projectService.CreateProjectWithUsersAsync(form, User);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, ProjectForm projectForm)
+        public async Task<IActionResult> Edit(int id, EditProjectViewModel model)
         {
-            if (id != projectForm.Id)
+            if (id != model.Id) return BadRequest();
+            if (!ModelState.IsValid) return View(model);
+
+            var memberDTOs = model.MemberIds.Select(mid => new MemberItemDTO
             {
-                return BadRequest();
-            }
+                Id = mid
+            }).ToList();
 
-            if (ModelState.IsValid)
+            var form = new ProjectForm
             {
-                var updatedProject = await _projectService.UpdateProjectAsync(projectForm);
-                if (updatedProject == null)
-                {
-                    return NotFound();
-                }
+                Id = model.Id,
+                Name = model.Name,
+                ClientEmail = model.ClientEmail,
+                Description = model.Description,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate,
+                Budget = model.Budget,
+                ImageUrl = model.ImageUrl,
+                Members = memberDTOs
+            };
 
-                return RedirectToAction("Index");
-            }
+            var updatedProject = await _projectService.UpdateProjectAsync(form);
+            if (updatedProject == null) return NotFound();
 
-            return View(projectForm);
+            return RedirectToAction("Index");
         }
 
-        // Delete - Ta bort projekt
+        [HttpPost]
+        public async Task<IActionResult> Complete(int id)
+        {
+            var success = await _projectService.MarkProjectAsCompletedAsync(id);
+            if (!success) return NotFound();
+
+            return RedirectToAction("Index");
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
+            if (project == null) return NotFound();
 
             return View(project);
         }
@@ -150,22 +206,15 @@ namespace Presentation.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var success = await _projectService.DeleteProjectAsync(id);
-            if (!success)
-            {
-                return NotFound();
-            }
+            if (!success) return NotFound();
 
             return RedirectToAction("Index");
         }
 
-        // Details - Visa detaljer för projekt
         public async Task<IActionResult> Details(int id)
         {
             var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
+            if (project == null) return NotFound();
 
             return View(project);
         }
@@ -174,12 +223,9 @@ namespace Presentation.Controllers
         {
             var now = DateTime.UtcNow;
             var difference = endDate - now;
-            if (difference.TotalDays < 1)
-                return "Less than 1 day left";
-            if (difference.TotalDays < 7)
-                return $"{difference.Days} days left";
-            if (difference.TotalDays < 30)
-                return $"{difference.Days / 7} weeks left";
+            if (difference.TotalDays < 1) return "Less than 1 day left";
+            if (difference.TotalDays < 7) return $"{difference.Days} days left";
+            if (difference.TotalDays < 30) return $"{difference.Days / 7} weeks left";
             return $"{difference.Days / 30} months left";
         }
     }

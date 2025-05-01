@@ -20,11 +20,11 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
             _dbContext = dbContext;
         }
 
-        public async Task<List<User>> GetUsersByRoleAsync(string roleName)
+        public async Task<List<UserEntity>> GetUsersByRoleAsync(string roleName)
         {
             var identityUsers = await _userManager.GetUsersInRoleAsync(roleName);
 
-            return identityUsers.Select(u => new User
+            return identityUsers.Select(u => new UserEntity
             {
                 Id = u.Id,
                 Email = u.Email,
@@ -36,13 +36,13 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
             }).ToList();
         }
 
-        public async Task<User> GetByIdAsync(string id)
+        public async Task<UserEntity> GetByIdAsync(string id)
         {
             var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (identityUser == null) return null;
 
             var roles = await _userManager.GetRolesAsync(identityUser);
-            return new User
+            return new UserEntity
             {
                 Id = identityUser.Id,
                 Email = identityUser.Email,
@@ -51,11 +51,11 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 Position = identityUser.Position,
                 Role = roles.FirstOrDefault() ?? "User",
                 ImageUrl = identityUser.ImageUrl,
-                ExternalImageUrl = identityUser.ExternalImageUrl // ✅ nytt!
+                ExternalImageUrl = identityUser.ExternalImageUrl
             };
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(UserEntity user)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
@@ -64,15 +64,13 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
                 if (identityUser == null) return;
 
-                // ✅ Uppdatera alla fält
                 identityUser.UserName = user.UserName;
                 identityUser.Email = user.Email;
                 identityUser.PhoneNumber = user.PhoneNumber;
                 identityUser.Position = user.Position;
                 identityUser.ImageUrl = user.ImageUrl;
-                identityUser.ExternalImageUrl = user.ExternalImageUrl; // ✅ nytt!
+                identityUser.ExternalImageUrl = user.ExternalImageUrl;
 
-                // 🎭 Rollhantering
                 var currentRoles = await _userManager.GetRolesAsync(identityUser);
                 var currentRole = currentRoles.FirstOrDefault();
 
@@ -94,7 +92,6 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
             }
         }
 
-
         public async Task DeleteUserAsync(string id)
         {
             var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -104,7 +101,7 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
             }
         }
 
-        public async Task<bool> IsInRoleAsync(User user, string role)
+        public async Task<bool> IsInRoleAsync(UserEntity user, string role)
         {
             var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
             if (identityUser == null) return false;
@@ -121,6 +118,7 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
             await _userManager.RemoveFromRolesAsync(identityUser, currentRoles);
             await _userManager.AddToRoleAsync(identityUser, newRole);
         }
+
         public async Task UpdateExternalImageUrlAsync(string userId, string externalImageUrl)
         {
             var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
@@ -131,5 +129,48 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
             }
         }
 
+        public async Task<List<UserEntity>> GetAllUsersAsync()
+        {
+            var identityUsers = await _userManager.Users.ToListAsync();
+            var result = new List<UserEntity>();
+
+            foreach (var identityUser in identityUsers)
+            {
+                var roles = await _userManager.GetRolesAsync(identityUser);
+                result.Add(new UserEntity
+                {
+                    Id = identityUser.Id,
+                    UserName = identityUser.UserName,
+                    Email = identityUser.Email,
+                    PhoneNumber = identityUser.PhoneNumber,
+                    Position = identityUser.Position,
+                    Role = roles.FirstOrDefault() ?? "User",
+                    ImageUrl = identityUser.ImageUrl,
+                    ExternalImageUrl = identityUser.ExternalImageUrl
+                });
+            }
+
+            return result;
+        }
+
+        public async Task<UserEntity?> GetUserByEmailAsync(string email)
+        {
+            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (identityUser == null) return null;
+
+            var roles = await _userManager.GetRolesAsync(identityUser);
+            var role = roles.FirstOrDefault() ?? "NoRole";
+
+            return new UserEntity
+            {
+                Id = identityUser.Id,
+                UserName = identityUser.UserName,
+                Email = identityUser.Email,
+                PhoneNumber = identityUser.PhoneNumber,
+                Position = identityUser.Position,
+                Role = role,
+                ImageUrl = identityUser.ImageUrl
+            };
+        }
     }
 }

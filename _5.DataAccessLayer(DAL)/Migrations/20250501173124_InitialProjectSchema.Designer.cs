@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _5.DataAccessLayer_DAL_;
 
@@ -11,9 +12,11 @@ using _5.DataAccessLayer_DAL_;
 namespace _5.DataAccessLayer_DAL_.Migrations
 {
     [DbContext(typeof(ApplicationProjectDbContext))]
-    partial class ApplicationProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250501173124_InitialProjectSchema")]
+    partial class InitialProjectSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

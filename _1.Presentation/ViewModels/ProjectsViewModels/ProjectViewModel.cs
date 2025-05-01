@@ -6,7 +6,7 @@ namespace _1.PresentationLayer.ViewModels.ProjectsViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ClientName { get; set; }
+        public string ClientEmail { get; set; }
         public string Description { get; set; }
         public string? ImageUrl { get; set; } = "~/Pictures/Icons/projectlogo.svg";
         public string TimeLeft { get; set; }

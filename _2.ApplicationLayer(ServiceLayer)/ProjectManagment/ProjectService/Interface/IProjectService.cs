@@ -1,6 +1,6 @@
 ﻿using __Cross_cutting_Concerns.FormDTOs;
-using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interface
@@ -10,9 +10,6 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interfa
         // Hämtar alla projekt baserat på användarens roller
         Task<IEnumerable<ProjectForm>> GetProjectsForUserRoleAsync(IEnumerable<string> roles, string userId);
 
-        // Skapar ett nytt projekt
-        Task<ProjectForm> CreateProjectAsync(ProjectForm projectForm);
-
         // Uppdaterar ett projekt
         Task<ProjectForm> UpdateProjectAsync(ProjectForm projectForm);
 
@@ -21,5 +18,12 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interfa
 
         // Hämtar ett projekt baserat på dess ID
         Task<ProjectForm> GetProjectByIdAsync(int projectId);
+
+        // Skapar ett projekt med kopplade användare och kund
+        Task CreateProjectWithUsersAsync(ProjectForm form, ClaimsPrincipal user);
+
+        Task<bool> MarkProjectAsCompletedAsync(int projectId);
+
+
     }
 }

@@ -9,15 +9,15 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface
     public interface IUserService
     {
         Task<NewMembersDTO> GetUsersFilteredAsync(string role, string? search, string tab, string sortBy, int page, int pageSize);
-        Task<User> GetUserByIdAsync(string id);
-        Task UpdateUserAsync(User user);
+        Task<UserEntity> GetUserByIdAsync(string id);
+        Task UpdateUserAsync(UserEntity user);
         Task DeleteUserAsync(string id);
-        Task<bool> IsInRoleAsync(User user, string role);
+        Task<bool> IsInRoleAsync(UserEntity user, string role);
         Task<(string? ImageUrl, string? UserName)> GetUserProfileForLayoutAsync(ClaimsPrincipal user);
         Task<bool> UseExternalProfilePictureAsync(string userId);
         Task<List<string>> GetUserRolesAsync(ClaimsPrincipal user);
         string GetUserId(ClaimsPrincipal user);
-
-
+        Task<List<MemberItemDTO>> GetAllUsersAsync();
+        Task<UserEntity?> GetUserByEmailAsync(string email);
     }
 }

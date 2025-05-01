@@ -8,15 +8,41 @@
             </div>
             <div class="project-text">
                 <h3 class="project-title">@Model.Name</h3>
-                <p class="company-name">@Model.ClientName</p>
+                <p class="company-name">@Model.ClientEmail</p>
             </div>
         </div>
-        <button class="projects-menu-button" aria-label="Open menu">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </button>
+
+        <div class="menu-wrapper">
+            <button class="projects-menu-button" aria-label="Open menu">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </button>
+            <div class="dropdown-menu" style="display: none;">
+                <button class="menu-item menu-item-edit"
+                        data-project-id="@Model.Id"
+                        data-project-name="@Model.Name">
+                    <span class="menu-text">Edit</span>
+                </button>
+
+                @* 🆕 Complete-knappen *@
+                <form method="post" asp-action="Complete" asp-controller="Projects" style="display:inline;">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="menu-item menu-item-complete">
+                        <span class="menu-text">Complete</span>
+                    </button>
+                </form>
+
+
+                <button class="menu-item menu-item-delete"
+                        data-project-id="@Model.Id"
+                        data-project-name="@Model.Name">
+                    <span class="menu-text">Delete</span>
+                </button>
+            </div>
+
+        </div>
     </div>
 
-    <p class="project-description">@Model.Description</p>
+    <div class="project-description">@Html.Raw(Model.Description)</div>
 
     <div class="project-footer">
         <div class="time-remaining">
@@ -26,9 +52,37 @@
         <div class="team-members">
             @foreach (var member in Model.Members)
             {
-                <img src="@Url.Content(member.ImageUrl ?? "https://placehold.co/24x24")" alt="@member.UserName" class="project-member-avatar" />
+                <img src="@(string.IsNullOrWhiteSpace(member.ImageUrl) ? "https://placehold.co/24x24" : Url.Content(member.ImageUrl))"
+                     alt="@member.UserName"
+                     class="project-member-avatar" />
+
             }
         </div>
     </div>
 </article>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('click', function (e) {
+            const isButton = e.target.closest('.projects-menu-button');
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+            if (isButton) {
+                e.stopPropagation();
+
+                const dropdown = isButton.parentElement.querySelector('.dropdown-menu');
+                if (!dropdown) return;
+
+                allDropdowns.forEach(menu => {
+                    if (menu !== dropdown) menu.style.display = 'none';
+                });
+
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            } else {
+                allDropdowns.forEach(menu => {
+                    menu.style.display = 'none';
+                });
+            }
+        });
+    });
+</script>
 

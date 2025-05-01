@@ -21,215 +21,25 @@
         {
             <partial name="~/Views/_Partials/ProjectListPartials/_ProjectCard.cshtml" model="project" />
         }
+
     </div>
+
 </section>
+        <partial name="~/Views/_Partials/ProjectListPartials/_ProjectPagination.cshtml" model="Model" />
+  
+<partial name="~/Views/_Partials/ProjectListPartials/_AddProjectModal.cshtml"
+         model="new _1.PresentationLayer.ViewModels.ProjectsViewModels.CreateProjectViewModel()" />
 
-<!-- ADD PROJECT MODAL -->
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="projectModal">
-        <header class="form-header">
-            <h1 class="form-title">Add Project</h1>
-            <div class="close-icon-wrapper">
-                <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/fbad265fe11d048cf327a34d15de60a4a8ffd228?placeholderIfAbsent=true"
-                     alt="Close"
-                     class="close-icon" />
-            </div>
-        </header>
-        <form class="project-form">
-            <section class="image-upload-section" id="imageUploadSection">
-                <label class="upload-border" for="projectImageInput">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/71061189ef2425aef008f44a16c4de13605797de?placeholderIfAbsent=true"
-                         alt="Upload"
-                         class="upload-icon"
-                         id="uploadPreview" />
-                    <span class="upload-text" id="uploadText">Click to upload icon</span>
-                </label>
-                <input type="file"
-                       id="projectImageInput"
-                       accept="image/*"
-                       hidden />
-            </section>
+<partial name="~/Views/_Partials/ProjectListPartials/_EditProjectModal.cshtml"
+         model="new _1.PresentationLayer.ViewModels.ProjectsViewModels.EditProjectViewModel()" />
 
-            <div class="form-group">
-                <label class="form-label">Project Name</label>
-                <input type="text"
-                       class="form-input"
-                       placeholder="Project Name" />
-            </div>
+<partial name="~/Views/_Partials/ProjectListPartials/_DeleteProjectModal.cshtml"
+         model="new _1.PresentationLayer.ViewModels.ProjectsViewModels.DeleteProjectViewModel()" />
 
-            <div class="form-group">
-                <label class="form-label">Client Name</label>
-                <input type="text"
-                       class="form-input"
-                       placeholder="Client Name" />
-            </div>
 
-            <!-- Quill -->
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                <div id="editor-container">
-                    <p><br /></p>
-                </div>
-                <input type="hidden"
-                       name="description"
-                       id="hidden-description" />
-            </div>
 
-            <div class="date-container">
-                <div class="form-group">
-                    <label class="form-label">Start Date</label>
-                    <div class="date-wrapper">
-                        <input type="date" class="form-input custom-date" />
-                        <img src="@Url.Content("~/Pictures/Icons/Calendar.svg")"
-                             alt="Calendar"
-                             class="calendar-icon-clickable" />
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label">End Date</label>
-                    <div class="date-wrapper">
-                        <input type="date" class="form-input custom-date" />
-                        <img src="@Url.Content("~/Pictures/Icons/Calendar.svg")"
-                             alt="Calendar"
-                             class="calendar-icon-clickable" />
-                    </div>
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label class="form-label">Members</label>
-                <div class="members-input">
-                    <div class="members-tags" id="membersTagsContainer">
-                        <!-- Dynamiskt tillagda taggar kommer här -->
-                    </div>
-                    <input type="text"
-                           id="memberInput"
-                           class="member-input"
-                           placeholder="Add member..." />
-                    <ul id="suggestionsList" class="suggestions-list">
-                        <!-- Filtrerade resultat kommer här -->
-                    </ul>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Budget</label>
-                <div class="budget-input">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/4dcedbc0cf0e776a433556885c24281aa83f0ee1?placeholderIfAbsent=true"
-                         alt="Currency"
-                         class="currency-icon" />
-                    <input type="text" placeholder="0" class="budget-field" />
-                </div>
-            </div>
-
-            <button type="submit" class="submit-button">Create</button>
-        </form>
-    </div>
-</div>
-<!-- EDIT PROJECT MODAL -->
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="editProjectModal">
-        <header class="form-header">
-            <h1 class="form-title">Add Project</h1>
-            <div class="close-icon-wrapper">
-                <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/fbad265fe11d048cf327a34d15de60a4a8ffd228?placeholderIfAbsent=true"
-                     alt="Close"
-                     class="close-icon" />
-            </div>
-        </header>
-        <form class="project-form">
-            <section class="image-upload-section" id="imageUploadSection">
-                <label class="upload-border" for="projectImageInput">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/71061189ef2425aef008f44a16c4de13605797de?placeholderIfAbsent=true"
-                         alt="Upload"
-                         class="upload-icon"
-                         id="uploadPreview" />
-                    <span class="upload-text" id="uploadText">Click to upload icon</span>
-                </label>
-                <input type="file"
-                       id="projectImageInput"
-                       accept="image/*"
-                       hidden />
-            </section>
-
-            <div class="form-group">
-                <label class="form-label">Project Name</label>
-                <input type="text"
-                       class="form-input"
-                       placeholder="Project Name" />
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Client Name</label>
-                <input type="text"
-                       class="form-input"
-                       placeholder="Client Name" />
-            </div>
-
-            <!-- Quill -->
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                <div id="editor-container">
-                    <p><br /></p>
-                </div>
-                <input type="hidden"
-                       name="description"
-                       id="hidden-description" />
-            </div>
-
-            <div class="date-container">
-                <div class="form-group">
-                    <label class="form-label">Start Date</label>
-                    <div class="date-wrapper">
-                        <input type="date" class="form-input custom-date" />
-                        <img src="icons/calendar.svg"
-                             alt="Calendar"
-                             class="calendar-icon-clickable" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">End Date</label>
-                    <div class="date-wrapper">
-                        <input type="date" class="form-input custom-date" />
-                        <img src="icons/calendar.svg"
-                             alt="Calendar"
-                             class="calendar-icon-clickable" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Members</label>
-                <div class="members-input">
-                    <div class="members-tags" id="membersTagsContainer">
-                        <!-- Dynamiskt tillagda taggar kommer här -->
-                    </div>
-                    <input type="text"
-                           id="memberInput"
-                           class="member-input"
-                           placeholder="Add member..." />
-                    <ul id="suggestionsList" class="suggestions-list">
-                        <!-- Filtrerade resultat kommer här -->
-                    </ul>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Budget</label>
-                <div class="budget-input">
-                    <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/4dcedbc0cf0e776a433556885c24281aa83f0ee1?placeholderIfAbsent=true"
-                         alt="Currency"
-                         class="currency-icon" />
-                    <input type="text" placeholder="0" class="budget-field" />
-                </div>
-            </div>
-
-            <button type="submit" class="submit-button">Create</button>
-        </form>
-    </div>
-</div>
 <!-- Script 1: Modalhantering -->
 <script>
     const addButton = document.querySelector(".add-button");
@@ -393,30 +203,37 @@
 
     // 🗑️ DELETE PROJECT
     document.querySelectorAll(".menu-item-delete").forEach((btn) => {
-        btn.addEventListener("mousedown", (e) => {
+        btn.addEventListener("click", (e) => {
             e.stopPropagation();
             window.suppressDropdownClose = true;
+            closeMenusExcept();
 
-            resetModal();
-            modal.dataset.mode = "delete";
-            modalTitle.textContent = "Delete Project";
-            submitButton.textContent = "Delete";
-
+            const modalOverlay = document.getElementById("deleteProjectModalOverlay");
             modalOverlay.classList.add("active");
-            showDeleteConfirmation();
 
-            closeMenusExcept(); // 👈 kör sist – efter att allt är synligt
-            safelySetTrigger("delete");
+            // sätt projekt-ID och namn (t.ex. via data-attributes)
+            const projectId = btn.dataset.projectId;
+            const projectName = btn.dataset.projectName;
+
+            modalOverlay.querySelector("input[name='Id']").value = projectId;
+            modalOverlay.querySelector(".form-label strong").textContent = projectName;
         });
     });
 
+
     // ❌ STÄNG MODAL
-    closeButton.addEventListener("click", () => {
-        modalOverlay.classList.remove("active");
-        const confirmMessage = modal.querySelector("#delete-confirm-message");
-        resetModal();
-        if (confirmMessage) confirmMessage.style.display = "none";
-    });
+ closeButton.addEventListener("click", () => {
+    modalOverlay.classList.remove("active");
+
+    // stäng även deleteModal om öppen
+    const deleteOverlay = document.getElementById("deleteProjectModalOverlay");
+    if (deleteOverlay?.classList.contains("active")) {
+        deleteOverlay.classList.remove("active");
+    }
+
+    resetModal();
+});
+
 </script>
 <!-- 2. Quill Editor + Cursor Fix -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -452,6 +269,16 @@
             }
         });
 </script>
+<!--Quill save-->
+<script>
+    const hiddenDescription = document.getElementById("hidden-description");
+
+    // Update the hidden description input whenever the content changes in Quill editor
+    quill.on('text-change', function (delta, oldDelta, source) {
+        hiddenDescription.value = quill.root.innerHTML;  // Save the HTML content of Quill to the hidden field
+    });
+</script>
+
 
 <!-- 3. Header-menyer: Profil, Inställningar & Notifications -->
 <script>
@@ -565,46 +392,23 @@
         fileInput.value = "";
     });
 </script>
-<!-- 7. Medlemssök och taggning -->
 <script>
     const memberInput = document.getElementById("memberInput");
     const suggestionsList = document.getElementById("suggestionsList");
-    const membersTagsContainer = document.getElementById(
-        "membersTagsContainer"
-    );
+    const membersTagsContainer = document.getElementById("membersTagsContainer");
+    const memberHiddenFieldsContainer = document.getElementById("memberHiddenFieldsContainer");
 
-    const membersData = {
-        therese: {
-            name: "Therése Lidbom",
-            avatar:
-                "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/062c8d2c544a1cfec394b494618868cbe3eae88b?placeholderIfAbsent=true",
-        },
-        hans: {
-            name: "Hans Mattin-Lassei",
-            avatar:
-                "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/421b658bc5ea3245d4f35d0f675af7b328b8c40e?placeholderIfAbsent=true",
-        },
-        emma: {
-            name: "Emma Sjöström",
-            avatar:
-                "https://cdn.builder.io/api/v1/image/assets/TEMP/50c7e1d92d04682beceaa22a8ea7709a6dc0a782?placeholderIfAbsent=true",
-        },
-        john: {
-            name: "John Doe",
-            avatar:
-                "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/062c8d2c544a1cfec394b494618868cbe3eae88b?placeholderIfAbsent=true",
-        },
-        lisa: {
-            name: "Lisa Lind",
-            avatar:
-                "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/421b658bc5ea3245d4f35d0f675af7b328b8c40e?placeholderIfAbsent=true",
-        },
-        david: {
-            name: "David Henriksson",
-            avatar:
-                "https://cdn.builder.io/api/v1/image/assets/TEMP/50c7e1d92d04682beceaa22a8ea7709a6dc0a782?placeholderIfAbsent=true",
-        },
-    };
+    const membersData = {};
+    const allMembers = @Html.Raw(Json.Serialize(Model.AllMembers));
+
+    allMembers.forEach(member => {
+        if (member.role === "TeamMember") {
+            membersData[member.id] = {
+                name: member.userName,
+                avatar: member.imageUrl ?? "https://placehold.co/24x24"
+            };
+        }
+    });
 
     let currentSuggestions = [];
     let activeIndex = -1;
@@ -612,67 +416,75 @@
 
     function showSuggestions(query) {
         suggestionsList.innerHTML = "";
+
         const availableMembers = Object.keys(membersData).filter(
             (key) => !selectedMembers.includes(key)
         );
-        let suggestions = [];
 
-        if (query.length < 1) {
-            suggestions = availableMembers.slice(0, 5);
-        } else {
-            suggestions = availableMembers.filter((key) =>
+        const filtered = query.length < 1
+            ? availableMembers.slice(0, 5)
+            : availableMembers.filter((key) =>
                 membersData[key].name.toLowerCase().includes(query.toLowerCase())
             );
-        }
 
-        if (suggestions.length === 0) {
+        if (filtered.length === 0) {
             suggestionsList.style.display = "none";
             return;
         }
 
-        currentSuggestions = suggestions;
+        currentSuggestions = filtered;
         suggestionsList.style.display = "block";
 
-        suggestions.forEach((key, index) => {
-            const suggestionItem = document.createElement("li");
-            suggestionItem.textContent = membersData[key].name;
+        filtered.forEach((key, index) => {
+            const li = document.createElement("li");
+            li.textContent = membersData[key].name;
 
-            if (activeIndex === index) {
-                suggestionItem.classList.add("active");
+            if (index === activeIndex) {
+                li.classList.add("active");
             }
 
-            // ✅ FIX: Stoppa eventet från att bubbla upp till modal-overlay
-            suggestionItem.addEventListener("click", (e) => {
+            li.addEventListener("click", (e) => {
                 e.stopPropagation();
                 addMember(key);
             });
 
-            suggestionsList.appendChild(suggestionItem);
+            suggestionsList.appendChild(li);
         });
     }
 
     function addMember(memberKey) {
         const member = membersData[memberKey];
-        const existingTag = membersTagsContainer.querySelector(
-            `[data-id="${memberKey}"]`
-        );
-        if (existingTag) return;
+        if (!member || selectedMembers.includes(memberKey)) return;
 
+        // Visa som tag
         const tag = document.createElement("div");
         tag.className = "member-tag";
         tag.dataset.id = memberKey;
         tag.innerHTML = `
-          <img src="${member.avatar}" alt="${member.name}" class="project-member-avatar" />
-          <span class="member-name">${member.name}</span>
-          <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/dfff3394c6759651f9dc2423c2fe281189809b34?placeholderIfAbsent=true" alt="Remove" class="remove-icon" />
-        `;
+                <img src="${member.avatar}" alt="${member.name}" class="project-member-avatar" />
+                <span class="member-name">${member.name}</span>
+                <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/dfff3394c6759651f9dc2423c2fe281189809b34?placeholderIfAbsent=true" alt="Remove" class="remove-icon" />
+            `;
 
-        tag
-            .querySelector(".remove-icon")
-            .addEventListener("click", () => tag.remove());
+        tag.querySelector(".remove-icon").addEventListener("click", () => {
+            tag.remove();
+            selectedMembers = selectedMembers.filter(id => id !== memberKey);
+            memberHiddenFieldsContainer.querySelectorAll(`[data-id="${memberKey}"]`).forEach(el => el.remove());
+        });
 
         membersTagsContainer.appendChild(tag);
         selectedMembers.push(memberKey);
+
+        // Lägg till enbart ID som hidden input
+        const index = selectedMembers.length - 1;
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = `MemberIds`; // 👈 matchar CreateProjectViewModel
+        input.value = memberKey;
+        input.dataset.id = memberKey;
+        memberHiddenFieldsContainer.appendChild(input);
+
+        // Nollställ inputfält
         memberInput.value = "";
         suggestionsList.innerHTML = "";
         activeIndex = -1;
@@ -688,15 +500,10 @@
         const suggestions = suggestionsList.querySelectorAll("li");
 
         if (e.key === "Enter" && activeIndex >= 0) {
-            e.preventDefault();
+         
             addMember(currentSuggestions[activeIndex]);
-        } else if (
-            e.key === "ArrowDown" &&
-            activeIndex < suggestions.length - 1
-        ) {
-            if (activeIndex >= 0) {
-                suggestions[activeIndex].classList.remove("active");
-            }
+        } else if (e.key === "ArrowDown" && activeIndex < suggestions.length - 1) {
+            if (activeIndex >= 0) suggestions[activeIndex].classList.remove("active");
             activeIndex++;
             suggestions[activeIndex].classList.add("active");
         } else if (e.key === "ArrowUp" && activeIndex > 0) {
@@ -707,10 +514,7 @@
     });
 
     document.addEventListener("click", (e) => {
-        if (
-            !memberInput.contains(e.target) &&
-            !suggestionsList.contains(e.target)
-        ) {
+        if (!memberInput.contains(e.target) && !suggestionsList.contains(e.target)) {
             suggestionsList.style.display = "none";
         }
     });
@@ -721,3 +525,105 @@
     });
 </script>
 
+
+
+<!-- 8. Customer Email-autocomplete -->
+<script>
+    const clientInput = document.getElementById("clientInput");
+    const clientSuggestionsList = document.getElementById("clientSuggestionsList");
+
+    const allMembersForCustomer = @Html.Raw(Json.Serialize(Model.AllMembers));
+    const customerData = {};
+
+    allMembersForCustomer.forEach(member => {
+        if (member.role?.toLowerCase() === "customer") {
+            customerData[member.email] = {
+                email: member.email,
+                avatar: member.imageUrl ?? "https://placehold.co/24x24"
+            };
+        }
+    });
+
+    let customerSuggestions = [];
+    let customerActiveIndex = -1;
+
+    function showCustomerSuggestions(query) {
+        clientSuggestionsList.innerHTML = "";
+
+        const available = Object.keys(customerData);
+
+        const filtered = query.length < 1
+            ? available.slice(0, 5)
+            : available.filter(key =>
+                customerData[key].email.toLowerCase().includes(query.toLowerCase())
+            );
+
+        if (filtered.length === 0) {
+            clientSuggestionsList.style.display = "none";
+            return;
+        }
+
+        customerSuggestions = filtered;
+        clientSuggestionsList.style.display = "block";
+
+        filtered.forEach((key, index) => {
+            const li = document.createElement("li");
+            li.textContent = customerData[key].email;
+
+            if (index === customerActiveIndex) {
+                li.classList.add("active");
+            }
+
+            li.addEventListener("click", (e) => {
+                e.stopPropagation();
+                clientInput.value = customerData[key].email;
+                clientSuggestionsList.innerHTML = "";
+                clientSuggestionsList.style.display = "none";
+                customerActiveIndex = -1;
+            });
+
+            clientSuggestionsList.appendChild(li);
+        });
+    }
+
+    clientInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim();
+        showCustomerSuggestions(query);
+    });
+
+    clientInput.addEventListener("keydown", (e) => {
+        const suggestions = clientSuggestionsList.querySelectorAll("li");
+
+        if (e.key === "Enter" && customerActiveIndex >= 0) {
+         
+            const key = customerSuggestions[customerActiveIndex];
+            clientInput.value = customerData[key].email;
+            clientSuggestionsList.innerHTML = "";
+            clientSuggestionsList.style.display = "none";
+            customerActiveIndex = -1;
+        } else if (e.key === "ArrowDown") {
+            if (customerActiveIndex >= 0 && customerActiveIndex < suggestions.length) {
+                suggestions[customerActiveIndex].classList.remove("active");
+            }
+            customerActiveIndex = Math.min(customerActiveIndex + 1, suggestions.length - 1);
+            suggestions[customerActiveIndex]?.classList.add("active");
+        } else if (e.key === "ArrowUp") {
+            if (customerActiveIndex >= 0 && customerActiveIndex < suggestions.length) {
+                suggestions[customerActiveIndex].classList.remove("active");
+            }
+            customerActiveIndex = Math.max(customerActiveIndex - 1, 0);
+            suggestions[customerActiveIndex]?.classList.add("active");
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!clientInput.contains(e.target) && !clientSuggestionsList.contains(e.target)) {
+            clientSuggestionsList.style.display = "none";
+        }
+    });
+
+    clientInput.addEventListener("focus", () => {
+        const query = clientInput.value.trim();
+        showCustomerSuggestions(query);
+    });
+</script>

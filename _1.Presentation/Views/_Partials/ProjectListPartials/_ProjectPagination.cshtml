@@ -1,0 +1,18 @@
+﻿@model _1.PresentationLayer.ViewModels.ProjectsViewModels.ProjectsViewModel
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination-wrapper">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li>
+                    <a class="@(i == Model.CurrentPage ? "pagination-button active-page" : "pagination-button")"
+                       href="@Url.Action("Index", "Projects", new { page = i, tab = Model.SelectedTab })">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

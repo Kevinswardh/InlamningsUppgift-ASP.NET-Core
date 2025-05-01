@@ -1,0 +1,114 @@
+﻿@model _1.PresentationLayer.ViewModels.ProjectsViewModels.CreateProjectViewModel
+
+<!-- ADD PROJECT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="projectModal">
+        <header class="form-header">
+            <h1 class="form-title">Add Project</h1>
+            <div class="close-icon-wrapper">
+                <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/fbad265fe11d048cf327a34d15de60a4a8ffd228?placeholderIfAbsent=true"
+                     alt="Close"
+                     class="close-icon" />
+            </div>
+        </header>
+
+        <form asp-action="Create" asp-controller="Projects" method="post" enctype="multipart/form-data" class="project-form">
+     
+            <section class="image-upload-section" id="imageUploadSection">
+                <label class="upload-border" for="projectImageInput">
+                    <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/71061189ef2425aef008f44a16c4de13605797de?placeholderIfAbsent=true"
+                         alt="Upload"
+                         class="upload-icon"
+                         id="uploadPreview" />
+                    <span class="upload-text" id="uploadText">Click to upload icon</span>
+                </label>
+                <input type="file"
+                       id="projectImageInput"
+                       name="ImageFile"
+                       accept="image/*"
+                       hidden />
+            </section>
+
+            <div class="form-group">
+                <label class="form-label">Project Name</label>
+                <input type="text"
+                       name="Name"
+                       class="form-input"
+                       placeholder="Project Name" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Customer Email</label>
+                <div class="members-input">
+                    <input type="text" id="clientInput" name="ClientEmail" class="member-input" placeholder="Customer Email" />
+                    <ul id="clientSuggestionsList" class="suggestions-list"></ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <div id="editor-container">
+                    <p><br /></p>
+                </div>
+                <input type="hidden"
+                       name="Description"
+                       id="hidden-description" />
+            </div>
+
+            <div class="date-container">
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <div class="date-wrapper">
+                        <input type="date" name="StartDate" class="form-input custom-date" />
+                        <img src="@Url.Content("~/Pictures/Icons/Calendar.svg")"
+                             alt="Calendar"
+                             class="calendar-icon-clickable" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <div class="date-wrapper">
+                        <input type="date" name="EndDate" class="form-input custom-date" />
+                        <img src="@Url.Content("~/Pictures/Icons/Calendar.svg")"
+                             alt="Calendar"
+                             class="calendar-icon-clickable" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Members</label>
+                <div class="members-input">
+                    <div class="members-tags" id="membersTagsContainer">
+                        <!-- Dynamiskt tillagda taggar kommer här -->
+                    </div>
+                    <input type="text"
+                           id="memberInput"
+                           class="member-input"
+                           placeholder="Add member..." />
+                    <ul id="suggestionsList" class="suggestions-list">
+                        <!-- Filtrerade resultat kommer här -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Här kommer de dynamiskt genererade hidden inputsen för medlemmar -->
+            <div id="memberHiddenFieldsContainer"></div>
+
+            <div class="form-group">
+                <label class="form-label">Budget</label>
+                <div class="budget-input">
+                    <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/4dcedbc0cf0e776a433556885c24281aa83f0ee1?placeholderIfAbsent=true"
+                         alt="Currency"
+                         class="currency-icon" />
+                    <input type="text" name="Budget" placeholder="0" class="budget-field" />
+                </div>
+            </div>
+
+            <button type="submit" class="submit-button">Create</button>
+        </form>
+ 
+
+    </div>
+</div>

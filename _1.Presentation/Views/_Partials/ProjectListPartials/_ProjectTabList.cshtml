@@ -1,7 +1,7 @@
 ﻿@model _1.PresentationLayer.ViewModels.ProjectsViewModels.ProjectsViewModel
 
 <div class="tab-list">
-    <button class="tab-item active-tab">ALL [@Model.AllCount]</button>
-    <button class="tab-item">STARTED [@Model.StartedCount]</button>
-    <button class="tab-item">COMPLETED [@Model.CompletedCount]</button>
+    <a asp-action="Index" asp-route-tab="All" class="tab-item @(Model.SelectedTab == "All" ? "active-tab" : "")">ALL [@Model.AllCount]</a>
+    <a asp-action="Index" asp-route-tab="Started" class="tab-item @(Model.SelectedTab == "Started" ? "active-tab" : "")">STARTED [@Model.StartedCount]</a>
+    <a asp-action="Index" asp-route-tab="Completed" class="tab-item @(Model.SelectedTab == "Completed" ? "active-tab" : "")">COMPLETED [@Model.CompletedCount]</a>
 </div>

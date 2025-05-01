@@ -6,22 +6,22 @@ namespace DomainLayer_BusinessLogicLayer_.InfraInterfaces
 {
     public interface IProjectRepository
     {
-        // Läs alla projekt
-        Task<IEnumerable<Project>> GetAllAsync();
+        // Skapa nytt projekt
+        Task<ProjectEntity> CreateProjectAsync(ProjectEntity project);
 
-        // Hämta projekt baserat på användar-ID
-        Task<IEnumerable<Project>> GetProjectsByUserIdAsync(string userId);
+        // Hämta alla projekt (inkl. kund och medlemmar)
+        Task<IEnumerable<ProjectEntity>> GetAllAsync();
+
+        // Hämta projekt för en viss användare (via ExternalUserId)
+        Task<IEnumerable<ProjectEntity>> GetProjectsByUserIdAsync(string externalUserId);
 
         // Hämta projekt baserat på ID
-        Task<Project> GetByIdAsync(int projectId);
+        Task<ProjectEntity> GetByIdAsync(int projectId);
 
-        // Skapa ett nytt projekt
-        Task<Project> CreateProjectAsync(Project project);
+        // Uppdatera projekt
+        Task<ProjectEntity> UpdateProjectAsync(ProjectEntity project);
 
-        // Uppdatera ett befintligt projekt
-        Task<Project> UpdateProjectAsync(Project project);
-
-        // Ta bort ett projekt
+        // Ta bort projekt
         Task<bool> DeleteProjectAsync(int projectId);
     }
 }

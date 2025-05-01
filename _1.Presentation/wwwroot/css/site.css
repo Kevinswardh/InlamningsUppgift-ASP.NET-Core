@@ -1322,6 +1322,38 @@ svg {
             background-color: #f0f4f8;
             font-weight: 600;
         }
+#clientSuggestionsList {
+    margin: 4px 0 0 0;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #ebeef2;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    left: 0;
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 8px 0;
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 10;
+}
+
+    #clientSuggestionsList li {
+        cursor: pointer;
+        color: #28263b;
+        font-family: Nunito, -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 15px;
+        padding: 10px 14px;
+        transition: background-color 0.2s ease, font-weight 0.2s ease;
+    }
+
+        #clientSuggestionsList li:hover,
+        #clientSuggestionsList li.active {
+            background-color: #f0f4f8;
+            font-weight: 600;
+        }
 
 .sortby-wrapper {
     display: inline-block;

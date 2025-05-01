@@ -1,0 +1,31 @@
+﻿@model _1.PresentationLayer.ViewModels.ProjectsViewModels.DeleteProjectViewModel
+
+<!-- DELETE PROJECT MODAL -->
+<div class="modal-overlay" id="deleteProjectModalOverlay">
+    <div class="modal" id="deleteProjectModal">
+        <header class="form-header">
+            <h1 class="form-title">Delete Project</h1>
+            <div class="close-icon-wrapper">
+                <img src="/Pictures/Icons/close.svg" alt="Close" class="close-icon" />
+            </div>
+        </header>
+
+        <form asp-action="DeleteConfirmed" asp-controller="Projects" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label class="form-label" style="margin: 1rem 0; display: block;">
+                    Are you sure you want to delete the project:
+                    <strong>@Model.Name</strong>?
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button type="submit" class="submit-button danger-button">Delete</button>
+                <button type="button" class="submit-button" onclick="document.getElementById('deleteProjectModalOverlay').classList.remove('active')">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

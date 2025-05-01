@@ -18,18 +18,20 @@ namespace _4.infrastructureLayer.Repositories.AuthRepository
             _dbContext = dbContext;
         }
 
-        public async Task<User?> GetUserByEmailAsync(string email)
+        public async Task<UserEntity?> GetUserByEmailAsync(string email)
         {
             var identityUser = await _userManager.FindByEmailAsync(email);
             if (identityUser == null) return null;
 
-            return new User
+            var roles = await _userManager.GetRolesAsync(identityUser);
+
+            return new UserEntity
             {
                 Email = identityUser.Email,
                 UserName = identityUser.UserName,
                 PhoneNumber = identityUser.PhoneNumber,
                 Position = identityUser.Position,
-                Role = "User" // ev. hämta riktig roll via _userManager.GetRolesAsync om det behövs
+                Role = roles.FirstOrDefault() ?? "User"
             };
         }
 
@@ -41,7 +43,7 @@ namespace _4.infrastructureLayer.Repositories.AuthRepository
             return await _userManager.CheckPasswordAsync(identityUser, password);
         }
 
-        public async Task<bool> CreateUserAsync(User user, string password)
+        public async Task<bool> CreateUserAsync(UserEntity user, string password)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
