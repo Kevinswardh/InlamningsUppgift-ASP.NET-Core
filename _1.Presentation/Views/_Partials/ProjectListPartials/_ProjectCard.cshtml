@@ -12,32 +12,39 @@
             </div>
         </div>
 
-        <div class="menu-wrapper">
-            <button class="projects-menu-button" aria-label="Open menu">
-                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </button>
-            <div class="dropdown-menu" style="display: none;">
-                <button class="menu-item menu-item-edit text-blue-600 hover:bg-blue-50"
-                        data-project-id="@Model.Id"
-                        data-project-name="@Model.Name">
-                    <span class="menu-text">Edit</span>
-                </button>
+        @{
+            var userRole = User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("TeamMember");
+        }
 
-                <form method="post" asp-action="Complete" asp-controller="Projects" style="display:inline; margin-bottom: 4px;">
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <button type="submit" class="menu-item menu-item-complete text-green-600 hover:bg-green-50">
-                        <span class="menu-text">Complete</span>
+        @if (userRole)
+        {
+            <div class="menu-wrapper">
+                <button class="projects-menu-button" aria-label="Open menu">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                </button>
+                <div class="dropdown-menu" style="display: none;">
+                    <button class="menu-item menu-item-edit text-blue-600 hover:bg-blue-50"
+                            data-project-id="@Model.Id"
+                            data-project-name="@Model.Name">
+                        <span class="menu-text">Edit</span>
                     </button>
-                </form>
 
-                <button class="menu-item menu-item-delete text-red-600 hover:bg-red-50"
-                        data-project-id="@Model.Id"
-                        data-project-name="@Model.Name">
-                    <span class="menu-text">Delete</span>
-                </button>
+                    <form method="post" asp-action="Complete" asp-controller="Projects" style="display:inline; margin-bottom: 4px;">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button type="submit" class="menu-item menu-item-complete text-green-600 hover:bg-green-50">
+                            <span class="menu-text">Complete</span>
+                        </button>
+                    </form>
+
+                    <button class="menu-item menu-item-delete text-red-600 hover:bg-red-50"
+                            data-project-id="@Model.Id"
+                            data-project-name="@Model.Name">
+                        <span class="menu-text">Delete</span>
+                    </button>
+                </div>
             </div>
+        }
 
-        </div>
     </div>
 
     <div class="project-description">@Html.Raw(Model.Description)</div>

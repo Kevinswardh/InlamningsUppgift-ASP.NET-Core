@@ -19,14 +19,24 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
         }
         public async Task<IEnumerable<ProjectForm>> GetProjectsForUserRoleAsync(IEnumerable<string> roles, string userId)
         {
-            var isManager = roles.Contains("Admin") || roles.Contains("Manager");
+            List<ProjectEntity> projects;
 
-            var projects = isManager
-                ? await _projectRepository.GetAllAsync()
-                : await _projectRepository.GetProjectsByUserIdAsync(userId);
+            if (roles.Contains("Admin") || roles.Contains("Manager"))
+            {
+                projects = (await _projectRepository.GetAllAsync()).ToList();
+            }
+            else if (roles.Contains("Customer"))
+            {
+                var user = await _userService.GetUserByIdAsync(userId);
+                projects = (await _projectRepository.GetProjectsForCustomerAsync(user.Email)).ToList();
+            }
+            else
+            {
+                projects = (await _projectRepository.GetProjectsByUserIdAsync(userId)).ToList();
+            }
 
-            // 🔄 Hämta alla användare från Identity via UserService
-            var allUsers = await _userService.GetAllUsersAsync(); // innehåller ImageUrl, Email osv.
+            // 🔄 Hämta alla användare från Identity för bild och status
+            var allUsers = await _userService.GetAllUsersAsync();
 
             return projects.Select(p => new ProjectForm
             {
@@ -41,20 +51,20 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
                 ClientEmail = p.Customer?.Email ?? "",
                 Members = p.ProjectMembers.Select(pm =>
                 {
-                    var matchingUser = allUsers.FirstOrDefault(u => u.Email == pm.TeamMember.Email);
-
+                    var match = allUsers.FirstOrDefault(u => u.Email == pm.TeamMember.Email);
                     return new MemberItemDTO
                     {
                         Id = pm.TeamMember.ExternalUserId,
                         Email = pm.TeamMember.Email,
                         UserName = pm.TeamMember.Name,
-                        ImageUrl = matchingUser?.ImageUrl, // 💡 Hämta från Identity om möjligt
-                        IsOnline = matchingUser?.IsOnline ?? false
+                        ImageUrl = match?.ImageUrl,
+                        IsOnline = match?.IsOnline ?? false
                     };
                 }).ToList(),
                 IsCompleted = p.IsCompleted
             }).ToList();
         }
+
 
         public async Task<ProjectForm> GetProjectByIdAsync(int projectId)
         {
@@ -80,7 +90,7 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
                     ImageUrl = "",
                     IsOnline = false
                 }).ToList(),
-                IsCompleted = project.EndDate <= DateTime.UtcNow
+           
             };
         }
 

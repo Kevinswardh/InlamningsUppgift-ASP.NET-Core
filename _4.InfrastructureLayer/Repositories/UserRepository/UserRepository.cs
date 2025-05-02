@@ -38,7 +38,10 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
 
         public async Task<UserEntity> GetByIdAsync(string id)
         {
-            var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var identityUser = await _userManager.Users
+                .AsNoTracking() // 👈 säkrar att vi får färskt värde
+                .FirstOrDefaultAsync(u => u.Id == id);
+
             if (identityUser == null) return null;
 
             var roles = await _userManager.GetRolesAsync(identityUser);
@@ -51,9 +54,11 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 Position = identityUser.Position,
                 Role = roles.FirstOrDefault() ?? "User",
                 ImageUrl = identityUser.ImageUrl,
-                ExternalImageUrl = identityUser.ExternalImageUrl
+                ExternalImageUrl = identityUser.ExternalImageUrl,
+                IsDarkModeEnabled = identityUser.IsDarkModeEnabled // 👈 detta var helt saknat!
             };
         }
+
 
         public async Task UpdateUserAsync(UserEntity user)
         {
@@ -64,12 +69,14 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 var identityUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
                 if (identityUser == null) return;
 
+                // ✅ Kopiera över nya egenskaper
                 identityUser.UserName = user.UserName;
                 identityUser.Email = user.Email;
                 identityUser.PhoneNumber = user.PhoneNumber;
                 identityUser.Position = user.Position;
                 identityUser.ImageUrl = user.ImageUrl;
                 identityUser.ExternalImageUrl = user.ExternalImageUrl;
+                identityUser.IsDarkModeEnabled = user.IsDarkModeEnabled; // 👈 LÄGG TILL DENNA
 
                 var currentRoles = await _userManager.GetRolesAsync(identityUser);
                 var currentRole = currentRoles.FirstOrDefault();
@@ -91,6 +98,7 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 throw;
             }
         }
+
 
         public async Task DeleteUserAsync(string id)
         {

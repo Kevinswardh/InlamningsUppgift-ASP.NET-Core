@@ -26,6 +26,7 @@ namespace DomainLayer_BusinessLogicLayer_.InfraInterfaces
 
         public Task<TeamMemberEntity?> GetTeamMemberByExternalIdAsync(string externalUserId);
         public Task CreateTeamMemberAsync(TeamMemberEntity member);
+        Task<IEnumerable<ProjectEntity>> GetProjectsForCustomerAsync(string email);
 
     }
 }

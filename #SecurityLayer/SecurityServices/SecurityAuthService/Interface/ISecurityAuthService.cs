@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using SecurityLayer.Identity;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SecurityLayer.SecurityServices.SecurityAuthService.Interface
@@ -11,7 +12,8 @@ namespace SecurityLayer.SecurityServices.SecurityAuthService.Interface
         // Authentication-related methods
         Task<ApplicationUser?> FindByEmailAsync(string email);
         Task<SignInResult> PasswordSignInAsync(ApplicationUser user, string password, bool isPersistent, bool lockoutOnFailure);
-        Task SignInAsync(ApplicationUser user, bool isPersistent);
+        Task SignInAsync(ApplicationUser user, bool isPersistent, IEnumerable<Claim> claims);
+
         Task SignOutAsync();
 
         // External authentication methods

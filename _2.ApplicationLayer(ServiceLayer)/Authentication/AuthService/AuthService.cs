@@ -53,7 +53,25 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
             if (result.Succeeded)
             {
                 _statusService.SetOnline(identityUser.Email);
+
+                // Hämta extra-info för claim
+                var user = await _userRepository.GetByIdAsync(identityUser.Id);
+
+                var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, identityUser.UserName),
+    new Claim(ClaimTypes.Email, identityUser.Email),
+    new Claim(ClaimTypes.NameIdentifier, identityUser.Id), // Lägger till användarens ID som ett claim
+    new Claim("darkMode", user?.IsDarkModeEnabled.ToString().ToLower() ?? "false"),
+    new Claim(ClaimTypes.Role, user?.Role ?? "User") // Lägg till användarens roll i claims
+};
+
+
+
+                await _securityAuthService.SignOutAsync(); // först utloggning om något redan finns
+                await _securityAuthService.SignInAsync(identityUser, false, claims);
             }
+
 
             return result.Succeeded;
         }
@@ -81,7 +99,7 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
             var identityUser = await _securityAuthService.FindByEmailAsync(user.Email);
             if (identityUser != null)
             {
-                await _securityAuthService.SignInAsync(identityUser, isPersistent: false);
+               // await _securityAuthService.SignInAsync(identityUser, isPersistent: false);
                // _statusService.SetOnline(identityUser.Email); Ska inte gå online vid registrering
             }
 
@@ -104,11 +122,7 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
             if (info == null)
                 return SignInResult.Failed;
 
-            var result = await _externalAuthService.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey);
-
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-            var pictureUrl = info.Principal.FindFirstValue("picture");
-
             if (string.IsNullOrEmpty(email))
                 return SignInResult.Failed;
 
@@ -116,87 +130,107 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
 
             if (identityUser != null)
             {
+                // Om användaren redan finns, uppdatera profilbild om den finns
+                var pictureUrl = info.Principal.FindFirstValue("picture");
                 if (!string.IsNullOrEmpty(pictureUrl))
                 {
                     identityUser.ExternalImageUrl = pictureUrl;
                     await _userRepository.UpdateExternalImageUrlAsync(identityUser.Id, pictureUrl);
                 }
 
-                if (result.Succeeded)
-                {
-                    await _securityAuthService.SignInAsync(identityUser, isPersistent: false);
-                    _statusService.SetOnline(identityUser.Email);
-                    return SignInResult.Success;
-                }
-                else
-                {
-                    var existingLogins = await _securityAuthService.GetLoginsAsync(identityUser);
-                    bool alreadyLinked = existingLogins.Any(l =>
-                        l.LoginProvider == info.LoginProvider &&
-                        l.ProviderKey == info.ProviderKey);
+                // Skapa claims och logga in användaren
+                var userEntity = await _userRepository.GetByIdAsync(identityUser.Id);
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, identityUser.UserName),
+            new Claim(ClaimTypes.Email, identityUser.Email),
+            new Claim(ClaimTypes.NameIdentifier, identityUser.Id),
+            new Claim("darkMode", userEntity?.IsDarkModeEnabled.ToString().ToLower() ?? "false"),
+            new Claim(ClaimTypes.Role, userEntity?.Role ?? "User") // Lägg till användarens roll i claims
+        };
 
-                    if (!alreadyLinked)
-                        await _securityAuthService.AddLoginAsync(identityUser, info);
-
-                    await _securityAuthService.SignInAsync(identityUser, isPersistent: false);
-                    _statusService.SetOnline(identityUser.Email);
-                    return SignInResult.Success;
-                }
+                await _securityAuthService.SignInAsync(identityUser, isPersistent: false, claims);
+                _statusService.SetOnline(identityUser.Email);
+                return SignInResult.Success;
             }
             else
             {
-                var (createResult, newUser, externalInfo) = await CreateExternalUserAsync();
-
+                // Om användaren inte finns, skapa en ny användare
+                var (createResult, newUser, externalInfo) = await CreateExternalUserAsync(info);
                 if (createResult.Succeeded)
                 {
-                    await _securityAuthService.SignInAsync(newUser, isPersistent: false);
+                    var userEntity = await _userRepository.GetByIdAsync(newUser.Id);
+                    var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, newUser.UserName),
+                new Claim(ClaimTypes.Email, newUser.Email),
+                new Claim(ClaimTypes.NameIdentifier, newUser.Id),
+                new Claim("darkMode", userEntity?.IsDarkModeEnabled.ToString().ToLower() ?? "false"),
+                new Claim(ClaimTypes.Role, "User")  // Sätt rollen till "User" vid skapande
+            };
+
+                    await _securityAuthService.SignInAsync(newUser, isPersistent: false, claims);
                     _statusService.SetOnline(newUser.Email);
                     return SignInResult.Success;
                 }
-
-                return SignInResult.Failed;
             }
+
+            return SignInResult.Failed;
         }
 
-        public async Task<(IdentityResult result, ApplicationUser user, ExternalLoginInfo info)> CreateExternalUserAsync()
+        public async Task<(IdentityResult result, ApplicationUser user, ExternalLoginInfo info)> CreateExternalUserAsync(ExternalLoginInfo info)
         {
-            var info = await _externalAuthService.GetExternalLoginInfoAsync();
             if (info == null)
                 return (IdentityResult.Failed(new IdentityError { Description = "No login info" }), null, null);
 
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             if (string.IsNullOrEmpty(email))
-            {
                 return (IdentityResult.Failed(new IdentityError { Description = "Email not provided" }), null, info);
-            }
 
+            // Skapa en ny användare
             var user = new UserEntity
             {
                 Email = email,
                 UserName = email,
                 Position = "New Member",
-                Role = "User"
+                Role = "User"  // Vi sätter rollen till "User" här
             };
 
-            var created = await _authRepo.CreateUserAsync(user, password: "DummyPassword123!");
+            // Skapa användaren i databasen
+            var created = await _authRepo.CreateUserAsync(user, "DummyPassword123!");  // Du kan använda ett mer säkert lösenord här
             if (!created)
-            {
                 return (IdentityResult.Failed(new IdentityError { Description = "Failed creating external user" }), null, info);
-            }
 
             var identityUser = await _securityAuthService.FindByEmailAsync(email);
             if (identityUser == null)
-            {
                 return (IdentityResult.Failed(new IdentityError { Description = "User not found after creation" }), null, info);
-            }
 
+            // Lägg till den externa login-informationen
             await _securityAuthService.AddLoginAsync(identityUser, info);
+            // Lägg till användaren till rollen "User"
             await _securityAuthService.AddToRoleAsync(identityUser, "User");
-            await _securityAuthService.SignInAsync(identityUser, isPersistent: false);
-            _statusService.SetOnline(identityUser.Email);
+
+            // Hämta den nyss skapade användaren för att kolla på DarkMode-inställning
+            var userEntity = await _userRepository.GetByIdAsync(identityUser.Id);
+
+            // Skapa en lista med claims för användaren
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, identityUser.Id),
+        new Claim("darkMode", userEntity?.IsDarkModeEnabled.ToString().ToLower() ?? "false"),
+        new Claim(ClaimTypes.Name, identityUser.UserName),
+        new Claim(ClaimTypes.Email, identityUser.Email),
+        new Claim(ClaimTypes.Role, "User")  // Lägg till rollen "User" som claim
+    };
+
+            // Logga in användaren
+            await _securityAuthService.SignInAsync(identityUser, isPersistent: false, claims);
+            _statusService.SetOnline(identityUser.Email);  // Sätt användaren som online i systemet
 
             return (IdentityResult.Success, identityUser, info);
         }
+
+
 
         public async Task<AuthenticationProperties> GetExternalLoginProperties(string provider, string? redirectUrl)
         {
@@ -207,5 +241,12 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
         {
             return await _externalAuthService.GetExternalLoginProviderAsync(userId);
         }
+        public async Task<ExternalLoginInfo> GetExternalLoginInfoAsync()
+        {
+            // Hämtar information om den externa inloggningen
+            var info = await _externalAuthService.GetExternalLoginInfoAsync();
+            return info;
+        }
+
     }
 }

@@ -1,0 +1,229 @@
+﻿/* === Bakgrund & textbas === */
+body,
+.dashboard,
+.sidebar,
+.main-content,
+.top-bar,
+.login-container,
+.profile-menu,
+.settings-menu,
+.notification-card,
+.modal,
+.project-form,
+.search-container,
+.sortby-button,
+.sortby-dropdown,
+.dropdown-menu,
+.notification-item,
+.menu-item,
+.google-login,
+.oauth-button,
+.upload-border {
+    background-color: #1e1e1e !important;
+    color: #f3f3f3 !important;
+    border-color: #333 !important;
+}
+.project-description::-webkit-scrollbar-thumb {
+    background-color: #444 !important;
+    color: #f3f3f3 !important;
+    border-color: #333 !important;
+}
+
+/* === Kort & komponenter === */
+.project-card,
+.member-card {
+    background-color: #252526 !important;
+    color: #f3f3f3 !important;
+    border: 1px solid #2d2d2d !important;
+}
+
+/* === Rubriker === */
+.section-title,
+.project-title,
+.company-name,
+.project-description,
+.member-name,
+.member-title,
+.notification-message,
+.notification-time,
+.menu-text,
+.form-label,
+.form-input,
+.login-header,
+.signup-title,
+.divider-text {
+    color: #f3f3f3 !important;
+}
+.profile-header {
+    background-color: #2d2d2d !important; /* mörkare än default, men ljusare än resten */
+    color: #f3f3f3 !important;
+}
+
+.profile-name {
+    color: #ffffff !important; /* extra tydlig vit text */
+}
+.settings-header {
+    background-color: #2d2d2d !important;
+    color: #f3f3f3 !important;
+}
+
+.settings-title {
+    color: #ffffff !important;
+}
+
+/* === Inputs & fält === */
+input,
+textarea,
+select,
+.form-input,
+.custom-date,
+.budget-field,
+.date-input {
+    background-color: #2c2c2c !important;
+    color: #f3f3f3 !important;
+    border-color: #444 !important;
+}
+
+/* === Quill === */
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow,
+#editor-container,
+#edit-editor-container {
+    background-color: #2c2c2c !important;
+    border-color: #444 !important;
+}
+
+.ql-editor {
+    color: #f3f3f3 !important;
+}
+
+/* === Ikoner & knappar === */
+.icon-button,
+.projects-menu-button,
+.project-menu-button,
+.settings-icon-large,
+.notification-close {
+    color: #f3f3f3 !important;
+}
+
+/* === Aktiva länkar/knappar === */
+.nav-item.active {
+    background-color: #3a3d41 !important;
+    color: #4fc3f7 !important;
+}
+
+/* === Övrig nav-text */
+.nav-item {
+    color: #d0d0d0 !important;
+}
+
+/* === Logo-text ("alpha") */
+.logo-text {
+    color: #ffffff !important;
+}
+
+/* === Tabs === */
+.tab-item {
+    color: #a0a0a0 !important;
+}
+
+    .tab-item.active-tab {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+        .tab-item.active-tab::after {
+            background-color: #0078d4 !important;
+        }
+
+/* === Sökfält === */
+.search-container {
+    background-color: #2c2c2c !important;
+    border-color: #3a3a3a !important;
+}
+
+.search-input {
+    color: #f3f3f3 !important;
+}
+
+/* === Statusfärger === */
+.status-active {
+    background-color: #004d80 !important;
+    color: #ade8ff !important;
+}
+
+.status-completed {
+    background-color: #004d40 !important;
+    color: #b2f5ea !important;
+}
+
+.status-expired {
+    background-color: #5c1a1a !important;
+    color: #ffb4b4 !important;
+}
+
+.status-late {
+    background-color: #664400 !important;
+    color: #ffe7a3 !important;
+}
+
+/* === Hover-effekter === */
+.menu-item:hover,
+.sortby-dropdown li:hover,
+.dropdown-menu li:hover,
+.notification-close:hover {
+    background-color: #2a2a2a !important;
+}
+
+/* === Suggestions dropdown (sök) === */
+.suggestions-list,
+#clientSuggestionsList {
+    background-color: #2a2a2a !important;
+    border-color: #444 !important;
+}
+
+    .suggestions-list li,
+    #clientSuggestionsList li {
+        color: #f3f3f3 !important;
+    }
+
+        .suggestions-list li:hover,
+        .suggestions-list li.active,
+        #clientSuggestionsList li:hover,
+        #clientSuggestionsList li.active {
+            background-color: #3a3a3a !important;
+        }
+
+/* === Avatar & taggar === */
+.avatar-initials,
+.avatar-initials-mypage {
+    background-color: #333 !important;
+    color: #f3f3f3 !important;
+}
+
+.member-tag {
+    background-color: #2c2c2c !important;
+    color: #f3f3f3 !important;
+}
+
+/* === Pagination === */
+.pagination-button {
+    background-color: #2c2c2c !important;
+    color: #f3f3f3 !important;
+    border-color: #444 !important;
+}
+
+    .pagination-button:hover {
+        background-color: #3a3a3a !important;
+    }
+
+    .pagination-button.active-page {
+        background-color: #0078d4 !important;
+        color: #ffffff !important;
+    }
+
+/* === Toggle-switch (ljus bild) === */
+.toggle-switch {
+    filter: invert(1) !important;
+}
+

@@ -17,6 +17,7 @@ namespace DomainLayer_BusinessLogicLayer_.DomainModel
         public bool IsOnline { get; set; }
         public string? ImageUrl { get; set; }
         public string? ExternalImageUrl { get; set; }
+        public bool IsDarkModeEnabled { get; set; }
 
     }
 }

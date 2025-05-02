@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using __Cross_cutting_Concerns.ServiceInterfaces;
 using System.Security.Claims;
 using SecurityLayer.Identity;
+using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 
 namespace _1.PresentationLayer.Controllers
 {
@@ -20,16 +21,20 @@ namespace _1.PresentationLayer.Controllers
         private readonly ILogger<AuthController> _logger;
         private readonly IAuthService _authService;
         private readonly IUserStatusService _statusService;
+        private readonly IUserService _userService;
 
         public AuthController(
             ILogger<AuthController> logger,
             IAuthService authService,
-            IUserStatusService statusService)
+            IUserStatusService statusService,
+            IUserService userService) // 👈 lägg till
         {
             _logger = logger;
             _authService = authService;
             _statusService = statusService;
+            _userService = userService; // 👈 spara fältet
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -112,25 +117,44 @@ namespace _1.PresentationLayer.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+            var info = await _authService.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                ModelState.AddModelError(string.Empty, "External login information is not available.");
+                return RedirectToAction("Index", "Login");
+            }
+
             var result = await _authService.ExternalLoginSignInAsync();
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Projects");
+                // Hämta roll för inloggad användare
+                var roles = await _userService.GetUserRolesAsync(User);
+                if (roles.Contains("User"))
+                    return RedirectToAction("Index", "Managers");
+                else
+                    return RedirectToAction("Index", "Projects");
             }
 
-            var (createResult, user, info) = await _authService.CreateExternalUserAsync();
-            if (createResult.Succeeded)
+            var createResult = await _authService.CreateExternalUserAsync(info);
+            if (createResult.result.Succeeded)
             {
-                return RedirectToAction("Index", "Projects");
+                var roles = await _userService.GetUserRolesAsync(User);
+                if (roles.Contains("User"))
+                    return RedirectToAction("Index", "Managers");
+                else
+                    return RedirectToAction("Index", "Projects");
             }
 
-            foreach (var error in createResult.Errors)
+            foreach (var error in createResult.result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
             return RedirectToAction("Index", "Login");
         }
+
+
+
 
 
         [Authorize]

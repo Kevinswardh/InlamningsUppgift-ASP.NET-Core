@@ -16,10 +16,13 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface
 
         // External authentication
         Task<SignInResult> ExternalLoginSignInAsync();
-        Task<(IdentityResult result, ApplicationUser user, ExternalLoginInfo info)> CreateExternalUserAsync();
+        Task<(IdentityResult result, ApplicationUser user, ExternalLoginInfo info)> CreateExternalUserAsync(ExternalLoginInfo info);
 
         // Add the new method for external login properties
         Task<AuthenticationProperties> GetExternalLoginProperties(string provider, string? redirectUrl);
         Task<string?> GetExternalLoginProviderAsync(string userId);
-    }
+
+        Task<ExternalLoginInfo> GetExternalLoginInfoAsync();
+        
+     }
 }

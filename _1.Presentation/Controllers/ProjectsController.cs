@@ -31,9 +31,22 @@ namespace Presentation.Controllers
             if (roles.Contains("User")) return Forbid();
 
             var userId = _userService.GetUserId(User);
-            var allProjects = await _projectService.GetProjectsForUserRoleAsync(roles, userId);
-            var allUsers = await _userService.GetAllUsersAsync();
+            var currentUser = await _userService.GetUserByIdAsync(userId);
+            var currentEmail = currentUser.Email;
 
+            // Hämta projekt enligt roll
+            var allProjects = await _projectService.GetProjectsForUserRoleAsync(roles, userId);
+
+            // Om användaren INTE är Admin eller Manager: Filtrera bort projekt hen inte är med i
+            if (!roles.Contains("Admin") && !roles.Contains("Manager"))
+            {
+                allProjects = allProjects.Where(p =>
+                    p.CreatedByUserId == userId ||
+                    p.ClientEmail == currentEmail ||
+                    p.Members.Any(m => m.Id == userId)).ToList();
+            }
+
+            var allUsers = await _userService.GetAllUsersAsync();
             var allMembers = allUsers.Select(u => new MemberItemViewModel
             {
                 Id = u.Id,
@@ -46,7 +59,7 @@ namespace Presentation.Controllers
                 ImageUrl = u.ImageUrl
             }).ToList();
 
-            // Filtrera efter vald tab
+            // Filtrera på flik
             var filtered = tab switch
             {
                 "Started" => allProjects.Where(p => !p.IsCompleted).ToList(),
@@ -96,6 +109,7 @@ namespace Presentation.Controllers
 
             return View(viewModel);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateProjectViewModel model)

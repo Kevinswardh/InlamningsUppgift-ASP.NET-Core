@@ -123,6 +123,17 @@ namespace _4.infrastructureLayer.Repositories.ProjectRepository
             _context.TeamMembers.Add(member);
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<ProjectEntity>> GetProjectsForCustomerAsync(string email)
+        {
+            return await _context.Projects
+                .Include(p => p.Customer)
+                .Include(p => p.ProjectMembers)
+                    .ThenInclude(pm => pm.TeamMember)
+                .Where(p => p.Customer.Email == email)
+                .ToListAsync();
+        }
+
+
 
     }
 }

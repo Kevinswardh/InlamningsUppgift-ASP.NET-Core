@@ -7,5 +7,7 @@ namespace SecurityLayer.Identity
         public string Position { get; set; }
         public string? ImageUrl { get; set; }           // aktiv – används i layout
         public string? ExternalImageUrl { get; set; }   // sparas från Google, ETC
+        public bool IsDarkModeEnabled { get; set; } = false;
+
     }
 }

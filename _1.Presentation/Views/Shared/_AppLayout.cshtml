@@ -1,10 +1,11 @@
 ﻿@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-    var isUser = User.IsInRole("User");
-    var isManager = User.IsInRole("Manager");
-    var isTeamMember = User.IsInRole("TeamMember");
-    var isCustomer = User.IsInRole("Customer");
-    var isAdmin = User.IsInRole("Admin");
+    var isUser = User?.Identity?.IsAuthenticated == true && User.IsInRole("User");
+    var isManager = User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager");
+    var isTeamMember = User?.Identity?.IsAuthenticated == true && User.IsInRole("TeamMember");
+    var isCustomer = User?.Identity?.IsAuthenticated == true && User.IsInRole("Customer");
+    var isAdmin = User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin");
+
 
     var canSeeProjects = isTeamMember || isCustomer || isManager || isAdmin;
     var canSeeCustomers = isTeamMember || isManager || isAdmin;
@@ -12,6 +13,7 @@
     var canSeeManagers = true;
     var canSeeNewMembers = isManager || isAdmin;
 }
+@using System.Security.Claims
 
 
 <!DOCTYPE html>
@@ -22,7 +24,28 @@
     <title>@ViewData["Title"]</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Nunito:wght@400;600;700&display=swap"
           rel="stylesheet" />
-    <link rel="stylesheet" href="@Url.Content("~/css/site.css")" />
+    @{
+        bool isDark = false;
+
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            var claim = ((ClaimsIdentity)User.Identity).FindFirst("darkMode");
+            isDark = string.Equals(claim?.Value, "true", StringComparison.OrdinalIgnoreCase);
+        }
+
+        ViewBag.IsDark = isDark; // 🟢 Sätt alltid ViewBag.IsDark
+    }
+
+    <!-- Grundstilar: alltid -->
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <!-- Dark mode: bara om aktivt -->
+    @if (ViewBag.IsDark == true)
+    {
+        <link rel="stylesheet" href="~/css/site-dark.css" />
+    }
+
+
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/@@tabler/icons-webfont@latest/tabler-icons.min.css" />
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
@@ -196,25 +219,16 @@
                         <hr class="menu-divider" />
 
                         <nav class="menu-options">
-                            <button class="menu-item settings-item">
-                                <svg class="settings-icon"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     width="20"
-                                     height="20"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="#1a1926"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round">
-                                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                                </svg>
+                            <form asp-controller="Settings" asp-action="ToggleDarkMode" method="post" class="darkmode-form">
+                                <button type="submit" name="enable" value="@(ViewBag.IsDark ? "false" : "true")" class="menu-item settings-item" style="width: 100%;">
+                                    <i class="ti ti-moon"></i>
+                                    <span class="menu-text" style="margin-left: 8px;">
+                                        @(ViewBag.IsDark ? "Light Mode" : "Dark Mode")
+                                    </span>
+                                </button>
+                            </form>
 
-                                <span class="menu-text">Dark Mode</span>
-                                <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/8e399c7b44626eab4a435fe78c427ce938d29b4f"
-                                     alt="Toggle switch"
-                                     class="toggle-switch" />
-                            </button>
+
                         </nav>
                     </article>
                     <button class="user-avatar-button"

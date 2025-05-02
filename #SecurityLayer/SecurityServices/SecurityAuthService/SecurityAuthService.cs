@@ -30,10 +30,16 @@ namespace SecurityLayer.SecurityServices.SecurityAuthService
             return await _signInManager.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure);
         }
 
-        public async Task SignInAsync(ApplicationUser user, bool isPersistent)
+        public async Task SignInAsync(ApplicationUser user, bool isPersistent, IEnumerable<Claim> claims)
         {
-            await _signInManager.SignInAsync(user, isPersistent);
+            var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await _signInManager.SignInAsync(user, isPersistent, authenticationMethod: null);
+            await _signInManager.Context.SignInAsync(IdentityConstants.ApplicationScheme, principal);
         }
+
+
+
 
         public async Task SignOutAsync()
         {
