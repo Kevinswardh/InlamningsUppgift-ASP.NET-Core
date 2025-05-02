@@ -25,26 +25,33 @@ namespace _5.DataAccessLayer_DAL_
                 .Property(p => p.Budget)
                 .HasPrecision(18, 2);
 
-            // 📌 Relation: Project ↔ Customer
+            // 📌 TeamMember.Id ska inte autogenereras (det är en string)
+            modelBuilder.Entity<TeamMemberEntity>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
+
+            // 📌 Project ↔ Customer (many-to-one)
             modelBuilder.Entity<ProjectEntity>()
                 .HasOne(p => p.Customer)
                 .WithMany(c => c.Projects)
                 .HasForeignKey(p => p.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 📌 Relation: ProjectMember (many-to-many via mellan-tabell)
+            // 📌 Project ↔ ProjectMember ↔ TeamMember (many-to-many)
             modelBuilder.Entity<ProjectMemberEntity>()
-                .HasKey(pm => new { pm.ProjectId, pm.TeamMemberId });
+                .HasKey(pm => new { pm.ProjectId, pm.TeamMemberId }); // composite key
 
             modelBuilder.Entity<ProjectMemberEntity>()
                 .HasOne(pm => pm.Project)
                 .WithMany(p => p.ProjectMembers)
-                .HasForeignKey(pm => pm.ProjectId);
+                .HasForeignKey(pm => pm.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProjectMemberEntity>()
                 .HasOne(pm => pm.TeamMember)
-                .WithMany()
-                .HasForeignKey(pm => pm.TeamMemberId);
+                .WithMany(tm => tm.ProjectMembers)
+                .HasForeignKey(pm => pm.TeamMemberId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

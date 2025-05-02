@@ -17,22 +17,20 @@
                 <span class="dot"></span><span class="dot"></span><span class="dot"></span>
             </button>
             <div class="dropdown-menu" style="display: none;">
-                <button class="menu-item menu-item-edit"
+                <button class="menu-item menu-item-edit text-blue-600 hover:bg-blue-50"
                         data-project-id="@Model.Id"
                         data-project-name="@Model.Name">
                     <span class="menu-text">Edit</span>
                 </button>
 
-                @* 🆕 Complete-knappen *@
-                <form method="post" asp-action="Complete" asp-controller="Projects" style="display:inline;">
+                <form method="post" asp-action="Complete" asp-controller="Projects" style="display:inline; margin-bottom: 4px;">
                     <input type="hidden" name="id" value="@Model.Id" />
-                    <button type="submit" class="menu-item menu-item-complete">
+                    <button type="submit" class="menu-item menu-item-complete text-green-600 hover:bg-green-50">
                         <span class="menu-text">Complete</span>
                     </button>
                 </form>
 
-
-                <button class="menu-item menu-item-delete"
+                <button class="menu-item menu-item-delete text-red-600 hover:bg-red-50"
                         data-project-id="@Model.Id"
                         data-project-name="@Model.Name">
                     <span class="menu-text">Delete</span>
@@ -45,19 +43,56 @@
     <div class="project-description">@Html.Raw(Model.Description)</div>
 
     <div class="project-footer">
-        <div class="time-remaining">
-            <i class="ti ti-clock"></i>
-            <span>@Model.TimeLeft</span>
+        <div class="time-remaining
+@(Model.TimeLeft == "Completed" ? "status-completed" :
+  Model.TimeLeft == "CompletedLate" ? "status-late" :
+  Model.TimeLeft == "Expired" ? "status-expired" :
+  "status-active")">
+            <i class="ti
+    @(Model.TimeLeft == "Completed" ? "ti-check" :
+      Model.TimeLeft == "CompletedLate" ? "ti-clock-pause" :
+      Model.TimeLeft == "Expired" ? "ti-alert-circle" :
+      "ti-clock")"></i>
+            <span>
+                @(Model.TimeLeft == "CompletedLate" ? "Completed Late" :
+                    Model.TimeLeft == "Completed" ? "Completed" :
+                    Model.TimeLeft == "Expired" ? "Expired" :
+                    Model.TimeLeft)
+            </span>
         </div>
-        <div class="team-members">
-            @foreach (var member in Model.Members)
-            {
-                <img src="@(string.IsNullOrWhiteSpace(member.ImageUrl) ? "https://placehold.co/24x24" : Url.Content(member.ImageUrl))"
-                     alt="@member.UserName"
-                     class="project-member-avatar" />
 
+
+
+
+        @{
+            var displayedMembers = Model.Members.Take(4).ToList();
+            var extraCount = Model.Members.Count - displayedMembers.Count;
+            var hiddenUsernames = Model.Members.Skip(4).Select(m => m.UserName).ToList();
+        }
+
+        <div class="team-members">
+            @foreach (var member in displayedMembers)
+            {
+                <div class="avatar-wrapper">
+                    <img src="@(string.IsNullOrWhiteSpace(member.ImageUrl) ? "https://placehold.co/24x24" : Url.Content(member.ImageUrl))"
+                         alt="@member.UserName"
+                         class="project-member-avatar" />
+                    <span class="tooltip">@member.UserName</span>
+                </div>
+            }
+
+            @if (extraCount > 0)
+            {
+                <div class="avatar-wrapper">
+                    <div class="project-member-avatar extra-count">
+                        +@extraCount
+                    </div>
+                    <span class="tooltip">@string.Join(", ", hiddenUsernames)</span>
+                </div>
             }
         </div>
+
+
     </div>
 </article>
 <script>

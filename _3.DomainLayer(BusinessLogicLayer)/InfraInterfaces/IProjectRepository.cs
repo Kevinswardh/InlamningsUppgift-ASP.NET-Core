@@ -23,5 +23,9 @@ namespace DomainLayer_BusinessLogicLayer_.InfraInterfaces
 
         // Ta bort projekt
         Task<bool> DeleteProjectAsync(int projectId);
+
+        public Task<TeamMemberEntity?> GetTeamMemberByExternalIdAsync(string externalUserId);
+        public Task CreateTeamMemberAsync(TeamMemberEntity member);
+
     }
 }

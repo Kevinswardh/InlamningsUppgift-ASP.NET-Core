@@ -19,5 +19,9 @@
 		<ProjectReference Include="..\_3.DomainLayer(BusinessLogicLayer)\_3.DomainLayer(BusinessLogicLayer).csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
+	</ItemGroup>
+
 
 </Project>

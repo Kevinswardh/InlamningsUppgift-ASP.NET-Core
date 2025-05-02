@@ -88,6 +88,7 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
         {
             var userId = form.CreatedByUserId;
 
+            // 🔍 Hämta kund från Identity
             var customer = await _userService.GetUserByEmailAsync(form.ClientEmail);
             if (customer == null)
                 throw new Exception("Kund hittades inte med angiven e-post.");
@@ -98,19 +99,39 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
                 Name = customer.UserName
             };
 
-            var teamMemberTasks = form.Members.Select(m => _userService.GetUserByIdAsync(m.Id));
-            var teamMemberUsers = await Task.WhenAll(teamMemberTasks);
+            var projectMembers = new List<ProjectMemberEntity>();
 
-            var projectMembers = teamMemberUsers.Select(u => new ProjectMemberEntity
+            // 🔁 Hämta och hantera teammedlemmar sekventiellt (undvik parallella EF-anrop!)
+            foreach (var member in form.Members)
             {
-                TeamMember = new TeamMemberEntity
-                {
-                    ExternalUserId = u.Id,
-                    Email = u.Email,
-                    Name = u.UserName
-                }
-            }).ToList();
+                var teamUser = await _userService.GetUserByIdAsync(member.Id);
+                if (teamUser == null)
+                    continue;
 
+                // ✅ Kontrollera om teammember redan finns i projekt-databasen
+                var existing = await _projectRepository.GetTeamMemberByExternalIdAsync(teamUser.Id);
+
+                if (existing == null)
+                {
+                    existing = new TeamMemberEntity
+                    {
+                        Id = teamUser.Id, // 👈 Måste sättas eftersom Id inte är int
+                        ExternalUserId = teamUser.Id,
+                        Name = teamUser.UserName,
+                        Email = teamUser.Email
+                    };
+
+                    await _projectRepository.CreateTeamMemberAsync(existing);
+                }
+
+                // 🔗 Lägg till relation
+                projectMembers.Add(new ProjectMemberEntity
+                {
+                    TeamMemberId = existing.Id
+                });
+            }
+
+            // 📦 Skapa nytt projekt
             var project = new ProjectEntity
             {
                 Name = form.Name,
@@ -127,42 +148,68 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
             await _projectRepository.CreateProjectAsync(project);
         }
 
+
         public async Task<ProjectForm> UpdateProjectAsync(ProjectForm form)
         {
             var project = await _projectRepository.GetByIdAsync(form.Id);
-            if (project == null) return null;
+            if (project == null)
+                return null;
 
-            var teamMemberTasks = form.Members.Select(m => _userService.GetUserByIdAsync(m.Id));
-            var teamMemberUsers = await Task.WhenAll(teamMemberTasks);
+            // 🔁 Hämta alla användare via ExternalUserId
+            var teamMemberUsers = await Task.WhenAll(
+                form.Members.Select(m => _userService.GetUserByIdAsync(m.Id))
+            );
 
-            var projectMembers = teamMemberUsers.Select(u => new ProjectMemberEntity
+            var projectMembers = new List<ProjectMemberEntity>();
+
+            foreach (var user in teamMemberUsers)
             {
-                TeamMember = new TeamMemberEntity
+                var existing = await _projectRepository.GetTeamMemberByExternalIdAsync(user.Id);
+                if (existing == null)
                 {
-                    ExternalUserId = u.Id,
-                    Email = u.Email,
-                    Name = u.UserName
-                },
-                ProjectId = form.Id
-            }).ToList();
+                    existing = new TeamMemberEntity
+                    {
+                        Id = user.Id, // 👈 viktig nu när ID är string
+                        ExternalUserId = user.Id,
+                        Name = user.UserName,
+                        Email = user.Email
+                    };
+                    await _projectRepository.CreateTeamMemberAsync(existing);
+                }
 
+                projectMembers.Add(new ProjectMemberEntity
+                {
+                    TeamMemberId = existing.Id,
+                    ProjectId = form.Id
+                });
+            }
+
+            // 🛠️ Uppdatera fält
             project.Name = form.Name;
             project.Description = form.Description;
             project.ImageUrl = form.ImageUrl;
+            project.StartDate = form.StartDate;
             project.EndDate = form.EndDate;
             project.Budget = form.Budget;
-            project.IsCompleted = form.EndDate <= DateTime.UtcNow;
+  
+
+            // 💾 Ersätt medlemmar
             project.ProjectMembers = projectMembers;
 
             var updated = await _projectRepository.UpdateProjectAsync(project);
-
             return await GetProjectByIdAsync(updated.Id);
         }
+
+
+
+
 
         public async Task<bool> DeleteProjectAsync(int projectId)
         {
             return await _projectRepository.DeleteProjectAsync(projectId);
         }
+
+
         public async Task<bool> MarkProjectAsCompletedAsync(int projectId)
         {
             var project = await _projectRepository.GetByIdAsync(projectId);

@@ -67,7 +67,7 @@ namespace Presentation.Controllers
                     ClientEmail = project.ClientEmail,
                     Description = project.Description,
                     ImageUrl = project.ImageUrl,
-                    TimeLeft = CalculateTimeLeft(project.EndDate),
+                    TimeLeft = CalculateTimeLeft(project.EndDate, project.IsCompleted),
                     Members = project.Members.Select(m => new MemberItemViewModel
                     {
                         Id = m.Id,
@@ -151,12 +151,26 @@ namespace Presentation.Controllers
             await _projectService.CreateProjectWithUsersAsync(form, User);
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         public async Task<IActionResult> Edit(int id, EditProjectViewModel model)
         {
             if (id != model.Id) return BadRequest();
             if (!ModelState.IsValid) return View(model);
+
+            string? imageUrl = model.ImageUrl; // Behåll gamla bild-URL:n som default
+
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine("wwwroot", "Pictures", "ProjectPictures", id.ToString());
+                Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = $"{id}{Path.GetExtension(model.ImageFile.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                    await model.ImageFile.CopyToAsync(stream);
+
+                imageUrl = $"/Pictures/ProjectPictures/{id}/{uniqueFileName}";
+            }
 
             var memberDTOs = model.MemberIds.Select(mid => new MemberItemDTO
             {
@@ -172,7 +186,7 @@ namespace Presentation.Controllers
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 Budget = model.Budget,
-                ImageUrl = model.ImageUrl,
+                ImageUrl = imageUrl,
                 Members = memberDTOs
             };
 
@@ -192,17 +206,7 @@ namespace Presentation.Controllers
         }
 
 
-
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var project = await _projectService.GetProjectByIdAsync(id);
-            if (project == null) return NotFound();
-
-            return View(project);
-        }
-
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var success = await _projectService.DeleteProjectAsync(id);
@@ -219,14 +223,39 @@ namespace Presentation.Controllers
             return View(project);
         }
 
-        private string CalculateTimeLeft(DateTime endDate)
+        private string CalculateTimeLeft(DateTime endDate, bool isCompleted)
         {
-            var now = DateTime.UtcNow;
-            var difference = endDate - now;
-            if (difference.TotalDays < 1) return "Less than 1 day left";
-            if (difference.TotalDays < 7) return $"{difference.Days} days left";
-            if (difference.TotalDays < 30) return $"{difference.Days / 7} weeks left";
+            if (isCompleted && endDate < DateTime.UtcNow)
+                return "CompletedLate"; // markerar att projektet avslutats sent
+
+            if (isCompleted)
+                return "Completed";
+
+            if (endDate < DateTime.UtcNow)
+                return "Expired";
+
+            var difference = endDate - DateTime.UtcNow;
+            if (difference.TotalDays < 1)
+                return "Less than 1 day left";
+            if (difference.TotalDays < 7)
+                return $"{difference.Days} days left";
+            if (difference.TotalDays < 30)
+                return $"{difference.Days / 7} weeks left";
+
             return $"{difference.Days / 30} months left";
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetProjectJson(int id)
+        {
+            var project = await _projectService.GetProjectByIdAsync(id);
+            if (project == null)
+                return NotFound();
+
+            return Json(project);
+        }
+
     }
 }

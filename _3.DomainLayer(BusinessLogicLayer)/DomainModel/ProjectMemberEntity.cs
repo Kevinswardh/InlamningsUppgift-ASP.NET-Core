@@ -8,10 +8,11 @@ namespace DomainLayer_BusinessLogicLayer_.DomainModel
 {
     public class ProjectMemberEntity
     {
-        public int ProjectId { get; set; }
+        public int ProjectId { get; set; } // ⬅️ måste matcha ProjectEntity.Id
         public ProjectEntity Project { get; set; }
 
-        public int TeamMemberId { get; set; }
+        public string TeamMemberId { get; set; } // ⬅️ matchar TeamMemberEntity.Id
         public TeamMemberEntity TeamMember { get; set; }
     }
+
 }

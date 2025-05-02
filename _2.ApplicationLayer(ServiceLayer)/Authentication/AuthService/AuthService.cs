@@ -82,7 +82,7 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
             if (identityUser != null)
             {
                 await _securityAuthService.SignInAsync(identityUser, isPersistent: false);
-                _statusService.SetOnline(identityUser.Email);
+               // _statusService.SetOnline(identityUser.Email); Ska inte gå online vid registrering
             }
 
             return IdentityResult.Success;

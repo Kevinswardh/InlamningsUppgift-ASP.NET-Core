@@ -59,46 +59,21 @@
     }
 
     function resetModal() {
-        modal.querySelectorAll(".form-group").forEach((group) => {
-            group.style.display = "block";
-        });
-
+        modal.querySelectorAll(".form-group").forEach((group) => group.style.display = "block");
         const imageField = document.getElementById("imageUploadSection");
         if (imageField) imageField.style.display = "flex";
-
         const oldMessage = modal.querySelector("#delete-confirm-message");
         if (oldMessage) oldMessage.remove();
-
         submitButton.classList.remove("danger-button");
-
         const memberLabel = modal.querySelector("label.form-label");
         if (memberLabel) memberLabel.style.display = "block";
-
-        // Ta bort alla member-tags
         modal.querySelectorAll(".member-tag").forEach((tag) => tag.remove());
-
-        // Töm alla inputfält
-        modal.querySelectorAll("input").forEach((input) => {
-            input.value = "";
-        });
-
-        // TÖM WYSIWYG
+        modal.querySelectorAll("input").forEach((input) => input.value = "");
         const editor = modal.querySelector(".ql-editor");
         if (editor) {
-            editor.innerHTML = "<p><br></p>"; // Tom paragraf med radbrytning (Quill default)
-            editor.classList.add("ql-blank"); // Lägger till klassen så att placeholder visas
+            editor.innerHTML = "<p><br></p>";
+            editor.classList.add("ql-blank");
         }
-    }
-
-    function showAllFields() {
-        modal.querySelectorAll(".form-group").forEach((group) => {
-            group.style.display = "block";
-        });
-
-        const imageField = modal.querySelector(".project-image-field");
-        if (imageField) imageField.style.display = "block";
-
-        submitButton.classList.remove("danger-button");
     }
 
     function showOnlyMemberField() {
@@ -106,45 +81,19 @@
             const hasMemberInput = group.querySelector("#memberInput");
             group.style.display = hasMemberInput ? "block" : "none";
         });
-
         const imageField = document.getElementById("imageUploadSection");
         if (imageField) imageField.style.display = "none";
-
         const memberLabel = modal.querySelector("label.form-label");
         if (memberLabel && memberLabel.textContent.trim() === "Members") {
             memberLabel.style.display = "none";
         }
-
         submitButton.classList.remove("danger-button");
-    }
-
-    function showDeleteConfirmation() {
-        modal.querySelectorAll(".form-group").forEach((group) => {
-            group.style.display = "none";
-        });
-
-        const imageField = document.getElementById("imageUploadSection");
-        if (imageField) imageField.style.display = "none";
-
-        const confirmMessage = document.createElement("label");
-        confirmMessage.id = "delete-confirm-message";
-        confirmMessage.className = "form-label";
-        confirmMessage.style.margin = "1rem";
-        confirmMessage.style.display = "block";
-        confirmMessage.textContent =
-            "Are you sure you want to delete this project?";
-        modal.querySelector("form").insertBefore(confirmMessage, submitButton);
-
-        submitButton.classList.add("danger-button");
     }
 
     function resetMemberInput() {
         const memberInput = document.getElementById("memberInput");
-        const membersTagsContainer = document.getElementById(
-            "membersTagsContainer"
-        );
+        const membersTagsContainer = document.getElementById("membersTagsContainer");
         const suggestionsList = document.getElementById("suggestionsList");
-
         if (memberInput) memberInput.value = "";
         if (membersTagsContainer) membersTagsContainer.innerHTML = "";
         if (suggestionsList) suggestionsList.innerHTML = "";
@@ -158,27 +107,87 @@
         modalTitle.textContent = "Add Project";
         submitButton.textContent = "Create";
         modalOverlay.classList.add("active");
-        showAllFields();
         safelySetTrigger("add");
         modal.scrollTop = 0;
     });
 
     // ✏️ EDIT PROJECT
     document.querySelectorAll(".menu-item-edit").forEach((editBtn) => {
-        editBtn.addEventListener("click", (e) => {
+        editBtn.addEventListener("click", async (e) => {
             e.stopPropagation();
-            window.suppressDropdownClose = true;
             closeMenusExcept();
-            resetModal();
-            modal.dataset.mode = "edit";
-            modalTitle.textContent = "Edit Project";
-            submitButton.textContent = "Save changes";
-            modalOverlay.classList.add("active");
-            showAllFields();
-            safelySetTrigger("edit");
-            modal.scrollTop = 0;
+
+            const projectId = editBtn.dataset.projectId;
+            const editModalOverlay = document.getElementById("editProjectModalOverlay");
+            const editModal = document.getElementById("editProjectModal");
+
+            try {
+                const response = await fetch(`/Projects/GetProjectJson?id=${projectId}`);
+                if (!response.ok) throw new Error("Kunde inte hämta projektdata");
+                const project = await response.json();
+
+                // 🔄 Fyll fält
+                editModal.querySelector("input[name='Id']").value = project.id;
+                editModal.querySelector("input[name='Name']").value = project.name;
+                editModal.querySelector("input[name='ClientEmail']").value = project.clientEmail;
+                editModal.querySelector("input[name='EndDate']").value = project.endDate?.split("T")[0] || "";
+                editModal.querySelector("input[name='Budget']").value = project.budget ?? 0;
+
+                // 🖼️ Bild – sätt preview & behåll imageUrl i hidden fält
+                const preview = editModal.querySelector("#editUploadPreview");
+                if (preview && project.imageUrl) preview.src = project.imageUrl;
+
+                const hiddenImageInput = editModal.querySelector("#editImageUrlHidden");
+                if (hiddenImageInput) hiddenImageInput.value = project.imageUrl ?? "";
+
+                // 📝 Quill
+                editQuill.root.innerHTML = project.description || "<p><br></p>";
+                document.getElementById("edit-hidden-description").value = project.description || "";
+
+                // 👥 Medlemmar
+                selectedEditMembers = [];
+                editMembersTagsContainer.innerHTML = "";
+                editMemberHiddenFieldsContainer.innerHTML = "";
+
+                project.members.forEach(m => {
+                    selectedEditMembers.push(m.id);
+                    const member = membersDataEdit[m.id];
+                    if (!member) return;
+
+                    const tag = document.createElement("div");
+                    tag.className = "member-tag";
+                    tag.dataset.id = m.id;
+                    tag.innerHTML = `
+                        <img src="${member.avatar}" class="project-member-avatar" alt="${member.name}" />
+                        <span class="member-name">${member.name}</span>
+                        <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/dfff3394c6759651f9dc2423c2fe281189809b34?placeholderIfAbsent=true" class="remove-icon" alt="Remove" />
+                    `;
+                    tag.querySelector(".remove-icon").addEventListener("click", () => {
+                        tag.remove();
+                        selectedEditMembers = selectedEditMembers.filter(mid => mid !== m.id);
+                        editMemberHiddenFieldsContainer.querySelectorAll(`[data-id='${m.id}']`).forEach(el => el.remove());
+                    });
+
+                    editMembersTagsContainer.appendChild(tag);
+
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "MemberIds";
+                    input.value = m.id;
+                    input.dataset.id = m.id;
+                    editMemberHiddenFieldsContainer.appendChild(input);
+                });
+
+                editModalOverlay.classList.add("active");
+                safelySetTrigger("edit");
+                editModal.scrollTop = 0;
+
+            } catch (err) {
+                alert("Kunde inte ladda projektet: " + err.message);
+            }
         });
     });
+
 
     // 👥 ADD MEMBER
     document.querySelectorAll(".menu-item").forEach((btn) => {
@@ -186,7 +195,6 @@
         if (label && label.textContent.trim() === "Add Member") {
             btn.addEventListener("click", (e) => {
                 e.stopPropagation();
-                window.suppressDropdownClose = true;
                 closeMenusExcept();
                 resetModal();
                 modal.dataset.mode = "add-member";
@@ -205,36 +213,42 @@
     document.querySelectorAll(".menu-item-delete").forEach((btn) => {
         btn.addEventListener("click", (e) => {
             e.stopPropagation();
-            window.suppressDropdownClose = true;
             closeMenusExcept();
-
             const modalOverlay = document.getElementById("deleteProjectModalOverlay");
             modalOverlay.classList.add("active");
-
-            // sätt projekt-ID och namn (t.ex. via data-attributes)
             const projectId = btn.dataset.projectId;
             const projectName = btn.dataset.projectName;
-
             modalOverlay.querySelector("input[name='Id']").value = projectId;
             modalOverlay.querySelector(".form-label strong").textContent = projectName;
         });
     });
 
-
     // ❌ STÄNG MODAL
- closeButton.addEventListener("click", () => {
-    modalOverlay.classList.remove("active");
+    closeButton.addEventListener("click", () => {
+        modalOverlay.classList.remove("active");
+        const deleteOverlay = document.getElementById("deleteProjectModalOverlay");
+        if (deleteOverlay?.classList.contains("active")) {
+            deleteOverlay.classList.remove("active");
+        }
+        resetModal();
+    });
+    // ❌ STÄNG EDIT MODAL
+    const editCloseButton = document.querySelector("#editProjectModal .close-icon");
+    const editModalOverlay = document.getElementById("editProjectModalOverlay");
 
-    // stäng även deleteModal om öppen
-    const deleteOverlay = document.getElementById("deleteProjectModalOverlay");
-    if (deleteOverlay?.classList.contains("active")) {
-        deleteOverlay.classList.remove("active");
-    }
-
-    resetModal();
-});
+    editCloseButton.addEventListener("click", () => {
+        editModalOverlay.classList.remove("active");
+        // Rensa fält om du vill, ex:
+        editQuill.root.innerHTML = "<p><br></p>";
+        document.getElementById("edit-hidden-description").value = "";
+        editMembersTagsContainer.innerHTML = "";
+        editMemberHiddenFieldsContainer.innerHTML = "";
+        selectedEditMembers = [];
+    });
 
 </script>
+
+
 <!-- 2. Quill Editor + Cursor Fix -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
@@ -390,6 +404,20 @@
             "https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/71061189ef2425aef008f44a16c4de13605797de?placeholderIfAbsent=true";
         uploadText.style.display = "block";
         fileInput.value = "";
+    });
+    // 6b. Bildförhandsvisning i "Edit Project"
+    const editFileInput = document.getElementById("editProjectImageInput");
+    const editPreviewImage = document.getElementById("editUploadPreview");
+
+    editFileInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                editPreviewImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
     });
 </script>
 <script>
@@ -625,5 +653,131 @@
     clientInput.addEventListener("focus", () => {
         const query = clientInput.value.trim();
         showCustomerSuggestions(query);
+    });
+</script>
+<script>
+    const editMemberInput = document.getElementById("editMemberInput");
+    const editSuggestionsList = document.getElementById("editSuggestionsList");
+    const editMembersTagsContainer = document.getElementById("editMembersTagsContainer");
+    const editMemberHiddenFieldsContainer = document.getElementById("editMemberHiddenFieldsContainer");
+
+    const membersDataEdit = {}; // återanvänd från allMembers
+    allMembers.forEach(member => {
+        if (member.role === "TeamMember") {
+            membersDataEdit[member.id] = {
+                name: member.userName,
+                avatar: member.imageUrl ?? "https://placehold.co/24x24"
+            };
+        }
+    });
+
+    let selectedEditMembers = [];
+    let currentEditSuggestions = [];
+    let activeEditIndex = -1;
+
+    function showEditSuggestions(query) {
+        editSuggestionsList.innerHTML = "";
+
+        const availableMembers = Object.keys(membersDataEdit).filter(
+            (key) => !selectedEditMembers.includes(key)
+        );
+
+        const filtered = query.length < 1
+            ? availableMembers.slice(0, 5)
+            : availableMembers.filter((key) =>
+                membersDataEdit[key].name.toLowerCase().includes(query.toLowerCase())
+            );
+
+        if (filtered.length === 0) {
+            editSuggestionsList.style.display = "none";
+            return;
+        }
+
+        currentEditSuggestions = filtered;
+        editSuggestionsList.style.display = "block";
+
+        filtered.forEach((key, index) => {
+            const li = document.createElement("li");
+            li.textContent = membersDataEdit[key].name;
+
+            if (index === activeEditIndex) li.classList.add("active");
+
+            li.addEventListener("click", (e) => {
+                e.stopPropagation();
+                addEditMember(key);
+            });
+
+            editSuggestionsList.appendChild(li);
+        });
+    }
+
+    function addEditMember(memberKey) {
+        const member = membersDataEdit[memberKey];
+        if (!member || selectedEditMembers.includes(memberKey)) return;
+
+        // Visa som tag
+        const tag = document.createElement("div");
+        tag.className = "member-tag";
+        tag.dataset.id = memberKey;
+        tag.innerHTML = `
+                <img src="${member.avatar}" alt="${member.name}" class="project-member-avatar" />
+                <span class="member-name">${member.name}</span>
+                <img src="https://cdn.builder.io/api/v1/image/assets/2a274513ffcd4318aca721aa009fe223/dfff3394c6759651f9dc2423c2fe281189809b34?placeholderIfAbsent=true" alt="Remove" class="remove-icon" />
+            `;
+
+        tag.querySelector(".remove-icon").addEventListener("click", () => {
+            tag.remove();
+            selectedEditMembers = selectedEditMembers.filter(id => id !== memberKey);
+            editMemberHiddenFieldsContainer.querySelectorAll(`[data-id="${memberKey}"]`).forEach(el => el.remove());
+        });
+
+        editMembersTagsContainer.appendChild(tag);
+        selectedEditMembers.push(memberKey);
+
+        // Hidden input
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "MemberIds";
+        input.value = memberKey;
+        input.dataset.id = memberKey;
+        editMemberHiddenFieldsContainer.appendChild(input);
+
+        editMemberInput.value = "";
+        editSuggestionsList.innerHTML = "";
+        activeEditIndex = -1;
+        editSuggestionsList.style.display = "none";
+    }
+
+    editMemberInput?.addEventListener("input", (e) => {
+        const query = e.target.value.trim();
+        showEditSuggestions(query);
+    });
+
+    editMemberInput?.addEventListener("keydown", (e) => {
+        const suggestions = editSuggestionsList.querySelectorAll("li");
+
+        if (e.key === "Enter" && activeEditIndex >= 0) {
+            e.preventDefault();
+            addEditMember(currentEditSuggestions[activeEditIndex]);
+        } else if (e.key === "ArrowDown" && activeEditIndex < suggestions.length - 1) {
+            if (activeEditIndex >= 0) suggestions[activeEditIndex].classList.remove("active");
+            activeEditIndex++;
+            suggestions[activeEditIndex].classList.add("active");
+        } else if (e.key === "ArrowUp" && activeEditIndex > 0) {
+            suggestions[activeEditIndex].classList.remove("active");
+            activeEditIndex--;
+            suggestions[activeEditIndex].classList.add("active");
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!editMemberInput?.contains(e.target) && !editSuggestionsList?.contains(e.target)) {
+            editSuggestionsList.style.display = "none";
+        }
+    });
+
+    editMemberInput?.addEventListener("focus", () => {
+        const query = editMemberInput.value.trim();
+        showEditSuggestions(query);
     });
 </script>

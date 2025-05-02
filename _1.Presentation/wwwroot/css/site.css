@@ -130,18 +130,49 @@ header {
 }
 
 .project-description {
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+    overflow-y: hidden;
+    max-height: 7.5em; /* ca 5 rader */
+    min-height: 4.5em; /* ca 3 rader */
     color: #4b5563;
-    display: -webkit-box;
+    display: block;
     flex-grow: 1;
     font-size: 14px;
-    height: 4.5em;
     line-height: 1.5;
     margin-bottom: 16px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding-right: 4px;
+    transition: overflow 0.2s;
 }
+
+    .project-description:hover {
+        overflow-y: auto;
+    }
+
+    /* Scrollbar-styling (valfritt) för WebKit-baserade browsers */
+    .project-description::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .project-description::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+    }
+
+    /* Lista inuti beskrivningen */
+    .project-description ol,
+    .project-description ul {
+        margin-left: 1.5rem;
+        padding-left: 1.5rem;
+        list-style-type: disc;
+    }
+
+    .project-description ol {
+        list-style-type: decimal;
+    }
+
+    .project-description li {
+        margin-bottom: 0.25rem;
+    }
+
 
 .project-footer {
     display: flex;
@@ -159,6 +190,66 @@ header {
     font-weight: 500;
     gap: 6px;
     padding: 6px 12px;
+}
+.status-completed {
+    background-color: #d1fae5; /* ljusgrön */
+    color: #065f46;
+}
+
+.status-expired {
+    background-color: #fee2e2; /* ljusröd */
+    color: #991b1b;
+}
+
+.status-late {
+    background-color: #fef3c7; /* ljusgul */
+    color: #92400e;
+}
+
+.status-active {
+    background-color: #e0f2fe; /* ljusblå */
+    color: #0369a1;
+}
+.
+
+.project-member-avatar.extra-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ccc;
+    color: #333;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+}
+.avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 1000;
+}
+
+.avatar-wrapper:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
 }
 
 .team-members {
@@ -826,11 +917,15 @@ svg {
 
 .member-name {
     color: #1a1926;
-    font-size: 22px;
-    padding: 12px;
+    font-size: 16px;
+    padding: 7px;
     font-weight: 700;
     margin: 0 0 0px;
     text-align: center;
+}
+.completed {
+    color: #28a745; /* grön färg */
+    font-weight: bold;
 }
 
 .member-title {
@@ -1082,6 +1177,7 @@ svg {
     border: none;
     color: #1a1926;
     cursor: pointer;
+    margin-bottom: 4px;
     display: flex;
     font-family: "Nunito", sans-serif;
     font-size: 15px;
@@ -1097,6 +1193,32 @@ svg {
     .menu-item:hover {
         background-color: #f5f7fa;
         font-weight: 600;
+    }
+.menu-item-edit {
+    background-color: #bfdbfe; /* blå-200 */
+    color: #1e3a8a; /* blå-900 */
+}
+
+    .menu-item-edit:hover {
+        background-color: #93c5fd; /* blå-300 */
+    }
+
+.menu-item-complete {
+    background-color: #bbf7d0; /* grön-200 */
+    color: #065f46; /* grön-900 */
+}
+
+    .menu-item-complete:hover {
+        background-color: #86efac; /* grön-300 */
+    }
+
+.menu-item-delete {
+    background-color: #fecaca; /* röd-200 */
+    color: #7f1d1d; /* röd-900 */
+}
+
+    .menu-item-delete:hover {
+        background-color: #fca5a5; /* röd-300 */
     }
 
 .settings-icon,
@@ -1781,6 +1903,7 @@ svg {
 .ql-editor * {
     background-color: transparent !important;
     background: transparent !important;
+
 }
 
 .ql-toolbar.ql-snow {
@@ -1790,6 +1913,20 @@ svg {
 .ql-container.ql-snow {
     border-radius: 0 0 8px 8px;
 }
+#editor-container,
+#edit-editor-container {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    height: 150px;
+}
+
+    #editor-container .ql-editor,
+    #edit-editor-container .ql-editor {
+        min-height: 120px;
+        padding: 0.75rem;
+    }
+
 
 input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;

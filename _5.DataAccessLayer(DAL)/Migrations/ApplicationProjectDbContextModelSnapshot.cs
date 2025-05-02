@@ -94,15 +94,10 @@ namespace _5.DataAccessLayer_DAL_.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TeamMemberId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TeamMemberEntityId")
-                        .HasColumnType("int");
+                    b.Property<string>("TeamMemberId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ProjectId", "TeamMemberId");
-
-                    b.HasIndex("TeamMemberEntityId");
 
                     b.HasIndex("TeamMemberId");
 
@@ -111,11 +106,8 @@ namespace _5.DataAccessLayer_DAL_.Migrations
 
             modelBuilder.Entity("DomainLayer_BusinessLogicLayer_.DomainModel.TeamMemberEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -153,12 +145,8 @@ namespace _5.DataAccessLayer_DAL_.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DomainLayer_BusinessLogicLayer_.DomainModel.TeamMemberEntity", null)
-                        .WithMany("ProjectMembers")
-                        .HasForeignKey("TeamMemberEntityId");
-
                     b.HasOne("DomainLayer_BusinessLogicLayer_.DomainModel.TeamMemberEntity", "TeamMember")
-                        .WithMany()
+                        .WithMany("ProjectMembers")
                         .HasForeignKey("TeamMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -83,13 +83,19 @@ namespace _4.infrastructureLayer.Repositories.ProjectRepository
             existingProject.CreatedByUserId = project.CreatedByUserId;
             existingProject.CustomerId = project.CustomerId;
 
-            // Ersätt teammedlemmar
-            _context.ProjectMembers.RemoveRange(existingProject.ProjectMembers);
+            // ❗ Viktigt: ta bort gamla relationer ordentligt
+            foreach (var member in existingProject.ProjectMembers.ToList())
+            {
+                _context.Entry(member).State = EntityState.Deleted;
+            }
+
+            // Lägg till nya relationer
             existingProject.ProjectMembers = project.ProjectMembers;
 
             await _context.SaveChangesAsync();
             return existingProject;
         }
+
 
         // Ta bort projekt
         public async Task<bool> DeleteProjectAsync(int projectId)
@@ -106,5 +112,17 @@ namespace _4.infrastructureLayer.Repositories.ProjectRepository
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<TeamMemberEntity?> GetTeamMemberByExternalIdAsync(string externalUserId)
+        {
+            return await _context.TeamMembers
+                .FirstOrDefaultAsync(m => m.ExternalUserId == externalUserId);
+        }
+
+        public async Task CreateTeamMemberAsync(TeamMemberEntity member)
+        {
+            _context.TeamMembers.Add(member);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

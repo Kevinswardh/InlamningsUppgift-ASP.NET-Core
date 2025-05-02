@@ -8,7 +8,7 @@ namespace DomainLayer_BusinessLogicLayer_.DomainModel
 {
     public class TeamMemberEntity
     {
-        public int Id { get; set; }         // intern ID
+        public string Id { get; set; }         // intern ID
         public string ExternalUserId { get; set; } // t.ex. IdentityUserId
         public string Name { get; set; }
         public string Email { get; set; }
