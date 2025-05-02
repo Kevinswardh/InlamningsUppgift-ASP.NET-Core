@@ -6,7 +6,9 @@
         <header class="form-header">
             <h1 class="form-title">Delete Project</h1>
             <div class="close-icon-wrapper">
-                <img src="/Pictures/Icons/close.svg" alt="Close" class="close-icon" />
+                <button type="button" class="close-icon" aria-label="Close modal" onclick="document.getElementById('deleteProjectModalOverlay').classList.remove('active')">
+                    <i class="ti ti-x"></i>
+                </button>
             </div>
         </header>
 
@@ -22,9 +24,7 @@
 
             <div class="modal-actions">
                 <button type="submit" class="submit-button danger-button">Delete</button>
-                <button type="button" class="submit-button" onclick="document.getElementById('deleteProjectModalOverlay').classList.remove('active')">
-                    Cancel
-                </button>
+          
             </div>
         </form>
     </div>

@@ -8,7 +8,9 @@
         <header class="form-header">
             <h1 class="form-title">Edit Member</h1>
             <div class="close-icon-wrapper" onclick="closeEditMemberModal()">
-                <img src="@Url.Content("~/Pictures/Icons/Close.svg")" alt="Close" class="close-icon" />
+                <button type="button" class="close-icon" aria-label="Close modal">
+                    <i class="ti ti-x"></i>
+                </button>
             </div>
         </header>
         <form id="editMemberForm" method="post" asp-controller="Users" asp-action="Edit" class="project-form">
@@ -63,9 +65,9 @@
     <div class="modal" id="deleteMemberModal">
         <header class="form-header">
             <h1 class="form-title">Delete Member</h1>
-            <div class="close-icon-wrapper" onclick="closeDeleteMemberModal()">
-                <img src="@Url.Content("~/Pictures/Icons/Close.svg")" alt="Close" class="close-icon" />
-            </div>
+            <button type="button" class="close-icon" aria-label="Close modal" onclick="closeDeleteMemberModal()">
+                <i class="ti ti-x"></i>
+            </button>
         </header>
         <form id="deleteMemberForm" method="post" asp-controller="Users" asp-action="Delete" class="project-form">
             <input type="hidden" name="returnUrl" value="@Context.Request.Path" />

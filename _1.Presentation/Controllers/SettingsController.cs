@@ -26,32 +26,31 @@ namespace _1.PresentationLayer.Controllers
 
             if (user != null)
             {
-                // 1. Uppdatera i databasen
                 user.IsDarkModeEnabled = enable;
                 await _userService.UpdateUserAsync(user);
 
-                // 2. Hämta ApplicationUser från IdentityDb
                 var identityUser = await _securityAuthService.FindByEmailAsync(user.Email);
 
                 if (identityUser != null)
                 {
-                    // 3. Logga ut gammal session
                     await _securityAuthService.SignOutAsync();
 
-                    // 4. Skapa claims inkl. ID
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, identityUser.Id), // 🟢 viktig!
-                new Claim("darkMode", enable.ToString().ToLower())
+                new Claim(ClaimTypes.NameIdentifier, identityUser.Id),
+                new Claim("darkMode", enable.ToString().ToLower()),
+                new Claim(ClaimTypes.Name, identityUser.UserName),
+                new Claim(ClaimTypes.Email, identityUser.Email),
+                new Claim(ClaimTypes.Role, user.Role ?? "User")
             };
 
-                    // 5. Logga in med nya claims
                     await _securityAuthService.SignInAsync(identityUser, isPersistent: false, claims);
                 }
             }
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
+
 
     }
 }

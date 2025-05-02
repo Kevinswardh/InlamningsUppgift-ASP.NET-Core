@@ -1615,14 +1615,23 @@ svg {
 }
 
 .close-icon {
-    align-self: start;
-    aspect-ratio: 1;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #1a1926;
+    font-size: 24px;
     cursor: pointer;
-    flex-shrink: 0;
-    object-fit: contain;
-    object-position: center;
-    width: 37px;
+    z-index: 100;
 }
+
+.close-icon:hover {
+    color: #ff4d4f;
+    transform: scale(1.1);
+    transition: 0.2s ease;
+}
+
 
 .close-icon-wrapper {
     /* Gör knappen fast inom headern */
