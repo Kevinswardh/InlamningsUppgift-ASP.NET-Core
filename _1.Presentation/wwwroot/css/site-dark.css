@@ -378,3 +378,50 @@ select,
 .close-icon {
     color: #f3f3f3 !important;
 }
+/* Cookie Consent Modal - Dark Mode */
+.cookie-modal {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7) !important;
+}
+
+    .cookie-modal .modal-content {
+        background-color: #2a2a2a !important;
+        border-radius: 12px !important;
+        padding: 2rem !important;
+    }
+
+.cookie-info h2,
+.cookie-options h3 {
+    color: #ffffff !important;
+}
+
+.cookie-info p,
+.cookie-options label,
+.cookie-info a {
+    color: #d1d1d1 !important;
+}
+
+.cookie-info a {
+    text-decoration: underline;
+    color: #6ca9ff !important;
+}
+
+.cookie-toggle input[type="checkbox"] {
+    accent-color: #6ca9ff !important;
+}
+
+.cookie-buttons button {
+    background-color: #333 !important;
+    color: white !important;
+    border: 1px solid #555 !important;
+}
+
+    .cookie-buttons button[type="submit"][value="all"] {
+        background-color: #307cf4 !important;
+        color: white !important;
+    }
+
+    .cookie-buttons button:hover {
+        filter: brightness(1.1) !important;
+    }

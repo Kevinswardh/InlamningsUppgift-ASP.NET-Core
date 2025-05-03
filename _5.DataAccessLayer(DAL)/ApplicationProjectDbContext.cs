@@ -16,6 +16,9 @@ namespace _5.DataAccessLayer_DAL_
         public DbSet<TeamMemberEntity> TeamMembers { get; set; }
         public DbSet<ProjectMemberEntity> ProjectMembers { get; set; }
 
+        // ✅ Ny DbSet för notifikationer
+        public DbSet<NotificationEntity> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -39,7 +42,7 @@ namespace _5.DataAccessLayer_DAL_
 
             // 📌 Project ↔ ProjectMember ↔ TeamMember (many-to-many)
             modelBuilder.Entity<ProjectMemberEntity>()
-                .HasKey(pm => new { pm.ProjectId, pm.TeamMemberId }); // composite key
+                .HasKey(pm => new { pm.ProjectId, pm.TeamMemberId });
 
             modelBuilder.Entity<ProjectMemberEntity>()
                 .HasOne(pm => pm.Project)
@@ -52,6 +55,21 @@ namespace _5.DataAccessLayer_DAL_
                 .WithMany(tm => tm.ProjectMembers)
                 .HasForeignKey(pm => pm.TeamMemberId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // 📌 Optional: konfigurera NotificationEntity
+            modelBuilder.Entity<NotificationEntity>()
+                .Property(n => n.Title)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<NotificationEntity>()
+                .Property(n => n.Message)
+                .IsRequired()
+                .HasMaxLength(500);
+
+            modelBuilder.Entity<NotificationEntity>()
+                .Property(n => n.ReceiverUserId)
+                .IsRequired();
         }
     }
 }

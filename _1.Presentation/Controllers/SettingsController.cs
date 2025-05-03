@@ -51,6 +51,27 @@ namespace _1.PresentationLayer.Controllers
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult SaveCookiePreferences(string consent, bool functional = false, bool analytics = false, bool marketing = false)
+        {
+            var values = new Dictionary<string, bool>
+            {
+                ["functional"] = consent == "all" || functional,
+                ["analytics"] = consent == "all" || analytics,
+                ["marketing"] = consent == "all" || marketing
+            };
+
+            var cookieValue = System.Text.Json.JsonSerializer.Serialize(values);
+            var options = new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddYears(1),
+                IsEssential = true
+            };
+
+            Response.Cookies.Append("CookiePreferences", cookieValue, options);
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
 
     }
 }

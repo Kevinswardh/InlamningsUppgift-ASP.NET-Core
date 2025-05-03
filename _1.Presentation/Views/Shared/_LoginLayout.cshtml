@@ -8,6 +8,20 @@
           rel="stylesheet" />
     <link rel="stylesheet" href="@Url.Content("~/css/site.css")" />
 
+    @{
+        var consentCookie = Context.Request.Cookies["CookiePreferences"];
+        var allowAnalytics = consentCookie?.Contains("\"analytics\":true") ?? false;
+    }
+    @if (allowAnalytics)
+    {
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXX');
+        </script>
+    }
 
     @RenderSection("Styles", required: false)
 </head>

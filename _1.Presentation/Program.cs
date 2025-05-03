@@ -20,10 +20,22 @@ using _5.DataAccessLayer_DAL_;
 using ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interface;
 using ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService;
 using _4.infrastructureLayer.Repositories.ProjectRepository;
+using _3.IntegrationLayer.Hubs;
+using ApplicationLayer.Services;
+using ApplicationLayer_ServiceLayer_.NotificationManagment.NotificationService.Interface;
+using _4.infrastructureLayer.Repositories.NotificationRepository;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// ========================================
+// Defaults
+// ========================================
+builder.Services.AddSignalR();
+
+
 
 // ========================================
 // 0. Lägg till konfiguration från ConfigurationLayer
@@ -73,12 +85,14 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IUserStatusService, UserStatusService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
 // REPOSITORIES
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 
 // ========================================
@@ -182,6 +196,9 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<NotificationHub>("/notificationHub");
+
 
 app.MapControllerRoute(
     name: "default",

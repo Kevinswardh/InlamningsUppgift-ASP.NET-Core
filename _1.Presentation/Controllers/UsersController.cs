@@ -178,7 +178,8 @@ public class UsersController : Controller
     [Authorize(Roles = "Admin,Manager")]
     public async Task<IActionResult> Edit(MemberItemViewModel model, string returnUrl)
     {
-        if (!ModelState.IsValid) return Redirect(returnUrl);
+        if (!ModelState.IsValid)
+            return Redirect(returnUrl);
 
 
         var user = await _userService.GetUserByIdAsync(model.Id);

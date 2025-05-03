@@ -1,0 +1,46 @@
+﻿@if (!Context.Request.Cookies.ContainsKey("CookiePreferences"))
+{
+    <div id="cookieConsentModal" class="cookie-modal">
+        <form method="post" asp-controller="Settings" asp-action="SaveCookiePreferences">
+
+            <div class="modal-content">
+                <div class="cookie-info">
+                    <h2>Du har kontroll över dina uppgifter</h2>
+                    <p>
+                        Vi och våra affärspartners använder teknik, inklusive cookies, för att samla in information
+                        om dig för olika ändamål. Du kan när som helst ändra eller återkalla ditt samtycke.
+                    </p>
+                    <a href="/policy" target="_blank">Läs mer här</a>
+                </div>
+
+                <div class="cookie-options">
+                    <h3>Cookies</h3>
+                    <div class="cookie-toggle">
+                        <label>Nödvändiga (alltid aktiva)</label>
+                        <input type="checkbox" checked disabled />
+                    </div>
+
+                    <div class="cookie-toggle">
+                        <label for="functional">Funktionella</label>
+                        <input type="checkbox" name="functional" id="functional" />
+                    </div>
+
+                    <div class="cookie-toggle">
+                        <label for="analytics">Analys & Statistik</label>
+                        <input type="checkbox" name="analytics" id="analytics" />
+                    </div>
+
+                    <div class="cookie-toggle">
+                        <label for="marketing">Marknadsföring</label>
+                        <input type="checkbox" name="marketing" id="marketing" />
+                    </div>
+
+                    <div class="cookie-buttons">
+                        <button type="submit" name="consent" value="all">Godkänn alla</button>
+                        <button type="submit" name="consent" value="custom">Spara valda inställningar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}

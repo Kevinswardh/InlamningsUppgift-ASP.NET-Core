@@ -1046,6 +1046,122 @@ svg {
         box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3);
     }
 
+/*Cookie modal*/
+/* Modal-overlay */
+.cookie-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+    /* Modal innehåll */
+    .cookie-modal .modal-content {
+        background-color: #fff;
+        border-radius: 12px;
+        max-width: 600px;
+        width: 100%;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        font-family: "Nunito", sans-serif;
+    }
+
+/* Info-del */
+.cookie-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.cookie-info p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.cookie-info a {
+    color: #2c7be5;
+    text-decoration: underline;
+}
+
+/* Cookie-val */
+.cookie-options h3 {
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.cookie-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0.75rem 0;
+}
+
+/* Knappar */
+.cookie-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+    .cookie-buttons button {
+        padding: 0.6rem 1.2rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+        .cookie-buttons button[value="all"] {
+            background-color: #2c7be5;
+            color: white;
+        }
+
+        .cookie-buttons button[value="custom"] {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+.cookie-options input[type="checkbox"] {
+    transform: scale(1.2);
+    accent-color: #2c7be5;
+    cursor: pointer;
+}
+.cookie-modal .modal-content {
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+}
+#cookieConsentModal[hidden] {
+    display: none !important;
+}
+.notification-item.fade-out {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.snackbar {
+    visibility: hidden;
+    min-width: 220px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 14px;
+    position: fixed;
+    z-index: 9999;
+    bottom: 30px;
+    right: 30px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.5s ease, bottom 0.5s ease;
+}
+
+    .snackbar.show {
+        visibility: visible;
+        opacity: 1;
+        bottom: 50px;
+    }
 
 
 /*Profile menu*/
@@ -1263,17 +1379,27 @@ svg {
 
 
 
-/* Notification */
+/* =========================== */
+/*      Notification Styles    */
+/* =========================== */
+.notification-count-inmenu {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
 
 .notification-card {
-    /* Justera höjden så att den är på samma nivå som de andra modalerna */
     right: 100px;
-    /* Placera den mer till höger för att den inte ska vara förbi knappen */
     width: 380px;
-    /* Se till att den är ovanpå andra element */
     background-color: #fff;
     border-radius: 14px;
-    box-shadow: 0 16px 80px 0 rgba(4, 15, 21, 0.15), 0 40px 20px -30px rgba(4, 15, 21, 0.1);
+    box-shadow: 0 16px 80px rgba(4, 15, 21, 0.15), 0 40px 20px -30px rgba(4, 15, 21, 0.1);
     padding: 22px 24px;
     position: absolute;
     top: 60px;
@@ -1281,8 +1407,8 @@ svg {
 }
 
 .notification-header {
-    align-items: center;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 17px;
 }
@@ -1296,17 +1422,19 @@ svg {
 }
 
 .notification-count {
-    align-items: center;
     background-color: #ff6640;
-    border-radius: 10px;
     color: #fff;
-    display: flex;
     font-family: "Nunito", sans-serif;
     font-size: 11px;
     font-weight: 700;
-    height: 20px;
-    justify-content: center;
     width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
 }
 
 .notification-divider {
@@ -1317,16 +1445,29 @@ svg {
 }
 
 .notification-item {
+    display: flex;
     align-items: center;
     background-color: #f5f7fa;
     border-radius: 14px;
-    display: flex;
     padding: 16px;
     position: relative;
+    margin-bottom: 12px;
 }
 
 .app-icon-wrapper {
-    margin-right: 20px;
+    margin-right: 16px;
+    background-color: #e0e6ef;
+    border-radius: 50%;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
 }
 
 .notification-content {
@@ -1334,18 +1475,17 @@ svg {
 }
 
 .notification-message {
-    color: #1a1926;
     font-family: "Nunito", sans-serif;
     font-size: 15px;
     font-weight: 400;
+    color: #1a1926;
     margin: 0 0 4px;
 }
 
 .notification-time {
-    color: #637085;
     font-family: "Nunito", sans-serif;
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 13px;
+    color: #637085;
     margin: 0;
 }
 
@@ -1353,18 +1493,18 @@ svg {
     background: none;
     border: none;
     color: #1a1926;
-    cursor: pointer;
     font-size: 18px;
-    padding: 0;
+    cursor: pointer;
     position: absolute;
+    top: 16px;
     right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+    padding: 0;
 }
 
     .notification-close:hover {
         opacity: 0.8;
     }
+
 
 /*Settings menu*/
 .settings-menu {

@@ -5,6 +5,9 @@ using ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService.Interface;
 using __Cross_cutting_Concerns.FormDTOs;
 using _1.PresentationLayer.ViewModels.MembersViewModels;
 using _1.PresentationLayer.ViewModels.ProjectsViewModels;
+using _3.IntegrationLayer.Hubs;
+using ApplicationLayer_ServiceLayer_.NotificationManagment.NotificationService.Interface;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Presentation.Controllers
 {
@@ -14,16 +17,22 @@ namespace Presentation.Controllers
         private readonly ILogger<ProjectsController> _logger;
         private readonly IUserService _userService;
         private readonly IProjectService _projectService;
-
+        private readonly INotificationService _notificationService;
+        private readonly IHubContext<NotificationHub> _hubContext;
         public ProjectsController(
             ILogger<ProjectsController> logger,
             IUserService userService,
-            IProjectService projectService)
+            IProjectService projectService,
+            INotificationService notificationService,
+            IHubContext<NotificationHub> hubContext)
         {
             _logger = logger;
             _userService = userService;
             _projectService = projectService;
+            _notificationService = notificationService;
+            _hubContext = hubContext;
         }
+
 
         public async Task<IActionResult> Index(string tab = "All", int page = 1)
         {
@@ -162,7 +171,50 @@ namespace Presentation.Controllers
                 IsCompleted = false
             };
 
+
             await _projectService.CreateProjectWithUsersAsync(form, User);
+            foreach (var member in memberDTOs)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Du har lagts till i ett projekt",
+                    Message = $"Projektet \"{model.Name}\" har skapats och du är tillagd.",
+                    ReceiverUserId = member.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(member.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
+            // Om kunden finns som användare
+            var customer = allUsers.FirstOrDefault(u => u.Email == model.ClientEmail);
+            if (customer != null)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Du är kontaktperson för nytt projekt",
+                    Message = $"Projektet \"{model.Name}\" har skapats och du är listad som kund.",
+                    ReceiverUserId = customer.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(customer.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+            var currentUser = await _userService.GetUserByIdAsync(userId);
+            var managersAndAdmins = allUsers.Where(u => u.Id != userId && (u.Role == "Admin" || u.Role == "Manager")).ToList();
+            foreach (var manager in managersAndAdmins)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Nytt projekt skapat",
+                    Message = $"Användaren \"{currentUser.UserName}\" har skapat projektet \"{model.Name}\".",
+                    ReceiverUserId = manager.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(manager.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
             return RedirectToAction("Index");
         }
         [HttpPost]
@@ -206,6 +258,48 @@ namespace Presentation.Controllers
 
             var updatedProject = await _projectService.UpdateProjectAsync(form);
             if (updatedProject == null) return NotFound();
+            foreach (var member in memberDTOs)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Projekt uppdaterat",
+                    Message = $"Projektet \"{model.Name}\" har uppdaterats.",
+                    ReceiverUserId = member.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(member.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
+            var allUsers = await _userService.GetAllUsersAsync();
+            var customer = allUsers.FirstOrDefault(u => u.Email == model.ClientEmail);
+            if (customer != null)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Ditt projekt har uppdaterats",
+                    Message = $"Projektet \"{model.Name}\" har uppdaterats.",
+                    ReceiverUserId = customer.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(customer.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+            var currentUser = await _userService.GetUserByIdAsync(_userService.GetUserId(User));
+            var managersAndAdmins = allUsers.Where(u => u.Id != currentUser.Id && (u.Role == "Admin" || u.Role == "Manager")).ToList();
+            foreach (var manager in managersAndAdmins)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Projekt uppdaterat",
+                    Message = $"Användaren \"{currentUser.UserName}\" har uppdaterat projektet \"{model.Name}\".",
+                    ReceiverUserId = manager.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(manager.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
 
             return RedirectToAction("Index");
         }
@@ -215,6 +309,52 @@ namespace Presentation.Controllers
         {
             var success = await _projectService.MarkProjectAsCompletedAsync(id);
             if (!success) return NotFound();
+            var project = await _projectService.GetProjectByIdAsync(id);
+            if (project != null)
+            {
+                foreach (var member in project.Members)
+                {
+                    var notif = new NotificationForm
+                    {
+                        Title = "Projektet är färdigställt",
+                        Message = $"Projektet \"{project.Name}\" har markerats som klart.",
+                        ReceiverUserId = member.Id,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _notificationService.AddNotificationAsync(notif);
+                    await _hubContext.Clients.User(member.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+                }
+
+                var customer = (await _userService.GetAllUsersAsync()).FirstOrDefault(u => u.Email == project.ClientEmail);
+                if (customer != null)
+                {
+                    var notif = new NotificationForm
+                    {
+                        Title = "Projekt slutfört",
+                        Message = $"Projektet \"{project.Name}\" är nu klart.",
+                        ReceiverUserId = customer.Id,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _notificationService.AddNotificationAsync(notif);
+                    await _hubContext.Clients.User(customer.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+                }
+            }
+            var currentUser = await _userService.GetUserByIdAsync(_userService.GetUserId(User));
+            var allUsers = await _userService.GetAllUsersAsync();
+            var managersAndAdmins = allUsers.Where(u => u.Id != currentUser.Id && (u.Role == "Admin" || u.Role == "Manager")).ToList();
+            foreach (var manager in managersAndAdmins)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Projekt markerat som klart",
+                    Message = $"Användaren \"{currentUser.UserName}\" har markerat projektet \"{project.Name}\" som slutfört.",
+                    ReceiverUserId = manager.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(manager.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
 
             return RedirectToAction("Index");
         }
@@ -223,11 +363,65 @@ namespace Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // 1. Hämta projektet INNAN det raderas
+            var project = await _projectService.GetProjectByIdAsync(id);
+            if (project == null) return NotFound();
+
+            // 2. Förbered användardata
+            var currentUser = await _userService.GetUserByIdAsync(_userService.GetUserId(User));
+            var allUsers = await _userService.GetAllUsersAsync();
+            var managersAndAdmins = allUsers
+                .Where(u => u.Id != currentUser.Id && (u.Role == "Admin" || u.Role == "Manager"))
+                .ToList();
+
+            // 3. Skicka notifikationer före borttagning
+            foreach (var member in project.Members)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Projekt raderat",
+                    Message = $"Projektet \"{project.Name}\" har tagits bort.",
+                    ReceiverUserId = member.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(member.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
+            var customer = allUsers.FirstOrDefault(u => u.Email == project.ClientEmail);
+            if (customer != null)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Projekt borttaget",
+                    Message = $"Projektet \"{project.Name}\" har tagits bort.",
+                    ReceiverUserId = customer.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(customer.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
+            foreach (var manager in managersAndAdmins)
+            {
+                var notif = new NotificationForm
+                {
+                    Title = "Projekt raderat",
+                    Message = $"Användaren \"{currentUser.UserName}\" har raderat projektet \"{project.Name}\".",
+                    ReceiverUserId = manager.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _notificationService.AddNotificationAsync(notif);
+                await _hubContext.Clients.User(manager.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+            }
+
+            // 4. Nu raderas projektet
             var success = await _projectService.DeleteProjectAsync(id);
             if (!success) return NotFound();
 
             return RedirectToAction("Index");
         }
+
 
         public async Task<IActionResult> Details(int id)
         {

@@ -1,0 +1,34 @@
+﻿@model List<__Cross_cutting_Concerns.FormDTOs.NotificationForm>
+
+<section class="notification-card" id="notificationsCard" hidden>
+    <header class="notification-header">
+        <h2 class="notification-title">Notifications</h2>
+        <span class="notification-count" id="notificationCount">@((Model != null) ? Model.Count : 0)</span>
+    </header>
+    <hr class="notification-divider" />
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var notif in Model)
+        {
+            <article class="notification-item" data-id="@notif.Id">
+                <div class="app-icon-wrapper">
+                    <svg class="app-icon" width="20" height="20" fill="currentColor">
+                        <circle cx="10" cy="10" r="10" />
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <p class="notification-message">@notif.Title</p>
+                    <p class="notification-time">@notif.CreatedAt.ToLocalTime().ToString("HH:mm")</p>
+                </div>
+                <button class="notification-close" aria-label="Close notification">
+                    <i class="ti ti-x"></i>
+                </button>
+            </article>
+        }
+    }
+    else
+    {
+        <p style="padding: 1rem;">Inga nya notifikationer.</p>
+    }
+</section>
