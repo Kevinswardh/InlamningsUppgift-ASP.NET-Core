@@ -24,6 +24,8 @@ using _3.IntegrationLayer.Hubs;
 using ApplicationLayer.Services;
 using ApplicationLayer_ServiceLayer_.NotificationManagment.NotificationService.Interface;
 using _4.infrastructureLayer.Repositories.NotificationRepository;
+using BackgroundJobs.SeedData;
+
 
 
 
@@ -178,6 +180,19 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(newAdmin, "Admin");
         }
     }
+}
+// ========================================
+// 6b. Skapa test användare
+// ========================================
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    // Din Admin-seed här...
+
+    // 🔽 Lägg till detta för att seeda testanvändare:
+    await SeedTestUsers.RunAsync(scope.ServiceProvider);
 }
 
 // ========================================

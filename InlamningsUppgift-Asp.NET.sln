@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_##Cross-cutting Concerns",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_#IntegrationLayer", "#IntegrationLayer\_#IntegrationLayer.csproj", "{119118A7-6D2A-4BB1-922C-EF8E65AF84C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_##Background Jobs", "##Background Jobs\_##Background Jobs.csproj", "{8B5C58EC-7E15-4870-B7AB-31DE565829A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackgroundJobs", "##Background Jobs\BackgroundJobs.csproj", "{8B5C58EC-7E15-4870-B7AB-31DE565829A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
