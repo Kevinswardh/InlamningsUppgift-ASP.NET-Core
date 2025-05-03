@@ -89,5 +89,10 @@ namespace SecurityLayer.SecurityServices.SecurityAuthService
             var logins = await _userManager.GetLoginsAsync(user);
             return logins.FirstOrDefault()?.LoginProvider;
         }
+        public async Task<ApplicationUser?> FindByUserNameAsync(string username)
+        {
+            return await _userManager.FindByNameAsync(username);
+        }
+
     }
 }

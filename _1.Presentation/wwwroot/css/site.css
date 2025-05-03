@@ -461,12 +461,11 @@ svg {
 
 /* Form toggle logic */
 .signup-form-wrapper {
-    display: none;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-.login-container.show-signup .login-form-wrapper {
-    display: none;
-}
 
 .login-container.show-signup .signup-form-wrapper {
     display: block;
@@ -584,7 +583,9 @@ svg {
     padding: 14px;
     width: 100%;
 }
-
+input::-ms-reveal {
+    display: none;
+}
 .signup-prompt,
 .login-text {
     font-size: 15px;
@@ -2610,3 +2611,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         padding: 12px;
     }
 }
+.notification-card {
+    max-width: 400px;
+}
+
+.notification-list-wrapper {
+    max-height: 300px; /* Justera till höjden av ~3 items */
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+}
+
+    .notification-list-wrapper::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+    }

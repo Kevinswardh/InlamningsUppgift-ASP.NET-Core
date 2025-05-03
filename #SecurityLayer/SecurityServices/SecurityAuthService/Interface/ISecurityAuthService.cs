@@ -26,5 +26,7 @@ namespace SecurityLayer.SecurityServices.SecurityAuthService.Interface
         Task AddToRoleAsync(ApplicationUser user, string role);
         Task<IList<UserLoginInfo>> GetLoginsAsync(ApplicationUser user);
         Task<string?> GetExternalLoginProviderAsync(string userId);
+        Task<ApplicationUser?> FindByUserNameAsync(string username);
+
     }
 }

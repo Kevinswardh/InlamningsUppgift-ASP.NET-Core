@@ -19,5 +19,6 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface
         string GetUserId(ClaimsPrincipal user);
         Task<List<MemberItemDTO>> GetAllUsersAsync();
         Task<UserEntity?> GetUserByEmailAsync(string email);
+
     }
 }

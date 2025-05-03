@@ -180,5 +180,6 @@ namespace _4.infrastructureLayer.Repositories.UserRepository
                 ImageUrl = identityUser.ImageUrl
             };
         }
+  
     }
 }

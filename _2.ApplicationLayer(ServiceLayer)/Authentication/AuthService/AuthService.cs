@@ -11,6 +11,7 @@ using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
 using DomainLayer_BusinessLogicLayer_.DomainModel;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
 using _4.infrastructureLayer.Repositories.UserRepository;
+using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 
 namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
 {
@@ -21,20 +22,23 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
         private readonly IExternalAuthService _externalAuthService;
         private readonly ISecurityAuthService _securityAuthService;
         private readonly IUserRepository _userRepository;
-
+        private readonly IUserService _userService;
         public AuthService(
             IAuthRepository authRepo,
             IUserStatusService statusService,
             IExternalAuthService externalAuthService,
             ISecurityAuthService securityAuthService,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IUserService userService) 
         {
             _authRepo = authRepo;
             _statusService = statusService;
             _externalAuthService = externalAuthService;
             _securityAuthService = securityAuthService;
             _userRepository = userRepository;
+            _userService = userService; 
         }
+
 
         public async Task<bool> LoginAsync(LoginForm model)
         {
@@ -75,9 +79,23 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
 
             return result.Succeeded;
         }
-
         public async Task<IdentityResult> RegisterUserAsync(RegisterForm model)
         {
+            var errors = new List<IdentityError>();
+
+            // Kontrollera om e-post redan finns
+            var existingEmailUser = await _securityAuthService.FindByEmailAsync(model.Email);
+            if (existingEmailUser != null)
+                errors.Add(new IdentityError { Code = nameof(model.Email), Description = "Email already exists" });
+
+            // Kontrollera om användarnamn redan finns
+            var existingUsernameUser = await _securityAuthService.FindByUserNameAsync(model.UserName);
+            if (existingUsernameUser != null)
+                errors.Add(new IdentityError { Code = nameof(model.UserName), Description = "Username is already taken" });
+
+            if (errors.Any())
+                return IdentityResult.Failed(errors.ToArray());
+
             var user = new UserEntity
             {
                 Email = model.Email,
@@ -92,19 +110,15 @@ namespace ApplicationLayer_ServiceLayer_.Authentication.AuthService
             {
                 return IdentityResult.Failed(new IdentityError
                 {
+                    Code = "", // generellt fel
                     Description = "Registration failed"
                 });
             }
 
-            var identityUser = await _securityAuthService.FindByEmailAsync(user.Email);
-            if (identityUser != null)
-            {
-               // await _securityAuthService.SignInAsync(identityUser, isPersistent: false);
-               // _statusService.SetOnline(identityUser.Email); Ska inte gå online vid registrering
-            }
-
             return IdentityResult.Success;
         }
+
+
 
         public async Task LogoutAsync(string email)
         {

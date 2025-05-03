@@ -20,5 +20,8 @@ namespace DomainLayer_BusinessLogicLayer_.InfraInterfaces
         Task UpdateExternalImageUrlAsync(string userId, string externalImageUrl);
         Task<List<UserEntity>> GetAllUsersAsync();
         Task<UserEntity?> GetUserByEmailAsync(string email);
+
+       
+
     }
 }

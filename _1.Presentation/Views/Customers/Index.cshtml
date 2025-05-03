@@ -53,18 +53,6 @@
             });
         });
 
-        function openEditModal(member) {
-            document.getElementById("editMemberId").value = member.id;
-            document.getElementById("editMemberUsername").value = member.username;
-            document.getElementById("editMemberEmail").value = member.email;
-            document.getElementById("editMemberPhone").value = member.phone;
-            document.getElementById("editMemberPosition").value = member.position;
-            document.getElementById("editMemberRole").value = member.role;
-
-            document.getElementById("editMemberModalOverlay").classList.add("active");
-        }
-
-
         function closeEditMemberModal() {
             document.getElementById("editMemberModalOverlay").classList.remove("active");
         }

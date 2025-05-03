@@ -1,0 +1,10 @@
+﻿
+
+loginögon på login
+Edit modalen i Customer sidan måste fixas, 
+Sort by menyn visuell bugg, 
+
+vit text i qwuill 
+eventeutllt validering på emails
+
+so mteammember varför funakr inte create project, 

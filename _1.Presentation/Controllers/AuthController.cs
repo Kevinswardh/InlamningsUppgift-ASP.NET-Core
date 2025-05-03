@@ -58,43 +58,21 @@ namespace _1.PresentationLayer.Controllers
                 return View("~/Views/Login/Index.cshtml", model);
             }
 
-            return RedirectToAction("Index", "Projects");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
+            // ✅ Kolla användarens roll
+            var user = await _userService.GetUserByEmailAsync(model.Email);
+            if (user != null)
             {
-                var errors = ModelState
-                    .Where(e => e.Value.Errors.Count > 0)
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                    );
-
-                return BadRequest(errors);
+                if (user.Role == "User") // vanliga användare
+                {
+                    return RedirectToAction("Index", "Managers");
+                }
             }
 
-            var form = new RegisterForm
-            {
-                Email = model.Email,
-                Password = model.Password,
-                ConfirmPassword = model.ConfirmPassword,
-                UserName = model.UserName,
-                PhoneNumber = model.PhoneNumber
-            };
-
-            var result = await _authService.RegisterUserAsync(form);
-
-            if (!result.Succeeded)
-            {
-                var errors = result.Errors.Select(e => e.Description).ToArray();
-                return BadRequest(new { generalErrors = errors });
-            }
-
-            return Ok();
+            return RedirectToAction("Index", "Projects"); // andra roller
         }
+
+
+
 
         // External login method
         [HttpPost]

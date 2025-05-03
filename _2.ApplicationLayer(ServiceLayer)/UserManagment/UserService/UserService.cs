@@ -9,6 +9,7 @@ using __Cross_cutting_Concerns.FormDTOs;
 using CrossCuttingConcerns.FormDTOs;
 using DomainLayer_BusinessLogicLayer_.DomainModel;
 using DomainLayer_BusinessLogicLayer_.InfraInterfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
 {
@@ -163,5 +164,7 @@ namespace ApplicationLayer_ServiceLayer_.UserManagment.UserService
         {
             return await _userRepo.GetUserByEmailAsync(email);
         }
+  
+
     }
 }

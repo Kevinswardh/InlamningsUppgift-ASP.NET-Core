@@ -94,8 +94,11 @@
             position: btn.dataset.position,
             role: btn.dataset.role
         };
+
+
         openEditModal(member);
     }
+
     function handleDeleteClick(btn) {
         const memberId = btn.dataset.id;  // Hämta ID:t från data-id attributet
         openDeleteModal(memberId);        // Öppna delete modal med rätt ID

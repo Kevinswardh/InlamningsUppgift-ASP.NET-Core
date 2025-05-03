@@ -114,80 +114,14 @@
                         <p class="signup-prompt">
                             Don’t have an account?
 
-                            <a href="#" class="toggle-to-signup">Sign Up</a>
+                            <a asp-controller="Register" asp-action="Index" style="color: #007bff; text-decoration: underline;">Sign up</a>
+
+
                         </p>
                     </form>
                 </div>
 
-                <!-- Signup Form -->
-                <div class="signup-form-wrapper">
-                    <h2 class="signup-title">Create Account</h2>
-       
-
-                    <form asp-controller="Auth" asp-action="Register" method="post" class="signup-form">
-                        <div class="form-group">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text"
-                                   name="UserName"
-                                   id="username"
-                                   class="form-input"
-                                   placeholder="Your Username" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="signup-email" class="form-label">Email</label>
-                            <input type="email"
-                                   name="Email"
-                                   id="signup-email"
-                                   class="form-input"
-                                   placeholder="Your email address" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="signup-password" class="form-label">Password</label>
-                            <input type="password"
-                                   name="Password"
-                                   id="signup-password"
-                                   class="form-input"
-                                   placeholder="Enter your password" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="confirm-password" class="form-label">Confirm Password</label>
-                            <input type="password"
-                                   name="ConfirmPassword"
-                                   id="confirm-password"
-                                   class="form-input"
-                                   placeholder="Confirm your password" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="phone-number" class="form-label">Phone Number</label>
-                            <input type="tel"
-                                   name="PhoneNumber"
-                                   id="phone-number"
-                                   class="form-input"
-                                   placeholder="Your phone number" />
-                        </div>
-
-                        <div class="form-actions">
-                            <label class="remember-me">
-                                <input type="checkbox" /> I accept
-                                <a href="#" class="terms-link">Terms and Conditions</a>
-                            </label>
-                        </div>
-
-                        <button type="submit" class="login-button">
-                            Create Account
-                        </button>
-
-                        <p class="login-text">
-                            Already have an account?
-                            <a href="#" class="toggle-to-login">Login</a>
-                        </p>
-                    </form>
-
-                </div>
+               
             </div>
         </div>
     </section>
@@ -199,120 +133,5 @@
 <script src="...jquery.min.js"></script>
 <script src="...jquery.validate.min.js"></script>
 <script src="...jquery.validate.unobtrusive.min.js"></script>
-
-<script>
-    document
-        .querySelector(".toggle-to-signup")
-        .addEventListener("click", function (e) {
-            e.preventDefault();
-            document
-                .querySelector(".login-container")
-                .classList.add("show-signup");
-        });
-
-    document
-        .querySelector(".toggle-to-login")
-        .addEventListener("click", function (e) {
-            e.preventDefault();
-            document
-                .querySelector(".login-container")
-                .classList.remove("show-signup");
-        });
-</script>
-<script>
-    document.querySelector(".signup-form").addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const form = e.target;
-
-        // 🔁 Rensa gamla fel
-        form.querySelectorAll(".field-error").forEach(el => el.remove());
-
-        let hasError = false;
-
-        // 🟠 Terms måste vara ikryssad
-        const termsAccepted = form.querySelector("input[type='checkbox']").checked;
-        if (!termsAccepted) {
-            const checkboxLabel = form.querySelector(".remember-me");
-            const errorEl = document.createElement("div");
-            errorEl.className = "field-error";
-            errorEl.style.color = "red";
-            errorEl.textContent = "You must accept the terms and conditions.";
-            checkboxLabel.insertAdjacentElement("afterend", errorEl);
-            hasError = true;
-        }
-
-        // 🟡 Validera obligatoriska fält
-        const requiredFields = ["UserName", "Email", "Password", "ConfirmPassword", "PhoneNumber"];
-        requiredFields.forEach(fieldName => {
-            const input = form.querySelector(`[name='${fieldName}']`);
-            if (!input.value.trim()) {
-                const errorEl = document.createElement("div");
-                errorEl.className = "field-error";
-                errorEl.style.color = "red";
-                errorEl.textContent = `${fieldName} is required.`;
-                input.insertAdjacentElement("afterend", errorEl);
-                hasError = true;
-            }
-        });
-
-        // 🟥 Lösenord måste matcha
-        const password = form.querySelector("[name='Password']").value.trim();
-        const confirmPassword = form.querySelector("[name='ConfirmPassword']").value.trim();
-        if (password && confirmPassword && password !== confirmPassword) {
-            const confirmInput = form.querySelector("[name='ConfirmPassword']");
-            const errorEl = document.createElement("div");
-            errorEl.className = "field-error";
-            errorEl.style.color = "red";
-            errorEl.textContent = "Passwords do not match.";
-            confirmInput.insertAdjacentElement("afterend", errorEl);
-            hasError = true;
-        }
-
-        if (hasError) return; // 🛑 Skicka inte till server
-
-        // 🟢 Allt OK – förbered data
-        const data = {
-            Email: form.querySelector("[name='Email']").value,
-            Password: form.querySelector("[name='Password']").value,
-            ConfirmPassword: form.querySelector("[name='ConfirmPassword']").value,
-            UserName: form.querySelector("[name='UserName']").value,
-            PhoneNumber: form.querySelector("[name='PhoneNumber']").value
-        };
-
-        const response = await fetch("/Auth/Register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            window.location.href = "/Projects";
-        } else {
-            const errors = await response.json();
-
-            for (let field in errors) {
-                const messages = errors[field];
-                const input = form.querySelector(`[name='${field}']`);
-                if (input) {
-                    const errorEl = document.createElement("div");
-                    errorEl.className = "field-error";
-                    errorEl.style.color = "red";
-                    errorEl.textContent = messages.join(", ");
-                    input.insertAdjacentElement("afterend", errorEl);
-                }
-            }
-
-            if (errors.generalErrors) {
-                const generalError = document.createElement("div");
-                generalError.className = "field-error";
-                generalError.style.color = "red";
-                generalError.style.marginTop = "10px";
-                generalError.textContent = errors.generalErrors.join("\n");
-                form.appendChild(generalError);
-            }
-        }
-    });
-</script>
 
 

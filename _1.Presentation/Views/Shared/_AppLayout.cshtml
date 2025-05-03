@@ -574,10 +574,20 @@
         });
 
     </script>
+    <!--SignalR för roll uppdatering-->
+    <script>
+        // JavaScript (frontend)
+        setInterval(() => {
+            fetch("/api/user/check-claims-version").then(res => {
+                if (res.status === 409) location.reload(); // reload if server says "you’re outdated"
+            });
+        }, 10000);
 
+    </script>
     <!-- 🧩 Snackbar för bekräftelser -->
     <div id="snackbar" class="snackbar">Notifikation markerad som läst</div>
 
+    
 
 </body>
 </html>

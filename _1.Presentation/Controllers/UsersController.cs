@@ -1,4 +1,5 @@
 ﻿using _1.PresentationLayer.ViewModels.MembersViewModels;
+using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -9,52 +10,14 @@ using System.Security.Claims;
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
+    private readonly IAuthService _authService;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IAuthService authService)
     {
         _userService = userService;
+        _authService = authService;
     }
 
-    //Kommenterar ut pga vi använder sidladdningarna via Index på respektive sida. (Kan återanvändas när vi ska hämta signal R delar ränker jag?
-    /*  public async Task<IActionResult> NewMembers(int page = 1, string search = "", string tab = "All", string sortBy = "Name")
-      {
-          // Hämta alla users för att räkna flikar
-          var allUsers = await _userService.GetUsersFilteredAsync("User", search, "All", sortBy, 1, 9999);
-
-          // Hämta filtrerat resultat för aktuell tab
-          var dto = await _userService.GetUsersFilteredAsync("User", search, tab, sortBy, page, 6);
-
-          var viewModel = new UserListViewModel
-          {
-              Members = dto.Members.Select(m => new MemberItemViewModel
-              {
-                  Id = m.Id,
-                  Email = m.Email,
-                  UserName = m.UserName,
-                  PhoneNumber = m.PhoneNumber,
-                  Position = m.Position,
-                  Role = m.Role,
-                  IsOnline = m.IsOnline
-              }).ToList(),
-
-              CurrentPage = dto.CurrentPage,
-              TotalPages = dto.TotalPages,
-              SelectedSort = sortBy,
-              SearchQuery = search,
-              Filter = dto.Filter,
-
-              TabData = new TabListViewModel
-              {
-                  SelectedTab = tab,
-                  AllCount = allUsers.Members.Count,
-                  OnlineCount = allUsers.Members.Count(m => m.IsOnline),
-                  OfflineCount = allUsers.Members.Count(m => !m.IsOnline),
-                  CurrentController = this.ControllerContext.RouteData.Values["controller"]?.ToString()
-              }
-          };
-
-          return View("NewMembers", viewModel);
-      }*/
     public async Task SetProfilePictureToLayout()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -178,9 +141,7 @@ public class UsersController : Controller
     [Authorize(Roles = "Admin,Manager")]
     public async Task<IActionResult> Edit(MemberItemViewModel model, string returnUrl)
     {
-        if (!ModelState.IsValid)
-            return Redirect(returnUrl);
-
+        if (!ModelState.IsValid) return Redirect(returnUrl);
 
         var user = await _userService.GetUserByIdAsync(model.Id);
         if (user == null) return NotFound();
@@ -193,12 +154,29 @@ public class UsersController : Controller
 
         await _userService.UpdateUserAsync(user);
 
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId == model.Id)
+        {
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim("darkMode", user.IsDarkModeEnabled.ToString().ToLower()),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role ?? "User")
+        };
+
+            var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+        }
 
         return Redirect(string.IsNullOrEmpty(returnUrl) ? "/NewMembers" : returnUrl);
-
-
-
     }
+
+
+
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]

@@ -1,0 +1,120 @@
+﻿@model _1.PresentationLayer.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register Page";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+
+}
+<main class="login-page">
+    <div class="background-container">
+        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/ce3234e7c1b44e43f8b055fd3bc42ab0c0e31e4c"
+             alt="Background"
+             class="background-image" />
+        <div class="blur-overlay"></div>
+    </div>
+    <section class="welcome-section">
+        <h1 class="welcome-title">
+            Welcome to <span class="highlight">Alpha</span>
+        </h1>
+        <p class="welcome-description">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
+            ullamcorper nisl erat, vel convallis elit fermentum pellentesque. Sed
+            mollis velit facilisis facilisis viverra.
+        </p>
+    </section>
+
+    <section class="login-section">
+        <div class="login-container">
+            <div class="form-toggle-container">
+            
+                <!-- Signup Form -->
+                <div class="signup-form-wrapper">
+                    <h2 class="signup-title">Create Account</h2>
+
+
+
+                    <form asp-controller="Register" asp-action="Register" method="post" class="signup-form">
+                        <div class="form-group">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" name="UserName" id="username" class="form-input" placeholder="Your Username" />
+                            <span asp-validation-for="UserName" style="color:red"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-email" class="form-label">Email</label>
+                            <input type="email" name="Email" id="signup-email" class="form-input" placeholder="Your email address" />
+                            <span asp-validation-for="Email" style="color:red"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-password" class="form-label">Password</label>
+                            <div style="position: relative;">
+                                <input type="password" name="Password" id="signup-password" class="form-input" placeholder="Enter your password" />
+                                <button type="button" class="toggle-password" data-target="signup-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none;">👁️</button>
+                            </div>
+                            <span asp-validation-for="Password" style="color:red"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm-password" class="form-label">Confirm Password</label>
+                            <div style="position: relative;">
+                                <input type="password" name="ConfirmPassword" id="confirm-password" class="form-input" placeholder="Confirm your password" />
+                                <button type="button" class="toggle-password" data-target="confirm-password" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none;">👁️</button>
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" style="color:red"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="phone-number" class="form-label">Phone Number</label>
+                            <input type="tel" name="PhoneNumber" id="phone-number" class="form-input" placeholder="Your phone number" />
+                            <span asp-validation-for="PhoneNumber" style="color:red"></span>
+                        </div>
+
+                        <div class="form-actions">
+                            <label class="remember-me">
+                                <input asp-for="AcceptTerms" type="checkbox" />
+                                I accept
+                                <a href="#" class="terms-link">Terms and Conditions</a>
+                            </label>
+                        </div>
+                            <span asp-validation-for="AcceptTerms" style="color:red"></span>
+
+
+
+                        <button type="submit" class="login-button">Create Account</button>
+
+                        <p class="login-text">
+                            Already have an account?
+                            <a asp-controller="Login" asp-action="Index" style="color: #007bff; text-decoration: underline;">Login</a>
+                        </p>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+    @await Html.PartialAsync("_CookieConsent")
+
+
+
+</main>
+<script src="...jquery.min.js"></script>
+<script src="...jquery.validate.min.js"></script>
+<script src="...jquery.validate.unobtrusive.min.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+<script>
+    document.querySelectorAll(".toggle-password").forEach(button => {
+        button.addEventListener("click", function () {
+            const targetId = this.getAttribute("data-target");
+            const input = document.getElementById(targetId);
+
+            const isHidden = input.type === "password";
+            input.type = isHidden ? "text" : "password";
+            this.textContent = isHidden ? "🔒" : "👁️";
+        });
+    });
+</script>
