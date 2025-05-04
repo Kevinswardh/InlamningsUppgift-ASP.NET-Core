@@ -1,4 +1,5 @@
-﻿@{
+﻿@* _AppLayout *@
+@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var isUser = User?.Identity?.IsAuthenticated == true && User.IsInRole("User");
     var isManager = User?.Identity?.IsAuthenticated == true && User.IsInRole("Manager");
@@ -51,7 +52,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
           rel="stylesheet" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js" integrity="sha512-CJZhmElKX8zJ1Z8Ipy3SdyT+FJZhMdu7AB3x0xMyGVrKi7M3qZQBGhWlMFCR+vNTVwEcLkE8TyzHi3oAVAbKHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 
     @RenderSection("Styles", required: false)
 </head>
@@ -118,12 +119,13 @@
                     <!-- Klockikonen -->
                     <button class="icon-button" id="notificationsToggle" style="position: relative;">
                         <i class="ti ti-bell"></i>
-                        <span id="notificationCount"
+                        <span id="notificationCountIcon"
                               style="position: absolute; top: -5px; right: -5px; background-color: red; color: white;
-                 font-size: 0.75rem; padding: 2px 6px; border-radius: 50%; display: inline-block;"
+             font-size: 0.75rem; padding: 2px 6px; border-radius: 50%; display: inline-block;"
                               hidden>
                             0
                         </span>
+
                     </button>
 
 
@@ -208,6 +210,13 @@
                             <i class="ti ti-user"></i>
                             <span class="menu-text">Mina sidor</span>
                         </button>
+                        @if (isManager || isAdmin)
+                        {
+                            <button class="menu-item settings-item" onclick="location.href='@Url.Action("Index", "AdminPage")'">
+                                <i class="ti ti-shield-lock"></i>
+                                <span class="menu-text">Admin Page</span>
+                            </button>
+                        }
 
                         <form asp-controller="Auth" asp-action="Logout" method="post">
                             <button class="menu-item logout-item" type="submit">
@@ -222,9 +231,8 @@
 
             @RenderBody()
             <!-- Tom behållare för att injicera cookiemodalen -->
-            <div id="cookieConsentModal" class="cookie-modal" hidden>
-                @await Html.PartialAsync("_CookieConsentInApp")
-            </div>
+            <div id="cookieConsentModal" class="cookie-modal" hidden></div>
+
 
 
 
@@ -477,8 +485,25 @@
         });
     </script>
 
-    <!-- 🛎️ SignalR - Markera som läst & animera bort + snackbar -->
+
+    <!--Signal R för notifications-->
     <script>
+        const iconCountEl = document.getElementById("notificationCountIcon");
+        const cardCountEl = document.getElementById("notificationCountCard");
+
+        // SignalR-anslutning
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/notificationHub")
+            .build();
+
+        connection.on("ReceiveNotification", function (title, message) {
+            // Öka båda räknarna
+            updateNotificationCount(1);
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        // Klick på stäng-knappen
         document.addEventListener("click", async (e) => {
             if (e.target.closest(".notification-close")) {
                 const article = e.target.closest(".notification-item");
@@ -493,97 +518,93 @@
 
                 article.classList.add("fade-out");
                 setTimeout(() => article.remove(), 300);
-
-                const countElem = document.getElementById("notificationCount");
-                const current = parseInt(countElem.textContent) || 0;
-                if (current > 0) countElem.textContent = current - 1;
-
-                showSnackbar("Notifikation markerad som läst");
+                updateNotificationCount(-1);
             }
         });
 
-        function showSnackbar(message) {
-            const snackbar = document.getElementById("snackbar");
-            snackbar.textContent = message;
-            snackbar.classList.add("show");
-
-            setTimeout(() => {
-                snackbar.classList.remove("show");
-            }, 3000); // visas i 3 sekunder
-        }
-    </script>
-
-
-    <!-- 🛎️ SignalR - Markera som läst & animera bort -->
-    <script>
-        document.addEventListener("click", async (e) => {
-            if (e.target.closest(".notification-close")) {
-                const article = e.target.closest(".notification-item");
-                const id = article.dataset.id;
-                if (!id) return;
-
-                try {
-                    await fetch(`/notifications/mark-read/${id}`, { method: "POST" });
-                } catch (err) {
-                    console.error("Kunde inte markera notifikation som läst:", err);
-                }
-
-                // Lägg till fade-out klass och ta bort efter animation
-                article.classList.add("fade-out");
-                setTimeout(() => article.remove(), 300); // Matchar transition-duration
-
-                const countElem = document.getElementById("notificationCount");
-                const current = parseInt(countElem.textContent) || 0;
-                if (current > 0) countElem.textContent = current - 1;
-            }
-        });
-    </script>
-    <!--Script for Notification count in menu-->
-    <script>
-        const notificationCountEl = document.getElementById("notificationCount");
-        let notificationCount = 0;
-
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/notificationHub")
-            .build();
-
-        connection.on("ReceiveNotification", function (title, message) {
-            notificationCount++;
-            notificationCountEl.textContent = notificationCount;
-            notificationCountEl.hidden = false;
-        });
-
-        connection.start().catch(err => console.error(err.toString()));
-    </script>
-    <!--script för att synka notification counts-->
-    <script>
+        // Ladda in antalet vid sidladdning
         document.addEventListener("DOMContentLoaded", async () => {
             try {
                 const res = await fetch("/notifications/getunreadcount");
                 const count = await res.json();
-                const el = document.getElementById("notificationCount");
-                if (count > 0) {
-                    el.textContent = count;
-                    el.hidden = false;
-                } else {
-                    el.hidden = true;
-                }
+                setCountText(count);
             } catch (err) {
                 console.error("Kunde inte hämta notifikationscount:", err);
             }
         });
 
-    </script>
-    <!--SignalR för roll uppdatering-->
-    <script>
-        // JavaScript (frontend)
-        setInterval(() => {
-            fetch("/api/user/check-claims-version").then(res => {
-                if (res.status === 409) location.reload(); // reload if server says "you’re outdated"
-            });
-        }, 10000);
+        function updateNotificationCount(change) {
+            const current = parseInt(iconCountEl.textContent) || 0;
+            const updated = Math.max(0, current + change);
+            setCountText(updated);
+        }
+
+        function setCountText(count) {
+            const shouldHide = count <= 0;
+
+            if (shouldHide) {
+                iconCountEl.style.display = "none";
+                cardCountEl.style.display = "none";
+            } else {
+                iconCountEl.style.display = "inline-block";
+                cardCountEl.style.display = "inline-block";
+                iconCountEl.textContent = count;
+                cardCountEl.textContent = count;
+            }
+        }
+
 
     </script>
+  
+
+    <!--SignalR för roll uppdatering-->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const userConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/userhub")
+                .build();
+
+            userConnection.on("RefreshClaims", async () => {
+                console.log("📡 RefreshClaims mottaget");
+
+                try {
+                    const res = await fetch("/Users/RefreshClaims", { method: "POST" });
+                    if (res.ok) {
+                        console.log("✅ Claims uppdaterade – laddar om");
+                        location.reload();
+                    } else {
+                        console.warn("❌ Kunde inte uppdatera claims – loggar ut");
+                        location.href = "/Auth/Logout";
+                    }
+                } catch (err) {
+                    console.error("❌ SignalR-fel:", err);
+                }
+            });
+
+            userConnection.start()
+                .then(() => console.log("✅ SignalR userhub igång"))
+                .catch(err => console.error("❌ SignalR userhub error:", err));
+        });
+    </script>
+    <script>
+        console.log("signalR finns?", typeof signalR); // ska visa "function"
+    </script>
+    <script>
+        function showCookieModal() {
+            const modal = document.getElementById("cookieConsentModal");
+
+            fetch("/Settings/CookieConsentModal")
+                .then(res => res.text())
+                .then(html => {
+                    modal.innerHTML = html;
+                    modal.removeAttribute("hidden");
+                });
+        }
+    </script>
+
+
+    
+    <!--!-->
     <!-- 🧩 Snackbar för bekräftelser -->
     <div id="snackbar" class="snackbar">Notifikation markerad som läst</div>
 

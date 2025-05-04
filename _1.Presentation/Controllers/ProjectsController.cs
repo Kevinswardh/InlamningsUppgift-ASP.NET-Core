@@ -8,6 +8,7 @@ using _1.PresentationLayer.ViewModels.ProjectsViewModels;
 using _3.IntegrationLayer.Hubs;
 using ApplicationLayer_ServiceLayer_.NotificationManagment.NotificationService.Interface;
 using Microsoft.AspNetCore.SignalR;
+using _IntegrationLayer.Hubs;
 
 namespace Presentation.Controllers
 {
@@ -19,19 +20,24 @@ namespace Presentation.Controllers
         private readonly IProjectService _projectService;
         private readonly INotificationService _notificationService;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly IHubContext<ProjectsHub> _projectsHub;
+
         public ProjectsController(
             ILogger<ProjectsController> logger,
             IUserService userService,
             IProjectService projectService,
             INotificationService notificationService,
-            IHubContext<NotificationHub> hubContext)
+            IHubContext<NotificationHub> hubContext,
+            IHubContext<ProjectsHub> projectsHub)
         {
             _logger = logger;
             _userService = userService;
             _projectService = projectService;
             _notificationService = notificationService;
             _hubContext = hubContext;
+            _projectsHub = projectsHub; // 👈 lägg till denna
         }
+
 
 
         public async Task<IActionResult> Index(string tab = "All", int page = 1)
@@ -171,8 +177,9 @@ namespace Presentation.Controllers
                 IsCompleted = false
             };
 
-
             await _projectService.CreateProjectWithUsersAsync(form, User);
+
+            // 🔔 Medlemmar
             foreach (var member in memberDTOs)
             {
                 var notif = new NotificationForm
@@ -184,9 +191,10 @@ namespace Presentation.Controllers
                 };
                 await _notificationService.AddNotificationAsync(notif);
                 await _hubContext.Clients.User(member.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+                await _projectsHub.Clients.User(member.Id).SendAsync("ReloadProjects");
             }
 
-            // Om kunden finns som användare
+            // 🔔 Kund
             var customer = allUsers.FirstOrDefault(u => u.Email == model.ClientEmail);
             if (customer != null)
             {
@@ -199,7 +207,10 @@ namespace Presentation.Controllers
                 };
                 await _notificationService.AddNotificationAsync(notif);
                 await _hubContext.Clients.User(customer.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+                await _projectsHub.Clients.User(customer.Id).SendAsync("ReloadProjects");
             }
+
+            // 🔔 Managers/Admins
             var currentUser = await _userService.GetUserByIdAsync(userId);
             var managersAndAdmins = allUsers.Where(u => u.Id != userId && (u.Role == "Admin" || u.Role == "Manager")).ToList();
             foreach (var manager in managersAndAdmins)
@@ -213,10 +224,14 @@ namespace Presentation.Controllers
                 };
                 await _notificationService.AddNotificationAsync(notif);
                 await _hubContext.Clients.User(manager.Id).SendAsync("ReceiveNotification", notif.Title, notif.Message);
+                await _projectsHub.Clients.User(manager.Id).SendAsync("ReloadProjects");
             }
 
             return RedirectToAction("Index");
         }
+
+
+
         [HttpPost]
         public async Task<IActionResult> Edit(int id, EditProjectViewModel model)
         {

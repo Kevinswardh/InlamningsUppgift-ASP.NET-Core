@@ -1247,7 +1247,7 @@ input::-ms-reveal {
     height: 120px;
     border-radius: 50%;
     overflow: hidden;
-    margin: 0 auto 16px;
+    margin: 16px auto 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1653,7 +1653,7 @@ input::-ms-reveal {
     padding: 8px 0;
     position: absolute;
     right: 0;
-    top: 110%;
+    top: 33px;
     width: 160px;
     z-index: 10;
 }
@@ -2623,4 +2623,156 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     .notification-list-wrapper::-webkit-scrollbar {
         display: none; /* Chrome, Safari, Edge */
+    }
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.input-error {
+    border: 1.5px solid red !important;
+}
+.form-group {
+    position: relative;
+}
+
+#editClientSuggestionsList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    background-color: #1e1e1e; /* matcha dark mode */
+    border: 1px solid #333;
+    border-radius: 4px;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+input[readonly] {
+    background-color: #eee;
+    cursor: not-allowed;
+}
+#editClientInput {
+    background-color: #2a2a2a !important;
+    color: #53B7D9 !important;
+    cursor: not-allowed;
+}
+
+.policy-container {
+    max-width: 800px;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: sans-serif;
+    line-height: 1.6;
+}
+
+    .policy-container h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 10px;
+    }
+
+    .policy-container h2 {
+        font-size: 1.4em;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        color: #222;
+    }
+
+    .policy-container p {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .policy-container ul {
+        padding-left: 20px;
+        margin-bottom: 20px;
+    }
+
+    .policy-container li {
+        margin-bottom: 10px;
+    }
+
+
+/* Root admin dashboard layout */
+.admin-dashboard {
+    padding: 2rem;
+    background-color: #f5f5f5;
+}
+
+/* Title */
+.admin-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #111;
+}
+
+/* Sections container */
+.card-sections-container {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-top: 50px;
+}
+
+/* Each section (Users, Projects, etc.) */
+.card-section {
+    flex: 1 1 500px;
+}
+
+    .card-section h2,
+    .dashboard-section h2 {
+        margin-bottom: 1rem;
+        color: #111;
+        font-size: 1.4rem;
+    }
+
+/* Grid layout for cards */
+.grid,
+.admin-dashboard .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Card component */
+.card {
+    background: #ffffff;
+    color: #111;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.card-value {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Progress bar */
+.progress-bar {
+    background: #ddd;
+    height: 8px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 0.6rem;
+}
+
+    .progress-bar .fill {
+        background: #00BCD4; /* Cyan */
+        height: 100%;
+        transition: width 0.3s ease;
     }

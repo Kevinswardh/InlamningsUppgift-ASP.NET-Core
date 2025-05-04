@@ -1,10 +1,12 @@
 ﻿using _1.PresentationLayer.ViewModels.MembersViewModels;
+using _IntegrationLayer.Hubs;
 using ApplicationLayer_ServiceLayer_.Authentication.AuthService.Interface;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 public class UsersController : Controller
@@ -141,11 +143,14 @@ public class UsersController : Controller
     [Authorize(Roles = "Admin,Manager")]
     public async Task<IActionResult> Edit(MemberItemViewModel model, string returnUrl)
     {
-        if (!ModelState.IsValid) return Redirect(returnUrl);
+        if (!ModelState.IsValid)
+            return Redirect(returnUrl);
 
         var user = await _userService.GetUserByIdAsync(model.Id);
-        if (user == null) return NotFound();
+        if (user == null)
+            return NotFound();
 
+        // 📝 Uppdatera användarens data
         user.UserName = model.UserName;
         user.Email = model.Email;
         user.PhoneNumber = model.PhoneNumber;
@@ -155,8 +160,10 @@ public class UsersController : Controller
         await _userService.UpdateUserAsync(user);
 
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         if (currentUserId == model.Id)
         {
+            // 🔄 Om användaren redigerar sig själv: uppdatera claims direkt
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -171,9 +178,18 @@ public class UsersController : Controller
 
             await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
         }
+        else
+        {
+            Console.WriteLine($"📡 Sänder SignalR till user.Id = {user.Id}");
+
+            var hubContext = HttpContext.RequestServices.GetRequiredService<IHubContext<UserHub>>();
+            await hubContext.Clients.User(user.Id).SendAsync("RefreshClaims");
+        }
+
 
         return Redirect(string.IsNullOrEmpty(returnUrl) ? "/NewMembers" : returnUrl);
     }
+
 
 
 
@@ -192,6 +208,31 @@ public class UsersController : Controller
 
         // Redirect to returnUrl, or default to NewMembers
         return Redirect(string.IsNullOrEmpty(returnUrl) ? "/NewMembers" : returnUrl);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> RefreshClaims()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userService.GetUserByIdAsync(userId);
+        if (user == null) return Unauthorized();
+
+        var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id),
+        new Claim("darkMode", user.IsDarkModeEnabled.ToString().ToLower()),
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role ?? "User")
+    };
+
+        var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+
+        Console.WriteLine($"✅ Claims uppdaterade för {user.UserName} ({user.Role})");
+        return Ok();
     }
 
 }

@@ -1,41 +1,60 @@
-﻿@* _CookieConsentInApp.cshtml *@
-<form method="post" asp-controller="Settings" asp-action="SaveCookiePreferences">
+﻿@model __Cross_cutting_Concerns.FormDTOs.CookiePreferencesForm
+
+<form id="cookieForm" method="post" asp-controller="Settings" asp-action="SaveCookiePreferences">
     <div class="modal-content">
+        <button type="button" onclick="document.getElementById('cookieConsentModal').setAttribute('hidden', true)"
+                style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:20px;color:white;cursor:pointer;">
+            ❌
+        </button>
+
         <div class="cookie-info">
             <h2>Du har kontroll över dina uppgifter</h2>
             <p>
                 Vi och våra affärspartners använder teknik, inklusive cookies, för att samla in information
                 om dig för olika ändamål. Du kan när som helst ändra eller återkalla ditt samtycke.
             </p>
-            <a href="/policy" target="_blank">Läs mer här</a>
+            <a asp-controller="CookiePage" asp-action="Index" target="_blank">Läs mer här</a>
+
         </div>
 
         <div class="cookie-options">
             <h3>Cookies</h3>
+
             <div class="cookie-toggle">
                 <label>Nödvändiga (alltid aktiva)</label>
                 <input type="checkbox" checked disabled />
             </div>
 
             <div class="cookie-toggle">
-                <label for="functional">Funktionella</label>
-                <input type="checkbox" name="functional" id="functional" />
+                <label asp-for="Functional">Funktionella</label>
+                <input asp-for="Functional" type="checkbox" id="Functional" />
             </div>
 
             <div class="cookie-toggle">
-                <label for="analytics">Analys & Statistik</label>
-                <input type="checkbox" name="analytics" id="analytics" />
+                <label asp-for="Analytics">Analys & Statistik</label>
+                <input asp-for="Analytics" type="checkbox" id="Analytics" />
             </div>
 
             <div class="cookie-toggle">
-                <label for="marketing">Marknadsföring</label>
-                <input type="checkbox" name="marketing" id="marketing" />
+                <label asp-for="Marketing">Marknadsföring</label>
+                <input asp-for="Marketing" type="checkbox" id="Marketing" />
             </div>
 
             <div class="cookie-buttons">
-                <button type="submit" name="consent" value="all">Godkänn alla</button>
-                <button type="submit" name="consent" value="custom">Spara valda inställningar</button>
+                <button type="submit" name="Consent" value="all">Godkänn alla</button>
+                <button type="submit" name="Consent" value="custom">Spara valda inställningar</button>
             </div>
         </div>
     </div>
 </form>
+
+<script>
+    document.getElementById("cookieForm").addEventListener("submit", function () {
+        ["Functional", "Analytics", "Marketing"].forEach(id => {
+            const checkbox = document.getElementById(id);
+            if (checkbox) {
+                checkbox.value = checkbox.checked ? "true" : "false";
+            }
+        });
+    });
+</script>

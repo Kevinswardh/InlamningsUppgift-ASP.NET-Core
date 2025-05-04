@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ApplicationLayer_ServiceLayer_.UserManagment.UserService.Interface;
 using SecurityLayer.SecurityServices.SecurityAuthService.Interface;
 using System.Security.Claims;
+using __Cross_cutting_Concerns.FormDTOs;
+using System.Text.Json;
 
 namespace _1.PresentationLayer.Controllers
 {
@@ -50,19 +52,23 @@ namespace _1.PresentationLayer.Controllers
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
-
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult SaveCookiePreferences(string consent, bool functional = false, bool analytics = false, bool marketing = false)
+        public IActionResult SaveCookiePreferences(CookiePreferencesForm model)
         {
+            // Se värdena
+            var f = model.Functional;
+            var a = model.Analytics;
+            var m = model.Marketing;
+
             var values = new Dictionary<string, bool>
             {
-                ["functional"] = consent == "all" || functional,
-                ["analytics"] = consent == "all" || analytics,
-                ["marketing"] = consent == "all" || marketing
+                ["functional"] = model.Consent == "all" || model.Functional,
+                ["analytics"] = model.Consent == "all" || model.Analytics,
+                ["marketing"] = model.Consent == "all" || model.Marketing
             };
 
-            var cookieValue = System.Text.Json.JsonSerializer.Serialize(values);
+            var cookieValue = JsonSerializer.Serialize(values);
             var options = new CookieOptions
             {
                 Expires = DateTimeOffset.UtcNow.AddYears(1),
@@ -72,6 +78,35 @@ namespace _1.PresentationLayer.Controllers
             Response.Cookies.Append("CookiePreferences", cookieValue, options);
             return Redirect(Request.Headers["Referer"].ToString());
         }
+
+
+
+        [AllowAnonymous]
+        public IActionResult CookieConsentModal()
+        {
+            var preferencesJson = Request.Cookies["CookiePreferences"];
+            var model = new CookiePreferencesForm();
+
+            if (!string.IsNullOrEmpty(preferencesJson))
+            {
+                try
+                {
+                    var values = JsonSerializer.Deserialize<Dictionary<string, bool>>(preferencesJson);
+                    model.Functional = values?.GetValueOrDefault("functional") ?? false;
+                    model.Analytics = values?.GetValueOrDefault("analytics") ?? false;
+                    model.Marketing = values?.GetValueOrDefault("marketing") ?? false;
+                }
+                catch
+                {
+                    // logga ev. fel här
+                }
+            }
+
+            return PartialView("_CookieConsentInApp", model);
+        }
+
+
+
 
     }
 }

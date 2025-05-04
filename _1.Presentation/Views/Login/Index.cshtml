@@ -89,16 +89,26 @@
 
                         <div class="form-group mb-20">
                             <label for="login-password" class="form-label">Password</label>
-                            <input type="password"
-                                   id="login-password"
-                                   name="Password"
-                                   class="form-input"
-                                   placeholder="Enter your password"
-                                   autocomplete="current-password" />
-                         
-                        <div asp-validation-summary="All" style="color: red;"></div>
+                            <div style="position: relative;">
+                                <input type="password"
+                                       id="login-password"
+                                       name="Password"
+                                       class="form-input"
+                                       placeholder="Enter your password"
+                                       autocomplete="current-password" />
 
+                                <button type="button"
+                                        class="toggle-password"
+                                        data-target="login-password"
+                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                       background: none; border: none; cursor: pointer; z-index: 10;">
+                                    👁️
+                                </button>
+                            </div>
+                            <div asp-validation-summary="All" style="color: red;"></div>
                         </div>
+
+
 
                         <div class="form-actions">
                             <label class="remember-me">
@@ -135,3 +145,18 @@
 <script src="...jquery.validate.unobtrusive.min.js"></script>
 
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".toggle-password").forEach(button => {
+                button.addEventListener("click", function () {
+                    const targetId = this.getAttribute("data-target");
+                    const input = document.getElementById(targetId);
+
+                    const isHidden = input.type === "password";
+                    input.type = isHidden ? "text" : "password";
+                    this.textContent = isHidden ? "🔒" : "👁️";
+                });
+            });
+        });
+</script>

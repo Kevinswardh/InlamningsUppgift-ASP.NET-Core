@@ -72,7 +72,10 @@ namespace _4.infrastructureLayer.Repositories.ProjectRepository
             if (existingProject == null)
                 return null;
 
-            // Uppdatera fält
+            // ❌ Ta bort gamla kopplingar från kopplingstabellen
+            _context.ProjectMembers.RemoveRange(existingProject.ProjectMembers);
+
+            // 🛠️ Uppdatera fält
             existingProject.Name = project.Name;
             existingProject.Description = project.Description;
             existingProject.StartDate = project.StartDate;
@@ -83,18 +86,23 @@ namespace _4.infrastructureLayer.Repositories.ProjectRepository
             existingProject.CreatedByUserId = project.CreatedByUserId;
             existingProject.CustomerId = project.CustomerId;
 
-            // ❗ Viktigt: ta bort gamla relationer ordentligt
-            foreach (var member in existingProject.ProjectMembers.ToList())
-            {
-                _context.Entry(member).State = EntityState.Deleted;
-            }
+            // ✅ Lägg till nya kopplingar direkt till DbSet, EF behöver detta
+            await _context.ProjectMembers.AddRangeAsync(project.ProjectMembers);
 
-            // Lägg till nya relationer
+            // ✅ Uppdatera navigation property för att spegla nya kopplingar
             existingProject.ProjectMembers = project.ProjectMembers;
 
+            // 💾 Spara ändringarna
             await _context.SaveChangesAsync();
-            return existingProject;
+
+            // 🧠 Returnera uppdaterad version med navigation properties inkluderade
+            return await _context.Projects
+                .Include(p => p.Customer)
+                .Include(p => p.ProjectMembers)
+                    .ThenInclude(pm => pm.TeamMember)
+                .FirstOrDefaultAsync(p => p.Id == project.Id);
         }
+
 
 
         // Ta bort projekt

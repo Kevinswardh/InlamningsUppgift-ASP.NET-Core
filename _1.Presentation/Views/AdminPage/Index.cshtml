@@ -1,0 +1,78 @@
+﻿@using __Cross_cutting_Concerns.FormDTOs
+@model AdminStatisticsDTO
+@{
+    Layout = "_AppLayout";
+    ViewData["Title"] = "Adminpanel";
+}
+
+<section class="admin-dashboard">
+    <h1>Adminpanel</h1>
+
+    <div class="card-sections-container">
+        <!-- 🧍 Användare -->
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">Användare totalt</div>
+                <div class="card-value">@Model.TotalUsers</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Managers</div>
+                <div class="card-value">@Model.Managers</div>
+                <div class="progress-bar">
+                    <div class="fill" style="width:@(Model.Managers * 100 / Model.TotalUsers)%"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Team Members</div>
+                <div class="card-value">@Model.TeamMembers</div>
+                <div class="progress-bar">
+                    <div class="fill" style="width:@(Model.TeamMembers * 100 / Model.TotalUsers)%"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Customers</div>
+                <div class="card-value">@Model.Customers</div>
+                <div class="progress-bar">
+                    <div class="fill" style="width:@(Model.Customers * 100 / Model.TotalUsers)%"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">New Members</div>
+                <div class="card-value">@Model.NewMembers</div>
+                <div class="progress-bar">
+                    <div class="fill" style="width:@(Model.NewMembers * 100 / Model.TotalUsers)%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📁 Projekt -->
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">Projekt totalt</div>
+                <div class="card-value">@Model.Projects</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Pågående projekt</div>
+                <div class="card-value">@Model.ActiveProjects</div>
+                <div class="progress-bar">
+                    <div class="fill" style="width:@(Model.ActiveProjects * 100 / Model.Projects)%"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Slutförda projekt</div>
+                <div class="card-value">@Model.CompletedProjects</div>
+                <div class="progress-bar">
+                    <div class="fill" style="width:@(Model.CompletedProjects * 100 / Model.Projects)%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 💰 Ekonomi -->
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">Total budget</div>
+                <div class="card-value">@Model.TotalBudget.ToString("C")</div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -29,11 +29,26 @@
             <div class="form-group">
                 <label class="form-label">Project Name</label>
                 <input type="text" asp-for="Name" class="form-input" placeholder="Project Name" />
+                <div class="error-message" id="error-edit-name"></div>
+
             </div>
 
             <div class="form-group">
                 <label class="form-label">Customer Email</label>
-                <input type="text" asp-for="ClientEmail" class="form-input" placeholder="Customer Email" />
+                <input type="text"
+                       asp-for="ClientEmail"
+                       class="form-input unselectable"
+                       id="editClientInput"
+                       placeholder="Customer Email"
+                       readonly
+                       tabindex="-1"
+                       onfocus="this.blur()" />
+
+
+                <ul id="editClientSuggestionsList" class="suggestions-list"></ul>
+                <div class="error-message" id="error-edit-client"></div>
+
+
             </div>
 
             <div class="form-group">
@@ -48,12 +63,16 @@
                 <div class="form-group">
                     <label class="form-label">End Date</label>
                     <input type="date" asp-for="EndDate" class="form-input custom-date" />
+                    <div class="error-message" id="error-edit-enddate"></div>
+
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Budget</label>
                 <input type="number" asp-for="Budget" class="form-input" step="0.01" />
+                <div class="error-message" id="error-edit-budget"></div>
+
             </div>
 
             <div class="form-group">
@@ -62,6 +81,8 @@
                     <div class="members-tags" id="editMembersTagsContainer"></div>
                     <input type="text" id="editMemberInput" class="member-input" placeholder="Add member..." />
                     <ul id="editSuggestionsList" class="suggestions-list"></ul>
+                    <div class="error-message" id="error-edit-members"></div>
+
                 </div>
             </div>
 
@@ -108,3 +129,93 @@
    
 
 </script>
+<!-- Script 7: Edit Project Form Validation -->
+<!-- Script 7: Edit Project Form Validation -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const editForm = document.querySelector("#editProjectModal .project-form");
+
+        // 🔁 Tillgång till global allMembers
+        const allMembers = window.allMembers = window.allMembers || [];
+
+        // 🔎 Bygg upp lookup-tabeller för rollbaserad kontroll
+        const customers = {};
+        const teamMembers = {};
+
+        allMembers.forEach(member => {
+            const role = member.role?.toLowerCase();
+            if (role === "customer") {
+                customers[member.email.toLowerCase()] = true;
+            }
+            if (role === "teammember") {
+                teamMembers[member.id] = true;
+            }
+        });
+
+        editForm.addEventListener("submit", function (e) {
+            let isValid = true;
+
+            // Rensa felmeddelanden
+            document.querySelectorAll("#editProjectModal .error-message").forEach(el => el.textContent = "");
+
+            const name = editForm.querySelector("input[name='Name']");
+            const client = editForm.querySelector("input[name='ClientEmail']");
+            const end = editForm.querySelector("input[name='EndDate']");
+            const budget = editForm.querySelector("input[name='Budget']");
+            const memberFields = editForm.querySelectorAll("input[name='MemberIds']");
+
+            // 🔹 Name
+            if (!name.value.trim()) {
+                document.getElementById("error-edit-name").textContent = "Project name is required.";
+                name.classList.add("input-error");
+                isValid = false;
+            } else {
+                name.classList.remove("input-error");
+            }
+
+            // 🔹 Customer Email – validera mot "customers"
+            const email = client.value.trim().toLowerCase();
+            if (!customers[email]) {
+                document.getElementById("error-edit-client").textContent = "Select a valid customer from the list.";
+                client.classList.add("input-error");
+                isValid = false;
+            } else {
+                client.classList.remove("input-error");
+            }
+
+            // 🔹 End Date
+            if (!end.value) {
+                document.getElementById("error-edit-enddate").textContent = "End date is required.";
+                end.classList.add("input-error");
+                isValid = false;
+            } else {
+                end.classList.remove("input-error");
+            }
+
+            // 🔹 Members – validera att minst en finns och att de är giltiga
+            if (memberFields.length < 1) {
+                document.getElementById("error-edit-members").textContent = "Add at least one member.";
+                isValid = false;
+            } else {
+                const invalidMembers = Array.from(memberFields).filter(field => !teamMembers[field.value]);
+                if (invalidMembers.length > 0) {
+                    document.getElementById("error-edit-members").textContent = "One or more members are invalid.";
+                    isValid = false;
+                }
+            }
+
+            // 🔹 Budget
+            const budgetValue = parseFloat(budget.value.trim());
+            if (isNaN(budgetValue) || budgetValue < 0 || budgetValue > Number.MAX_SAFE_INTEGER) {
+                document.getElementById("error-edit-budget").textContent = "Enter a valid number between 0 and " + Number.MAX_SAFE_INTEGER;
+                budget.classList.add("input-error");
+                isValid = false;
+            } else {
+                budget.classList.remove("input-error");
+            }
+
+            if (!isValid) e.preventDefault();
+        });
+    });
+</script>
+

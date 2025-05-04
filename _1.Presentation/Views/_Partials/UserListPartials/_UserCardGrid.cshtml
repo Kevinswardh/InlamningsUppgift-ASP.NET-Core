@@ -11,7 +11,7 @@
     var isManager = User.IsInRole("Manager");
     var showMenu = isAdmin || (isManager && member.Role != "Manager");
 
-    <article class="member-card">
+        <article class="member-card" data-user-email="@member.Email">
         @if (showMenu)
         {
             <button class="member-menu-button" aria-label="Open menu">
@@ -104,4 +104,31 @@
         openDeleteModal(memberId);        // Öppna delete modal med rätt ID
     }
 
+</script>
+<script>
+    // SignalR: Live uppdatering av användares online-status
+    document.addEventListener("DOMContentLoaded", () => {
+        const onlineConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/userhub")
+            .build();
+
+        onlineConnection.on("UserStatusChanged", (email, isOnline) => {
+            console.log(`🟢 ${email} är nu ${isOnline ? "online" : "offline"}`);
+
+            // Hitta alla användarkort med matchande email
+            const userEls = document.querySelectorAll(`[data-user-email="${email}"]`);
+
+            userEls.forEach(el => {
+                const statusIcon = el.querySelector(".status-indicator");
+                if (statusIcon) {
+                    statusIcon.classList.toggle("online", isOnline);
+                    statusIcon.classList.toggle("offline", !isOnline);
+                }
+            });
+        });
+
+        onlineConnection.start()
+            .then(() => console.log("✅ SignalR OnlineStatus igång"))
+            .catch(err => console.error("❌ SignalR OnlineStatus error:", err));
+    });
 </script>

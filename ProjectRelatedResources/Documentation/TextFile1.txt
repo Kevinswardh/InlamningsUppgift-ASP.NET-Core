@@ -1,10 +1,13 @@
 ﻿
 
-loginögon på login
-Edit modalen i Customer sidan måste fixas, 
-Sort by menyn visuell bugg, 
 
-vit text i qwuill 
-eventeutllt validering på emails
 
-so mteammember varför funakr inte create project, 
+Admin sida för statestik.  Skippa admin du sköter statuslägen etc direkt i UIn, ger okej ux, eventuella saker som skulle behövts är isåfall statestik på olika delar i 
+appen samlat p åen sidan, mängd projekt, användare, per roll, mängs completed, expired, CompletedLate. mängd kvar som inte ha compleeted/expired/completedlate. Återkom til ldetta o mtid finns.
+
+
+
+Live chat funktion. Om tid finnsx. 
+
+
+

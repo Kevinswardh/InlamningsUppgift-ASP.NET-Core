@@ -1,7 +1,7 @@
 ﻿@* ============================= *@
 @*       Index.cshtml          *@
 @* ============================= *@
-
+@using System.Security.Claims
 @using _1.PresentationLayer.ViewModels.MembersViewModels
 @model UserListViewModel
 
@@ -12,6 +12,13 @@
 
 <section class="content-section">
     <div class="section-header">
+        <!-- Lägg detta längst ned i <body> -->
+        <div style="font-size:25px;color:Black;" hidden>
+            ID: @User.FindFirstValue(ClaimTypes.NameIdentifier) |
+            Namn: @User.Identity?.Name |
+            Roll: @User.FindFirstValue(ClaimTypes.Role)
+        </div>
+
         <h2 class="section-title">Managers</h2>
         @await Html.PartialAsync("~/Views/_Partials/UserListPartials/_SortByDropdown.cshtml",
                  new SortViewModel
@@ -37,6 +44,9 @@
 
 @section Scripts {
     <script>
+        Console.WriteLine("🧠 RefreshClaims kallad av: " + User.Identity?.Name);
+        Console.WriteLine("Gammal roll: " + User.FindFirstValue(ClaimTypes.Role));
+
         document.querySelectorAll(".menu-item-edit").forEach(button => {
             button.addEventListener("click", e => {
                 const memberId = button.dataset.id;

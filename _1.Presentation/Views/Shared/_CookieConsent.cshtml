@@ -1,7 +1,8 @@
-﻿@if (!Context.Request.Cookies.ContainsKey("CookiePreferences"))
+﻿@* Detta körs bara om cookien inte finns *@
+@if (!Context.Request.Cookies.ContainsKey("CookiePreferences"))
 {
     <div id="cookieConsentModal" class="cookie-modal">
-        <form method="post" asp-controller="Settings" asp-action="SaveCookiePreferences">
+        <form id="cookieForm" method="post" asp-controller="Settings" asp-action="SaveCookiePreferences">
 
             <div class="modal-content">
                 <div class="cookie-info">
@@ -10,7 +11,8 @@
                         Vi och våra affärspartners använder teknik, inklusive cookies, för att samla in information
                         om dig för olika ändamål. Du kan när som helst ändra eller återkalla ditt samtycke.
                     </p>
-                    <a href="/policy" target="_blank">Läs mer här</a>
+                    <a asp-controller="CookiePage" asp-action="Index" target="_blank">Läs mer här</a>
+
                 </div>
 
                 <div class="cookie-options">
@@ -43,4 +45,15 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.getElementById("cookieForm").addEventListener("submit", function () {
+            ["functional", "analytics", "marketing"].forEach(id => {
+                const checkbox = document.getElementById(id);
+                if (checkbox) {
+                    checkbox.value = checkbox.checked ? "true" : "false";
+                }
+            });
+        });
+    </script>
 }

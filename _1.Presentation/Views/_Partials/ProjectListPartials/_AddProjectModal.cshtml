@@ -28,6 +28,7 @@
                        name="ImageFile"
                        accept="image/*"
                        hidden />
+
             </section>
 
             <div class="form-group">
@@ -36,6 +37,7 @@
                        name="Name"
                        class="form-input"
                        placeholder="Project Name" />
+                <div class="error-message" id="error-name"></div>
             </div>
 
             <div class="form-group">
@@ -43,6 +45,7 @@
                 <div class="members-input">
                     <input type="text" id="clientInput" name="ClientEmail" class="member-input" placeholder="Customer Email" />
                     <ul id="clientSuggestionsList" class="suggestions-list"></ul>
+            <div class="error-message" id="error-client"></div>
                 </div>
             </div>
 
@@ -65,6 +68,7 @@
                              alt="Calendar"
                              class="calendar-icon-clickable" />
                     </div>
+            <div class="error-message" id="error-startdate"></div>
                 </div>
 
                 <div class="form-group">
@@ -75,6 +79,7 @@
                              alt="Calendar"
                              class="calendar-icon-clickable" />
                     </div>
+            <div class="error-message" id="error-enddate"></div>
                 </div>
             </div>
 
@@ -91,6 +96,7 @@
                     <ul id="suggestionsList" class="suggestions-list">
                         <!-- Filtrerade resultat kommer här -->
                     </ul>
+            <div class="error-message" id="error-members"></div>
                 </div>
             </div>
 
@@ -105,6 +111,7 @@
                          class="currency-icon" />
                     <input type="text" name="Budget" placeholder="0" class="budget-field" />
                 </div>
+        <div class="error-message" id="error-budget"></div>
             </div>
 
             <button type="submit" class="submit-button">Create</button>
@@ -113,3 +120,67 @@
 
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector(".project-form");
+
+        form.addEventListener("submit", function (e) {
+            let isValid = true;
+
+            // Rensa gamla fel
+            document.querySelectorAll(".error-message").forEach(el => el.textContent = "");
+
+            const name = form.querySelector("input[name='Name']");
+            const client = form.querySelector("input[name='ClientEmail']");
+            const start = form.querySelector("input[name='StartDate']");
+            const end = form.querySelector("input[name='EndDate']");
+            const budget = form.querySelector("input[name='Budget']");
+            const memberHiddenFields = document.querySelectorAll("input[name='Members']");
+
+            // Project Name
+            if (!name.value.trim()) {
+                document.getElementById("error-name").textContent = "Project name is required.";
+                isValid = false;
+            }
+
+            // Client Email must match suggestion
+            const clientSuggestions = Array.from(document.querySelectorAll("#clientSuggestionsList li"));
+            const match = clientSuggestions.some(s => s.textContent.trim().toLowerCase() === client.value.trim().toLowerCase());
+            if (!match) {
+                document.getElementById("error-client").textContent = "Select a valid customer from the list.";
+                isValid = false;
+            }
+
+            // Dates
+            const startDate = new Date(start.value);
+            const endDate = new Date(end.value);
+            if (!start.value) {
+                document.getElementById("error-startdate").textContent = "Start date is required.";
+                isValid = false;
+            }
+            if (!end.value) {
+                document.getElementById("error-enddate").textContent = "End date is required.";
+                isValid = false;
+            }
+            if (start.value && end.value && startDate > endDate) {
+                document.getElementById("error-enddate").textContent = "End date must come after start date.";
+                isValid = false;
+            }
+
+            // Members
+            if (memberHiddenFields.length < 1) {
+                document.getElementById("error-members").textContent = "Add at least one member from the list.";
+                isValid = false;
+            }
+
+            // Budget
+            const budgetValue = parseInt(budget.value.trim(), 10);
+            if (isNaN(budgetValue) || budgetValue < 0 || budgetValue > Number.MAX_SAFE_INTEGER) {
+                document.getElementById("error-budget").textContent = "Enter a valid number between 0 and " + Number.MAX_SAFE_INTEGER;
+                isValid = false;
+            }
+
+            if (!isValid) e.preventDefault();
+        });
+    });
+</script>

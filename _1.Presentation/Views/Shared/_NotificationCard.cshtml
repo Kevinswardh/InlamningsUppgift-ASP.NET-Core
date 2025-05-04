@@ -1,8 +1,10 @@
-﻿@model List<__Cross_cutting_Concerns.FormDTOs.NotificationForm>
+﻿@* _NotificationCard *@
+@model List<__Cross_cutting_Concerns.FormDTOs.NotificationForm>
 <section class="notification-card" id="notificationsCard" hidden>
     <header class="notification-header">
         <h2 class="notification-title">Notifications</h2>
-        <span class="notification-count" id="notificationCount">@((Model != null) ? Model.Count : 0)</span>
+        <span class="notification-count" id="notificationCountCard">@((Model != null) ? Model.Count : 0)</span>
+
     </header>
     <hr class="notification-divider" />
 

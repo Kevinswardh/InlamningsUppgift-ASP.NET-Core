@@ -6,13 +6,29 @@
 }
 
 <section class="content-section">
-    <div class="section-header">
-        <h2 class="section-title">Projects</h2>
-        <button class="add-button">
-            <i class="ti ti-plus"></i>
-            <span>Add Project</span>
-        </button>
-    </div>
+    @{
+        var isAdmin = User.IsInRole("Admin");
+        var isManager = User.IsInRole("Manager");
+        var isTeamMember = User.IsInRole("TeamMember");
+    }
+
+    @if (isAdmin || isManager || isTeamMember)
+    {
+        <div class="section-header">
+            <h2 class="section-title">Projects</h2>
+            <button class="add-button">
+                <i class="ti ti-plus"></i>
+                <span>Add Project</span>
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="section-header">
+            <h2 class="section-title">Projects</h2>
+        </div>
+    }
+
 
     <partial name="~/Views/_Partials/ProjectListPartials/_ProjectTabList.cshtml" model="Model" />
 
@@ -781,3 +797,42 @@
         showEditSuggestions(query);
     });
 </script>
+<!--Project signalR-->
+<script>
+    const projectsConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/projectshub")
+        .build();
+
+    projectsConnection.on("ReloadProjects", () => {
+        console.log("🔄 Signal mottagen – laddar om Projects-sidan");
+        location.reload();
+    });
+
+    projectsConnection.start()
+        .then(() => console.log("✅ ProjectsHub ansluten"))
+        .catch(err => console.error("❌ ProjectsHub-fel:", err));
+</script>
+
+<script>
+    // 🟢 Alla användare globalt
+    window.allMembers = @Html.Raw(Json.Serialize(Model.AllMembers));
+
+    // 🟢 Filtrera ut customers och team members direkt så de finns globalt också
+    window.customerDataEdit = {};
+    window.membersDataEdit = {};
+
+    allMembers.forEach(member => {
+        if (member.role?.toLowerCase() === "customer") {
+            window.customerDataEdit[member.email] = {
+                email: member.email,
+                avatar: member.imageUrl ?? "https://placehold.co/24x24"
+            };
+        } else if (member.role === "TeamMember") {
+            window.membersDataEdit[member.id] = {
+                name: member.userName,
+                avatar: member.imageUrl ?? "https://placehold.co/24x24"
+            };
+        }
+    });
+</script>
+

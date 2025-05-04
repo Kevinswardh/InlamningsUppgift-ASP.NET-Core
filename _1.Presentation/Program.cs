@@ -25,6 +25,11 @@ using ApplicationLayer.Services;
 using ApplicationLayer_ServiceLayer_.NotificationManagment.NotificationService.Interface;
 using _4.infrastructureLayer.Repositories.NotificationRepository;
 using BackgroundJobs.SeedData;
+using _IntegrationLayer.Hubs;
+using _IntegrationLayer.Providers;
+using Microsoft.AspNetCore.SignalR;
+using ApplicationLayer_ServiceLayer_.AdminPageManagment.Interface;
+using ApplicationLayer_ServiceLayer_.AdminPageManagment;
 
 
 
@@ -88,6 +93,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IUserStatusService, UserStatusService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 
 // REPOSITORIES
@@ -95,6 +101,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
+//Providers
+builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
+
 
 
 // ========================================
@@ -213,6 +223,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<UserHub>("/userhub");
+app.MapHub<ProjectsHub>("/projectshub");
 
 
 app.MapControllerRoute(

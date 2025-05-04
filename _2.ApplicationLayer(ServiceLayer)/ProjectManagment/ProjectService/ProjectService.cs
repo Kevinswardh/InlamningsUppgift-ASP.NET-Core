@@ -174,41 +174,48 @@ namespace ApplicationLayer_ServiceLayer_.ProjectManagment.ProjectService
 
             foreach (var user in teamMemberUsers)
             {
+                // ✅ Se till att vi söker på ExternalUserId, inte bara Id
                 var existing = await _projectRepository.GetTeamMemberByExternalIdAsync(user.Id);
                 if (existing == null)
                 {
                     existing = new TeamMemberEntity
                     {
-                        Id = user.Id, // 👈 viktig nu när ID är string
+                        Id = user.Id, // 🔑 Viktigt: sätt som string
                         ExternalUserId = user.Id,
                         Name = user.UserName,
                         Email = user.Email
                     };
+
+                    // ✅ Se till att den sparas direkt
                     await _projectRepository.CreateTeamMemberAsync(existing);
                 }
 
+                // 🔗 Koppla projektet till team medlemmen
                 projectMembers.Add(new ProjectMemberEntity
                 {
                     TeamMemberId = existing.Id,
-                    ProjectId = form.Id
+                    ProjectId = form.Id,
+                    TeamMember = existing // 👈 detta är nyckeln!
                 });
+
             }
 
-            // 🛠️ Uppdatera fält
+            // 🛠️ Uppdatera projektets fält
             project.Name = form.Name;
             project.Description = form.Description;
             project.ImageUrl = form.ImageUrl;
             project.StartDate = form.StartDate;
             project.EndDate = form.EndDate;
             project.Budget = form.Budget;
-  
 
             // 💾 Ersätt medlemmar
             project.ProjectMembers = projectMembers;
 
+            // 🧠 Sparar till databasen och returnerar ny version
             var updated = await _projectRepository.UpdateProjectAsync(project);
-            return await GetProjectByIdAsync(updated.Id);
+            return await GetProjectByIdAsync(updated.Id); // ❗ denna MÅSTE ha ThenInclude för TeamMember
         }
+
 
 
 
