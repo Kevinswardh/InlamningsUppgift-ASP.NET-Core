@@ -5,54 +5,45 @@
 @using _1.PresentationLayer.ViewModels.MembersViewModels
 
 <div class="member-card-grid">
-@foreach (var member in Model)
-{
-    var isAdmin = User.IsInRole("Admin");
-    var isManager = User.IsInRole("Manager");
-    var showMenu = isAdmin || (isManager && member.Role != "Manager");
+    @foreach (var member in Model)
+    {
+        var isAdmin = User.IsInRole("Admin");
+        var isManager = User.IsInRole("Manager");
+        var showMenu = isAdmin || (isManager && member.Role != "Manager");
 
         <article class="member-card" data-user-email="@member.Email">
-        @if (showMenu)
-        {
-            <button class="member-menu-button" aria-label="Open menu">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </button>
-
-            <div class="dropdown-menu" style="display: none">
-                <button class="menu-item menu-item-edit"
-                        data-id="@member.Id"
-                        data-username="@member.UserName"
-                        data-email="@member.Email"
-                        data-phone="@member.PhoneNumber"
-                        data-position="@member.Position"
-                        data-role="@member.Role"
-                        onclick="handleEditClick(this)">
-
-
-                    <div class="icon-wrapper">
-                        <i class="ti ti-pencil"></i>
-                    </div>
-                    <span class="menu-text">Edit</span>
+            @if (showMenu)
+            {
+                <button class="member-menu-button" aria-label="Open menu">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
                 </button>
 
+                <div class="dropdown-menu" style="display: none">
+                    <button class="menu-item menu-item-edit"
+                            data-id="@member.Id"
+                            data-username="@member.UserName"
+                            data-email="@member.Email"
+                            data-phone="@member.PhoneNumber"
+                            data-position="@member.Position"
+                            data-role="@member.Role"
+                            onclick="handleEditClick(this)">
+                        <div class="icon-wrapper"><i class="ti ti-pencil"></i></div>
+                        <span class="menu-text">Edit</span>
+                    </button>
 
-                <div class="menu-divider"></div>
+                    <div class="menu-divider"></div>
 
                     <button class="menu-item menu-item-delete"
                             data-id="@member.Id"
-                            onclick='handleDeleteClick(this)'>
-                        <div class="icon-wrapper">
-                            <i class="ti ti-trash"></i>
-                        </div>
+                            onclick="handleDeleteClick(this)">
+                        <div class="icon-wrapper"><i class="ti ti-trash"></i></div>
                         <span class="menu-text menu-text-delete">Delete</span>
                     </button>
+                </div>
+            }
 
-
-
-            </div>
-        }
             <div class="member-avatar-wrapper">
                 @if (!string.IsNullOrEmpty(member.ImageUrl))
                 {
@@ -69,42 +60,26 @@
                 <span class="status-indicator @(member.IsOnline ? "online" : "offline")"></span>
             </div>
 
+            <h2 class="member-name">@member.UserName</h2>
+            <p class="member-title">@member.Position</p>
+            <address class="member-contact">
+                <p class="member-email">@member.Email</p>
+                <p class="member-phone">@member.PhoneNumber</p>
+            </address>
 
+            <button class="member-message-button"
+                    data-id="@member.Id"
+                    data-email="@member.Email"
+                    data-username="@member.UserName">
+                Message
+            </button>
 
-        <h2 class="member-name">@member.UserName</h2>
-        <p class="member-title">@member.Position</p>
-        <address class="member-contact">
-            <p class="member-email">@member.Email</p>
-            <p class="member-phone">@member.PhoneNumber</p>
-        </address>
-
-        <button class="member-message-button" aria-label="Send message to @member.UserName">
-            Message
-        </button>
-    </article>
-}
+        </article>
+    }
 </div>
-<script>
-    function handleEditClick(btn) {
-        const member = {
-            id: btn.dataset.id,
-            username: btn.dataset.username,
-            email: btn.dataset.email,
-            phone: btn.dataset.phone,
-            position: btn.dataset.position,
-            role: btn.dataset.role
-        };
 
 
-        openEditModal(member);
-    }
 
-    function handleDeleteClick(btn) {
-        const memberId = btn.dataset.id;  // Hämta ID:t från data-id attributet
-        openDeleteModal(memberId);        // Öppna delete modal med rätt ID
-    }
-
-</script>
 <script>
     // SignalR: Live uppdatering av användares online-status
     document.addEventListener("DOMContentLoaded", () => {

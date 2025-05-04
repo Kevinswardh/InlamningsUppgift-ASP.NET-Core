@@ -238,8 +238,40 @@
 
 
         </main>
+
+
+    </div>
+    <!-- Global chat-modal -->
+    <div class="chat-modal" id="chatModal">
+        <div class="chat-header">
+            <h3 id="chatUserName">Chat with...</h3>
+            <button onclick="closeChatModal()">×</button>
+        </div>
+
+        <!-- Visa tidigare-knapp -->
+        <div class="chat-history-control">
+            <button id="loadOlderMessagesBtn" onclick="loadChatHistory()">Visa tidigare meddelanden</button>
+        </div>
+
+        <!-- Meddelanden visas här -->
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <!-- Skrivfält -->
+        <div class="chat-input">
+            <button type="button" class="emoji-button" onclick="showEmojiShortcutTip()">😊</button>
+            <span id="emojiTip" class="emoji-tip" hidden>Tryck Win + . för emojis 💡</span>
+            <input type="text" id="chatInput" placeholder="Skriv ett meddelande..." />
+            <button onclick="sendMessage()">Skicka</button>
+        </div>
     </div>
 
+    <!-- Chat-bubbla -->
+    <div id="globalChatLauncher" class="chat-launcher hidden">
+        <button class="chat-launcher-button" id="chatLauncherButton" aria-label="Open chat">
+            💬
+            <span id="chatBadge" class="chat-badge hidden">1</span>
+        </button>
+    </div>
 
 
 
@@ -608,7 +640,204 @@
     <!-- 🧩 Snackbar för bekräftelser -->
     <div id="snackbar" class="snackbar">Notifikation markerad som läst</div>
 
-    
+    <script>
+        let currentChatUser = null;
+        let chatConnection = null;
+        const pendingMessages = {}; // { email: [msg1, msg2] }
+        let unreadChatCount = 0;
+        let lastSenderEmail = null;
+        let skipCount = 0;
+
+        function showChatLauncher(fromEmail) {
+            if (fromEmail === window.currentUserEmail) return; // 👈 förhindra ikon till avsändaren
+
+            console.log("🔔 showChatLauncher() körs för:", fromEmail);
+            const launcher = document.getElementById("globalChatLauncher");
+            const badge = launcher?.querySelector(".chat-badge");
+
+            if (!launcher || !badge) {
+                console.warn("❌ Kunde inte hitta chatt-launcher eller badge");
+                return;
+            }
+
+            unreadChatCount++;
+            lastSenderEmail = fromEmail;
+
+            badge.textContent = unreadChatCount;
+            badge.classList.remove("hidden");
+            launcher.classList.remove("hidden");
+
+            console.log("📢 Chattbubbla visad med count =", unreadChatCount);
+        }
+
+        function hideChatLauncher() {
+            const launcher = document.getElementById("globalChatLauncher");
+            const badge = launcher?.querySelector(".chat-badge");
+
+            if (!launcher || !badge) return;
+
+            unreadChatCount = 0;
+            badge.textContent = "";
+            badge.classList.add("hidden");
+            launcher.classList.add("hidden");
+        }
+
+        function openChatModal(email, name) {
+            const modal = document.getElementById('chatModal');
+            if (!modal) return;
+
+            currentChatUser = email;
+            skipCount = 0;
+            modal.classList.add('show');
+            modal.style.display = 'flex';
+            document.getElementById('chatUserName').innerText = `Chat with ${name}`;
+            document.getElementById('chatMessages').innerHTML = '';
+
+            // buffrade meddelanden
+            if (pendingMessages[email]?.length) {
+                pendingMessages[email].forEach(msg => appendMessageBubble(email, msg));
+                pendingMessages[email] = [];
+            }
+
+            loadChatHistory(); // 👈 ny funktion
+        }
+
+        function closeChatModal() {
+            currentChatUser = null;
+            const modal = document.getElementById('chatModal');
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+            }
+        }
+
+        function appendMessageBubble(fromEmail, message) {
+            if (!message || !fromEmail) return;
+
+            const isMine = fromEmail === window.currentUserEmail;
+            const msgDiv = document.createElement("div");
+            msgDiv.classList.add("chat-bubble");
+            msgDiv.classList.add(isMine ? "chat-bubble-right" : "chat-bubble-left");
+            msgDiv.textContent = message;
+
+            return msgDiv;
+        }
+
+        function renderMessages(messages, prepend = false) {
+            const container = document.getElementById("chatMessages");
+            const fragment = document.createDocumentFragment();
+
+            messages.forEach(msg => {
+                if (msg?.fromEmail && msg?.content) {
+                    const bubble = appendMessageBubble(msg.fromEmail, msg.content);
+                    fragment.appendChild(bubble);
+                }
+            });
+
+            if (prepend) {
+                container.prepend(fragment);
+            } else {
+                container.appendChild(fragment);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            skipCount += messages.length;
+        }
+
+        function loadChatHistory() {
+            if (!currentChatUser) return;
+            chatConnection?.invoke("LoadChatHistory", currentChatUser, skipCount);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input?.value.trim();
+            if (!message) return;
+
+            const bubble = appendMessageBubble(window.currentUserEmail, message);
+            document.getElementById("chatMessages").appendChild(bubble);
+
+            chatConnection?.invoke("SendMessage", currentChatUser, message);
+            input.value = "";
+        }
+
+        function showEmojiShortcutTip() {
+            const tip = document.getElementById("emojiTip");
+            tip.hidden = false;
+            setTimeout(() => tip.hidden = true, 3000);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.addEventListener("click", (e) => {
+                const messageBtn = e.target.closest('.member-message-button');
+                if (messageBtn) {
+                    openChatModal(messageBtn.dataset.email, messageBtn.dataset.username);
+                }
+
+                const closeBtn = e.target.closest('#chatModal .chat-header button');
+                if (closeBtn) closeChatModal();
+
+                const sendBtn = e.target.closest('#chatModal .chat-input button:not(.emoji-button)');
+                if (sendBtn) sendMessage();
+
+                const emojiBtn = e.target.closest('.emoji-button');
+                if (emojiBtn) showEmojiShortcutTip();
+            });
+
+            const launcher = document.getElementById("globalChatLauncher");
+            launcher?.addEventListener("click", () => {
+                if (lastSenderEmail) {
+                    openChatModal(lastSenderEmail, lastSenderEmail);
+                    hideChatLauncher();
+                }
+            });
+
+            if (!window.chatHubStarted) {
+                window.chatHubStarted = true;
+
+                if (!window.signalR) {
+                    console.error("❌ SignalR är inte laddad");
+                    return;
+                }
+
+                chatConnection = new signalR.HubConnectionBuilder()
+                    .withUrl("/chathub")
+                    .build();
+
+                chatConnection.on("ReceiveMessage", (fromEmail, message) => {
+                    if (!fromEmail || !message) return;
+
+                    if (currentChatUser === fromEmail) {
+                        const bubble = appendMessageBubble(fromEmail, message);
+                        document.getElementById("chatMessages").appendChild(bubble);
+                        document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
+                    } else {
+                        pendingMessages[fromEmail] ??= [];
+                        pendingMessages[fromEmail].push(message);
+                        showChatLauncher(fromEmail);
+                    }
+                });
+
+                chatConnection.on("LoadChatHistory", (messages, isOlderLoad) => {
+                    if (!Array.isArray(messages)) return;
+                    renderMessages(messages, isOlderLoad);
+                });
+
+                chatConnection.start()
+                    .then(() => console.log("✅ ChatHub igång"))
+                    .catch(err => console.error("🚨 Kunde inte starta ChatHub:", err));
+            }
+        });
+    </script>
+
+
+
+
+    <script>
+        window.currentUserEmail = '@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value';
+    </script>
+
+   
 
 </body>
 </html>

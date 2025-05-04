@@ -30,6 +30,9 @@ using _IntegrationLayer.Providers;
 using Microsoft.AspNetCore.SignalR;
 using ApplicationLayer_ServiceLayer_.AdminPageManagment.Interface;
 using ApplicationLayer_ServiceLayer_.AdminPageManagment;
+using ApplicationLayer_ServiceLayer_.ChattManagment;
+using _4.infrastructureLayer.Repositories.ChatRepository;
+using __Cross_cutting_Concerns.CrossCutting.Interfaces;
 
 
 
@@ -65,6 +68,10 @@ builder.Services.AddDbContext<IdentityDbContext>(options =>
 builder.Services.AddDbContext<ApplicationProjectDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectConnection")));
 
+//ChatDatabas
+builder.Services.AddDbContext<ApplicationChatDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ChatConnection")));
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<IdentityDbContext>()
@@ -94,6 +101,7 @@ builder.Services.AddSingleton<IUserStatusService, UserStatusService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 
 // REPOSITORIES
@@ -101,6 +109,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 
 //Providers
 builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
@@ -225,6 +234,7 @@ app.UseAuthorization();
 app.MapHub<NotificationHub>("/notificationHub");
 app.MapHub<UserHub>("/userhub");
 app.MapHub<ProjectsHub>("/projectshub");
+app.MapHub<ChatHub>("/chathub");
 
 
 app.MapControllerRoute(

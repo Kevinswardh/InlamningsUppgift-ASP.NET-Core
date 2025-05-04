@@ -16,5 +16,9 @@
 		<ProjectReference Include="..\_4.InfrastructureLayer\_4.InfrastructureLayer.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="ChattManagment\Interface\" />
+	</ItemGroup>
+
 
 </Project>
