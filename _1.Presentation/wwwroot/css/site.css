@@ -1423,10 +1423,10 @@ input::-ms-reveal {
 }
 
 .notification-count {
-    background-color: #ff6640;
+    background-color: #ff3b3b;
     color: #fff;
     font-family: "Nunito", sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     width: 20px;
     height: 20px;
@@ -1434,9 +1434,12 @@ input::-ms-reveal {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
     padding: 0;
+    box-sizing: border-box;
 }
+
+
+
 
 .notification-divider {
     background-color: #ebeef2;
@@ -1471,9 +1474,12 @@ input::-ms-reveal {
     fill: currentColor;
 }
 
-.notification-content {
-    flex-grow: 1;
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Justera efter behov */
 }
+
 
 .notification-message {
     font-family: "Nunito", sans-serif;
