@@ -248,13 +248,15 @@
             <button onclick="closeChatModal()">×</button>
         </div>
 
-        <!-- Visa tidigare-knapp -->
+        <!-- Kontroll för att ladda tidigare -->
         <div class="chat-history-control">
-            <button id="loadOlderMessagesBtn" onclick="loadChatHistory()">Visa tidigare meddelanden</button>
+            <button id="loadOlderMessagesBtn" class="load-more-button" onclick="loadChatHistory()">Visa tidigare meddelanden</button>
         </div>
 
         <!-- Meddelanden visas här -->
-        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-messages" id="chatMessages">
+          
+        </div>
 
         <!-- Skrivfält -->
         <div class="chat-input">
@@ -828,6 +830,16 @@
                     .catch(err => console.error("🚨 Kunde inte starta ChatHub:", err));
             }
         });
+        document.getElementById("chatInput")?.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault(); // förhindra radbrytning
+                sendMessage();
+                const container = document.getElementById("chatMessages");
+                container.scrollTop = container.scrollHeight; // 🔽 scrolla till botten
+            }
+        });
+
+
     </script>
 
 
